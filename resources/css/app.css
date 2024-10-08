@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&family=Poppins:wght@300;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -5,3 +7,19 @@
 [x-cloak] {
     display: none;
 }
+
+@layer base {
+    body, html {
+      @apply font-poppins;
+    }
+
+    /* Headings */
+    h1 {
+        @apply text-[2rem] font-semibold;
+    }
+
+    h2 {
+        @apply font-semibold;
+    }
+}
+

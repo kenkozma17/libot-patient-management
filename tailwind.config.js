@@ -15,8 +15,12 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                'poppins': ['Poppins', 'sans-serif'],
             },
+            colors: {
+                'main-gray': '#333333',
+                'light-gray': '#F0F0F0',
+            }
         },
     },
 
