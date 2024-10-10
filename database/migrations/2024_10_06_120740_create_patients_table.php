@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('first_name');
             $table->string('last_name');
-            $table->string('middle_name');
+            $table->string('middle_name')->nullable();
             $table->string('suffix')->nullable();
             $table->string('gender')->nullable();
             $table->string('phone')->nullable();
@@ -23,7 +23,7 @@ return new class extends Migration
             $table->date('birthdate');
             $table->string('street_address');
             $table->string('barangay');
-            $table->string('municapility');
+            $table->string('municipality');
             $table->string('province');
             $table->string('postal_code');
             $table->string('region');
