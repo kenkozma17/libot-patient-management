@@ -42,7 +42,7 @@ const addPatient = () => {
     <h1>Add New Patient Form</h1>
     <form
       @submit.prevent="addPatient"
-      class="bg-white rounded-md mt-2.5 md:px-[1.9rem] px-[1.25rem] md:py-[1.4rem] py-[1.125rem]"
+      class="bg-white rounded-md mt-2.5 mb-[6rem] md:px-[1.9rem] px-[1.25rem] md:py-[1.4rem] py-[1.125rem]"
     >
       <h2 class="font-semibold md:mb-4 mb-2">Personal Information</h2>
 
@@ -163,7 +163,7 @@ const addPatient = () => {
       </TwoColumnWrapper>
 
       <div
-        class="flex justify-end md:ml-[16.5rem] bg-white md:px-10 px-8 py-8 fixed bottom-0 left-0 right-0"
+        class="flex justify-end md:ml-[16.5rem] bg-white md:px-10 px-8 md:py-8 py-6 fixed bottom-0 left-0 right-0 border-t-2 border-t-dark-gray"
       >
         <PrimaryButton> Save </PrimaryButton>
       </div>
