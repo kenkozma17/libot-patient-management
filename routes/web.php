@@ -20,7 +20,6 @@ Route::get('/', function () {
     return Inertia::render('Home');
 });
 
-Route::resource('patients', PatientController::class);
 
 Route::middleware([
     'auth:sanctum',
@@ -30,4 +29,7 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
+
+    /** Patients */
+    Route::resource('patients', PatientController::class);
 });

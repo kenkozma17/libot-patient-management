@@ -24,7 +24,9 @@ class PatientController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Patients/Create', [
+            /** Props */
+        ]);
     }
 
     /**

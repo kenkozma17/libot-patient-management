@@ -1,10 +1,12 @@
 <script setup>
-import AdminLayout from "@/Layouts/AdminLayout.vue";
 import AdminContentWrapper from "@/Components/Partials/AdminContentWrapper.vue";
 import AddPatientForm from "@/Pages/Patients/Partials/AddPatientForm.vue";
+import AdminLayout from '@/Layouts/AdminLayout.vue';
 
-defineOptions({ layout: AdminLayout });
+defineOptions({ layout: AdminLayout  });
 </script>
 <template>
-    <AdminContentWrapper> Patients List </AdminContentWrapper>
+  <AdminContentWrapper>
+    <AddPatientForm />
+  </AdminContentWrapper>
 </template>
