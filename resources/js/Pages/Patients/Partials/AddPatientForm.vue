@@ -7,11 +7,14 @@ import InputError from "@/Components/Forms/InputError.vue";
 import TwoColumnWrapper from "@/Components/Forms/TwoColumnWrapper.vue";
 import SelectInput from "@/Components/Forms/SelectInput.vue";
 import PrimaryButton from "@/Components/Forms/PrimaryButton.vue";
+import Loader from "@/Components/Forms/Loader.vue";
 import regions from "@/regions";
 import provinces from "@/provinces";
+import {useToast} from 'vue-toast-notification';
 
 const regionsList = reactive(regions);
 const provincesList = reactive(provinces);
+const $toast = useToast({ position: 'top-right'});
 
 const form = useForm({
   first_name: "",
@@ -25,7 +28,7 @@ const form = useForm({
   municipality: "",
   barangay: "",
   postal_code: "",
-  country: 'Philippines',
+  country: "Philippines",
   phone: "",
   email: "",
 });
@@ -34,6 +37,10 @@ const addPatient = () => {
   form.post(route("patients.store"), {
     errorBag: "addPatient",
     preserveScroll: true,
+    onSuccess: () => {
+        $toast.success('Patient Created Successfully!');
+        form.reset();
+    },
   });
 };
 </script>
@@ -163,9 +170,13 @@ const addPatient = () => {
       </TwoColumnWrapper>
 
       <div
-        class="flex justify-end md:ml-[16.5rem] bg-white md:px-10 px-8 md:py-8 py-6 fixed bottom-0 left-0 right-0 border-t-2 border-t-dark-gray"
+        class="flex items-center gap-x-2 justify-end md:ml-[16.5rem] bg-white md:px-10 px-8 md:py-8 py-6 fixed bottom-0 left-0 right-0 border-t-2 border-t-dark-gray"
       >
-        <PrimaryButton> Save </PrimaryButton>
+        <Loader v-if="form.processing" />
+        <PrimaryButton :class="{ 'opacity-25': form.processing }">
+          <span v-if="!form.processing">Save</span>
+          <span v-else>Saving...</span>
+        </PrimaryButton>
       </div>
     </form>
   </div>

@@ -4,6 +4,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\PatientController;
+use App\Http\Controllers\PatientVisitController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,4 +33,8 @@ Route::middleware([
 
     /** Patients */
     Route::resource('patients', PatientController::class);
+    Route::resource('patient-visits', PatientVisitController::class);
+    Route::get('patient-visits/create/{patientId?}', [PatientVisitController::class, 'create'])
+        ->name('patient-visits.create');
+
 });

@@ -4,41 +4,33 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\Http\Requests\PatientStoreRequest;
-use App\Models\Patient;
 
-class PatientController extends Controller
+class PatientVisitController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return Inertia::render('Patients/PatientsList', [
-            /** Props */
-        ]);
+        //
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create($patientId)
     {
-        return Inertia::render('Patients/Create', [
-            /** Props */
+        return Inertia::render('PatientVisits/Create', props: [
+
         ]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(PatientStoreRequest $request)
+    public function store(Request $request)
     {
-        $patient = new Patient;
-        $patient->fill($request->validated());
-        $patient->save();
-
-        return redirect()->route('patients.show', $patient->id);
+        //
     }
 
     /**
@@ -46,10 +38,7 @@ class PatientController extends Controller
      */
     public function show(string $id)
     {
-        $patient = Patient::find($id);
-        return Inertia::render('Patients/Show', props: [
-            'patient' => $patient,
-        ]);
+        //
     }
 
     /**

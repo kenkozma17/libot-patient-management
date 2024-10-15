@@ -15,7 +15,7 @@
 
     /* Headings */
     h1 {
-        @apply text-[2rem] font-semibold;
+        @apply md:text-[2rem] text-[1.35rem] font-semibold;
     }
 
     h2 {
