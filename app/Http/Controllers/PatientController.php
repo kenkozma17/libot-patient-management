@@ -72,15 +72,22 @@ class PatientController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $patient = Patient::Find($id);
+        return Inertia::render('Patients/Edit', [
+            'patient' => $patient
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(PatientStoreRequest $request, string $id)
     {
-        //
+        $patient = Patient::find($id);
+        $patient->update($request->validated());
+        $patient->save();
+
+        return redirect()->route('patients.show', $patient->id);
     }
 
     /**
@@ -88,6 +95,7 @@ class PatientController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        Patient::destroy($id);
+        return redirect()->route('patients.index');
     }
 }

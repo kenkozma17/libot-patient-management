@@ -1,5 +1,5 @@
 <script setup>
-import { useForm } from "@inertiajs/vue3";
+import { useForm, Link } from "@inertiajs/vue3";
 import { reactive } from "vue";
 import TextInput from "@/Components/Forms/TextInput.vue";
 import InputLabel from "@/Components/Forms/InputLabel.vue";
@@ -17,29 +17,33 @@ const regionsList = reactive(regions);
 const provincesList = reactive(provinces);
 const $toast = useToast({ position: "top-right" });
 
+const props = defineProps({
+  patient: Object,
+});
+
 const form = useForm({
-  first_name: "",
-  last_name: "",
-  middle_name: "",
-  gender: "",
-  birthdate: "",
-  street_address: "",
-  region: "",
-  province: "",
-  municipality: "",
-  barangay: "",
-  postal_code: "",
+  first_name: props.patient.first_name,
+  last_name: props.patient.last_name,
+  middle_name: props.patient.middle_name,
+  gender: props.patient.gender,
+  birthdate: props.patient.birthdate,
+  street_address: props.patient.street_address,
+  region: props.patient.region,
+  province: props.patient.province,
+  municipality: props.patient.municipality,
+  barangay: props.patient.barangay,
+  postal_code: props.patient.postal_code,
   country: "Philippines",
-  phone: "",
-  email: "",
+  phone: props.patient.phone,
+  email: props.patient.email,
 });
 
 const addPatient = () => {
-  form.post(route("patients.store"), {
-    errorBag: "addPatient",
+  form.put(route("patients.update", props.patient.id), {
+    errorBag: "updatePatient",
     preserveScroll: true,
     onSuccess: () => {
-      $toast.success("Patient Created Successfully!");
+      $toast.success("Patient Updated Successfully!");
       form.reset();
     },
   });
@@ -47,7 +51,8 @@ const addPatient = () => {
 </script>
 <template>
   <div>
-    <h1>Add New Patient Form</h1>
+    <h1>Edit Patient Form</h1>
+    <span>{{ props.patient.full_name }}</span>
     <form
       @submit.prevent="addPatient"
       class="bg-white rounded-md mt-2.5 mb-[6rem] md:px-[1.9rem] px-[1.25rem] md:py-[1.4rem] py-[1.125rem]"
@@ -172,9 +177,16 @@ const addPatient = () => {
 
       <ButtonWrapper>
         <Loader v-if="form.processing" />
+        <Link
+          v-if="!form.processing"
+          :href="route('patients.show', props.patient.id)"
+          class="mr-4"
+        >
+          Cancel
+        </Link>
         <PrimaryButton :class="{ 'opacity-25': form.processing }">
-          <span v-if="!form.processing">Save</span>
-          <span v-else>Saving...</span>
+          <span v-if="!form.processing">Update</span>
+          <span v-else>Updating...</span>
         </PrimaryButton>
       </ButtonWrapper>
     </form>
