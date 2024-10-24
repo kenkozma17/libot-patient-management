@@ -9,6 +9,11 @@ class InventoryItem extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'slug',
+    ];
+
     public function invoiceItems()
     {
         return $this->morphMany(InvoiceItem::class, 'itemable');

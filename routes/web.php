@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\InventoryController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -36,5 +37,8 @@ Route::middleware([
     Route::resource('patient-visits', PatientVisitController::class);
     Route::get('patient-visits/create/{patientId?}', [PatientVisitController::class, 'create'])
         ->name('patient-visits.create');
+
+    /** Inventory */
+    Route::resource('inventory', InventoryController::class);
 
 });

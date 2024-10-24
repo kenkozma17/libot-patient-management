@@ -4,6 +4,7 @@ import { ref, onMounted, useTemplateRef } from "vue";
 import { route } from "ziggy-js";
 
 const patientMenu = useTemplateRef("patient-menu");
+const inventoryMenu = useTemplateRef("inventory-menu");
 const activeMenuClass = "menu__dropdown--active";
 
 const page = usePage();
@@ -26,6 +27,8 @@ const toggleSubMenu = (e) => {
 onMounted(() => {
   if (page.component.startsWith("Patient")) {
     patientMenu.value.classList.add(activeMenuClass);
+  } else if(page.component.startsWith("Inventory")) {
+    inventoryMenu.value.classList.add(activeMenuClass);
   }
 });
 </script>
@@ -66,7 +69,25 @@ onMounted(() => {
         </ul>
       </li>
 
-      <li><Link class="menu" href="#">Inventory</Link></li>
+      <li>
+        <a href="#" ref="inventory-menu" class="menu menu__dropdown" @click="toggleSubMenu">Inventory</a>
+        <ul class="sub-menu flex flex-col mt-[.5rem] gap-[.5rem]">
+          <li>
+            <Link
+              :class="{ active: isCurrentRoute('Inventory/InventoryList') }"
+              :href="route('inventory.index')"
+              >View Inventory</Link
+            >
+          </li>
+          <li>
+            <Link
+              :class="{ active: isCurrentRoute('Inventory/Create') }"
+              :href="route('inventory.create')"
+              >Add New Inventory</Link
+            >
+          </li>
+        </ul>
+      </li>
     </ul>
   </aside>
 </template>
