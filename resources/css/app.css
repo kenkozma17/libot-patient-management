@@ -10,7 +10,7 @@
 
 @layer base {
     body, html {
-      @apply font-poppins;
+      @apply font-poppins text-black;
     }
 
     /* Headings */

@@ -12,10 +12,25 @@ class PatientController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $search = $request->get('search');
+        $patients = Patient::where([
+            [function ($query) use ($request) {
+                if (($s = $request->search)) {
+                    $query->orWhere('last_name', 'LIKE', '%' . $s . '%')
+                        ->orWhere('first_name', 'LIKE', '%' . $s . '%')
+                        ->orWhere('phone', 'LIKE', '%' . $s . '%')
+                        ->get();
+                }
+            }]
+        ])
+        ->orderBy('last_name', 'asc')
+        ->paginate(config('pagination.default'))
+        ->withQueryString();
         return Inertia::render('Patients/PatientsList', [
-            /** Props */
+            'patients' => $patients,
+            'search' => $search,
         ]);
     }
 
