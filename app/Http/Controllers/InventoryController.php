@@ -72,15 +72,22 @@ class InventoryController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $item = InventoryItem::Find($id);
+        return Inertia::render('Inventory/Edit', [
+            'item' => $item
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(InventoryStoreRequest $request, string $id)
     {
-        //
+        $item = InventoryItem::find($id);
+        $item->update($request->validated());
+        $item->save();
+
+        return redirect()->route('inventory.show', $item->id);
     }
 
     /**
@@ -88,6 +95,7 @@ class InventoryController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        InventoryItem::destroy($id);
+        return redirect()->route('inventory.index');
     }
 }

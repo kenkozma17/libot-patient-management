@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('inventory_transactions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('inventory_id')->constrained('inventory_items');
+            $table->foreignId('inventory_item_id')->constrained('inventory_items');
             $table->date('date_received')->nullable();
             $table->date('expiration_date')->nullable();
             $table->string('lot_number')->nullable();
             $table->integer('quantity')->nullable();
             $table->date('date_opened')->nullable();
-            $table->string('transaction_type'); // INCREASE OR DECREASE
+            $table->string('transaction_type')->nullable(); // INCREASE OR DECREASE
             $table->text('notes')->nullable();
             $table->timestamps();
         });

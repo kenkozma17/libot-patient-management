@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\InventoryTransactionController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -40,5 +41,6 @@ Route::middleware([
 
     /** Inventory */
     Route::resource('inventory', InventoryController::class);
+    Route::resource('inventory-transactions', InventoryTransactionController::class);
 
 });

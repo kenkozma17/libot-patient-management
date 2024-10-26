@@ -3,6 +3,9 @@ import Profile from "@/Components/Icons/Profile.vue";
 import LabelAndValue from "@/Components/Patients/LabelAndValue.vue";
 import PrimaryButton from "@/Components/Forms/PrimaryButton.vue";
 import { Link, useForm } from "@inertiajs/vue3";
+import { useToast } from "vue-toast-notification";
+
+const $toast = useToast({ position: "top-right" });
 
 const props = defineProps({
   patient: Object,
