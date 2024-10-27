@@ -1,6 +1,6 @@
 <script setup></script>
 <template>
-    <div class="grid md:grid-cols-2 gap-4 md:mb-4 mb-2">
+    <div class="grid md:grid-cols-2 gap-4 mb-4">
         <div>
             <slot name="col1"></slot>
         </div>

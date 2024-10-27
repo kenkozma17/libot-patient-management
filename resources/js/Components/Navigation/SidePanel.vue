@@ -27,7 +27,7 @@ const toggleSubMenu = (e) => {
 onMounted(() => {
   if (page.component.startsWith("Patient")) {
     patientMenu.value.classList.add(activeMenuClass);
-  } else if(page.component.startsWith("Inventory")) {
+  } else if (page.component.startsWith("Inventory")) {
     inventoryMenu.value.classList.add(activeMenuClass);
   }
 });
@@ -70,7 +70,13 @@ onMounted(() => {
       </li>
 
       <li>
-        <a href="#" ref="inventory-menu" class="menu menu__dropdown" @click="toggleSubMenu">Inventory</a>
+        <a
+          href="#"
+          ref="inventory-menu"
+          class="menu menu__dropdown"
+          @click="toggleSubMenu"
+          >Inventory</a
+        >
         <ul class="sub-menu flex flex-col mt-[.5rem] gap-[.5rem]">
           <li>
             <Link
@@ -140,6 +146,7 @@ onMounted(() => {
     }
 
     &__dropdown {
+      margin: 0.5rem 0;
       &::after {
         content: "";
         background: url("/icons/arrow-down.png");

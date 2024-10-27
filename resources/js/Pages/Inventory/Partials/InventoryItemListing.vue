@@ -5,6 +5,7 @@ import { Link, useForm } from "@inertiajs/vue3";
 import { ref } from "vue";
 import { useToast } from "vue-toast-notification";
 import InventoryTransactionForm from "./InventoryTransactionForm.vue";
+import TitleAndButtonsWrapper from "@/Components/Partials/TitleAndButtonsWrapper.vue";
 
 const $toast = useToast({ position: "top-right" });
 
@@ -36,7 +37,7 @@ const deleteItem = () => {
     >
       <div class="flex md:flex-row flex-col md:gap-x-4 gap-x-3">
         <div class="w-full">
-          <div class="flex justify-between items-center">
+          <TitleAndButtonsWrapper>
             <h2 class="leading-none md:text-[1.5rem] text-[1.2rem]">
               {{ item.name }}
             </h2>
@@ -50,16 +51,16 @@ const deleteItem = () => {
                 >Delete</PrimaryButton
               >
             </div>
-          </div>
+          </TitleAndButtonsWrapper>
         </div>
       </div>
     </div>
 
     <!-- Inventory Transactions -->
     <div
-      class="bg-white rounded-md md:mt-6 md:px-[1.9rem] px-[1.25rem] md:py-[1.4rem] py-[1.125rem]"
+      class="bg-white rounded-md md:mt-6 mt-3 md:px-[1.9rem] px-[1.25rem] md:py-[1.4rem] py-[1.125rem]"
     >
-      <div class="md:flex md:flex-row flex-col md:justify-between md:items-center">
+      <TitleAndButtonsWrapper>
         <h2 class="leading-none md:text-[1.5rem] text-[1.2rem]">Transactions</h2>
         <PrimaryButton
           v-if="!showForm"
@@ -69,7 +70,7 @@ const deleteItem = () => {
           >New Transaction
         </PrimaryButton>
         <a href="#" @click="toggleTransactionForm" v-else>Cancel</a>
-      </div>
+      </TitleAndButtonsWrapper>
       <div class="border-t-black border-t md:mt-[2rem] mt-[1rem]" v-if="showForm">
         <InventoryTransactionForm :item="item" />
       </div>

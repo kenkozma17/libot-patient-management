@@ -95,7 +95,7 @@ const addPatient = () => {
         </template>
       </TwoColumnWrapper>
 
-      <h2 class="font-semibold md:mb-4 mb-2 mt-8">Address</h2>
+      <h2 class="font-semibold md:mb-4 mb-2 md:mt-8 mt-2">Address</h2>
 
       <!-- Street Address and Region -->
       <TwoColumnWrapper>
@@ -154,7 +154,7 @@ const addPatient = () => {
         </template>
       </TwoColumnWrapper>
 
-      <h2 class="font-semibold md:mb-4 mb-2 mt-8">Contact Information</h2>
+      <h2 class="font-semibold md:mb-4 mb-2 md:mt-8 mt-2">Contact Information</h2>
 
       <!-- Phone and Email -->
       <TwoColumnWrapper>

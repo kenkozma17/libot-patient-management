@@ -4,6 +4,7 @@ import LabelAndValue from "@/Components/Patients/LabelAndValue.vue";
 import PrimaryButton from "@/Components/Forms/PrimaryButton.vue";
 import { Link, useForm } from "@inertiajs/vue3";
 import { useToast } from "vue-toast-notification";
+import TitleAndButtonsWrapper from "@/Components/Partials/TitleAndButtonsWrapper.vue";
 
 const $toast = useToast({ position: "top-right" });
 
@@ -36,8 +37,8 @@ const deletePatient = () => {
           </div>
         </div>
         <div class="w-full">
-          <div class="flex justify-between items-center">
-            <h2 class="leading-none md:text-[1.5rem] text-[1.2rem]">
+          <TitleAndButtonsWrapper>
+            <h2 class="leading-none md:text-[1.5rem] text-[1.2rem] md:mt-0 mt-[.5rem]">
               {{ patient.full_name }}
             </h2>
             <div>
@@ -50,7 +51,7 @@ const deletePatient = () => {
                 >Delete</PrimaryButton
               >
             </div>
-          </div>
+          </TitleAndButtonsWrapper>
           <div
             class="grid lg:grid-cols-3 md:grid-cols-2 md:gap-x-6 md:gap-y-4 gap-3 md:mt-4 mt-6"
           >
@@ -73,14 +74,14 @@ const deletePatient = () => {
 
     <!-- Patient Transactions -->
     <div
-      class="bg-white rounded-md md:mt-6 md:px-[1.9rem] px-[1.25rem] md:py-[1.4rem] py-[1.125rem]"
+      class="bg-white rounded-md md:mt-6 mt-3 md:px-[1.9rem] px-[1.25rem] md:py-[1.4rem] py-[1.125rem]"
     >
-      <div class="flex justify-between items-center">
+      <TitleAndButtonsWrapper>
         <h2 class="leading-none md:text-[1.5rem] text-[1.2rem]">Patient Transactions</h2>
         <Link :href="route('patient-visits.create', { id: 1 })"
           ><PrimaryButton size="small">New Transaction</PrimaryButton>
         </Link>
-      </div>
+      </TitleAndButtonsWrapper>
     </div>
   </div>
 </template>
