@@ -17,7 +17,7 @@ const props = defineProps({
 const s = ref(props.search);
 </script>
 <template>
-  <div class="bg-white p-[1rem] rounded-md">
+  <div class="bg-white rounded-md">
     <form v-if="hasSearch" class="md:mb-4 mb-3 md:w-1/2 w-full">
       <TextInput name="search" placeholder="Search" v-model="s" />
     </form>

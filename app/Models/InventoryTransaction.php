@@ -19,4 +19,8 @@ class InventoryTransaction extends Model
         'notes',
         'inventory_item_id'
     ];
+
+    public function inventory_item() {
+        return $this->belongsTo(InventoryItem::class);
+    }
 }

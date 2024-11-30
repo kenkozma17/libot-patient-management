@@ -6,11 +6,13 @@ import { ref } from "vue";
 import { useToast } from "vue-toast-notification";
 import InventoryTransactionForm from "./InventoryTransactionForm.vue";
 import TitleAndButtonsWrapper from "@/Components/Partials/TitleAndButtonsWrapper.vue";
+import DataTable from "@/Components/Data/DataTable.vue";
 
 const $toast = useToast({ position: "top-right" });
 
 const props = defineProps({
   item: Object,
+  transactions: Object,
 });
 
 const showForm = ref(false);
@@ -27,6 +29,16 @@ const deleteItem = () => {
     });
   }
 };
+
+const columns = ref([
+  { field: "lot_number", title: "Lot No." },
+  { field: "quantity", title: "Quantity" },
+  { field: "date_received", title: "Date Received" },
+  { field: "date_opened", title: "Date Opened" },
+  { field: "expiration_date", title: "Expiration" },
+]);
+
+const rows = ref(props.transactions.data);
 </script>
 <template>
   <div>
@@ -71,9 +83,19 @@ const deleteItem = () => {
         </PrimaryButton>
         <a href="#" @click="toggleTransactionForm" v-else>Cancel</a>
       </TitleAndButtonsWrapper>
-      <div class="border-t-black border-t md:mt-[2rem] mt-[1rem]" v-if="showForm">
+      <div
+        class="border-black border-t border-b border-opacity-20 md:mt-[2rem] mt-[1rem]"
+        v-if="showForm"
+      >
         <InventoryTransactionForm :item="item" />
       </div>
+      <DataTable class="mt-2.5" :rows="rows" :columns="columns">
+        <template #lot_number="{ data }">
+          <Link class="hover:underline" :href="route('inventory-transactions.show', data.value.id)">{{
+            data.value.lot_number
+          }}</Link>
+        </template>
+      </DataTable>
     </div>
   </div>
 </template>

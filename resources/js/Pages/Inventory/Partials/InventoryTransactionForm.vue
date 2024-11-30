@@ -31,6 +31,7 @@ const AddTransaction = () => {
     preserveScroll: true,
     onSuccess: () => {
       $toast.success("Inventory Transaction Created Successfully!");
+      form.reset();
     },
   });
 };
@@ -40,7 +41,7 @@ const AddTransaction = () => {
     <!-- <h2>Inventory Transaction Form</h2> -->
     <form
       @submit.prevent="AddTransaction"
-      class="bg-white rounded-md mt-2.5 md:px-[1.9rem] px-[1.25rem] md:py-[1.4rem] py-[1.125rem]"
+      class="bg-white rounded-md mt-2.5 md:py-[1.4rem] py-[1.125rem]"
     >
       <h2 class="font-semibold md:mb-4 mb-2">Inventory Details</h2>
 

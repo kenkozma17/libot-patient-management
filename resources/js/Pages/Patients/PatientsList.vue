@@ -25,7 +25,7 @@ defineOptions({ layout: AdminLayout });
   <AdminContentWrapper>
     <h1>Patients List</h1>
     <DataTable
-      class="mt-2.5"
+      class="mt-2.5 p-[1rem]"
       :search="props.search"
       :hasSearch="true"
       :rows="rows"

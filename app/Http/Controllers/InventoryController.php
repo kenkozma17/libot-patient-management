@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\InventoryTransaction;
 use Inertia\Inertia;
 use App\Http\Requests\InventoryStoreRequest;
 use App\Models\InventoryItem;
@@ -62,8 +63,15 @@ class InventoryController extends Controller
     public function show(string $id)
     {
         $item = InventoryItem::find($id);
+        $inventoryTransactions = InventoryTransaction::
+            where('inventory_item_id', $id)
+            ->orderBy('created_at', 'desc')
+            ->paginate(config('pagination.default'))
+            ->withQueryString();
+
         return Inertia::render('Inventory/Show', props: [
             'item' => $item,
+            'transactions' => $inventoryTransactions
         ]);
     }
 

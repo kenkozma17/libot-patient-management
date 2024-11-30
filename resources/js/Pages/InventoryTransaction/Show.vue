@@ -1,16 +1,16 @@
 <script setup>
 import AdminContentWrapper from "@/Components/Partials/AdminContentWrapper.vue";
-import InventoryItemListing from "@/Pages/Inventory/Partials/InventoryItemListing.vue";
+import InventoryTransactionListing from "@/Pages/InventoryTransaction/Partials/InventoryTransactionListing.vue";
 import AdminLayout from "@/Layouts/AdminLayout.vue";
 
-defineOptions({ layout: AdminLayout });
 const props = defineProps({
-  item: Object,
-  transactions: Object,
+  transaction: Object,
 });
+
+defineOptions({ layout: AdminLayout });
 </script>
 <template>
   <AdminContentWrapper>
-    <InventoryItemListing :transactions="transactions" :item="item" />
+    <InventoryTransactionListing :transaction="transaction" />
   </AdminContentWrapper>
 </template>

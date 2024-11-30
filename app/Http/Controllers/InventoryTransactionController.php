@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\InventoryTransactionStoreRequest;
 use App\Models\InventoryTransaction;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 use Illuminate\Support\Str;
 
 class InventoryTransactionController extends Controller
@@ -42,7 +43,11 @@ class InventoryTransactionController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $transaction = InventoryTransaction::with(['inventory_item'])->find($id);
+
+        return Inertia::render('InventoryTransaction/Show', props: [
+            'transaction' => $transaction,
+        ]);
     }
 
     /**
