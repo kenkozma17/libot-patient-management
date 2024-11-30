@@ -11,21 +11,16 @@ import ButtonWrapper from "@/Components/Forms/ButtonWrapper.vue";
 import { useToast } from "vue-toast-notification";
 const $toast = useToast({ position: "top-right" });
 
-const props = defineProps({
-  categories: Array,
-});
-
 const form = useForm({
   name: "",
-  category_id: "",
 });
 
 const addItem = () => {
-  form.post(route("inventory.store"), {
+  form.post(route("inventory-categories.store"), {
     errorBag: "addItem",
     preserveScroll: true,
     onSuccess: () => {
-      $toast.success("Item Created Successfully!");
+      $toast.success("Category Created Successfully!");
       form.reset();
     },
   });
@@ -33,33 +28,19 @@ const addItem = () => {
 </script>
 <template>
   <div>
-    <h1>Add New Inventory Item Form</h1>
+    <h1>Add New Inventory Category Form</h1>
     <form
       @submit.prevent="addItem"
       class="bg-white rounded-md mt-2.5 mb-[6rem] md:px-[1.9rem] px-[1.25rem] md:py-[1.4rem] py-[1.125rem]"
     >
-      <h2 class="font-semibold md:mb-4 mb-2">Item Details</h2>
+      <h2 class="font-semibold md:mb-4 mb-2">Category Details</h2>
 
-      <!-- Name and Category -->
+      <!-- Name -->
       <TwoColumnWrapper>
         <template v-slot:col1>
           <InputLabel for="name" value="Name" />
-          <TextInput autofocus v-model="form.name" placeholder="Glucose" />
+          <TextInput autofocus v-model="form.name" placeholder="Hematology" />
           <InputError :message="form.errors.name" class="mt-1.5" />
-        </template>
-        <template v-slot:col2>
-          <InputLabel for="category" value="Category" />
-          <SelectInput v-model="form.category_id">
-            <option value="">Select Category</option>
-            <option
-              v-for="category in props.categories"
-              :key="category.slug"
-              :value="category.id"
-            >
-              {{ category.name }}
-            </option>
-          </SelectInput>
-          <InputError :message="form.errors.category_id" class="mt-1.5" />
         </template>
       </TwoColumnWrapper>
 

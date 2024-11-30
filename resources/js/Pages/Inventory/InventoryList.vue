@@ -12,6 +12,7 @@ const props = defineProps({
 
 const columns = ref([
   { field: "name", title: "Item Name" },
+  { field: "category", title: "Category" },
 ]);
 
 const rows = ref(props.inventory_items.data);
@@ -32,6 +33,9 @@ defineOptions({ layout: AdminLayout });
         <Link class="hover:underline" :href="route('inventory.show', data.value.id)">{{
           data.value.name
         }}</Link>
+      </template>
+      <template #category="{ data }">
+        <span>{{ data.value.category.name }}</span>
       </template>
     </DataTable>
   </AdminContentWrapper>

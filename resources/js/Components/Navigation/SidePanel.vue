@@ -92,6 +92,13 @@ onMounted(() => {
               >Add New Inventory</Link
             >
           </li>
+          <li>
+            <Link
+              :class="{ active: isCurrentRoute('InventoryCategory/InventoryCategoryList') }"
+              :href="route('inventory-categories.index')"
+              >Categories</Link
+            >
+          </li>
         </ul>
       </li>
     </ul>

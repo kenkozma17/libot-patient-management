@@ -7,68 +7,68 @@ import TwoColumnWrapper from "@/Components/Forms/TwoColumnWrapper.vue";
 import PrimaryButton from "@/Components/Forms/PrimaryButton.vue";
 import Loader from "@/Components/Forms/Loader.vue";
 import ButtonWrapper from "@/Components/Forms/ButtonWrapper.vue";
-import SelectInput from "@/Components/Forms/SelectInput.vue";
 import { useToast } from "vue-toast-notification";
+import DangerButton from "@/Components/DangerButton.vue";
 const $toast = useToast({ position: "top-right" });
 
 const props = defineProps({
   item: Object,
-  categories: Array,
 });
 
 const form = useForm({
   name: props.item.name,
-  category_id: props.item.category_id,
 });
+
+const name = props.item.name;
+
 const updateItem = () => {
-  form.put(route("inventory.update", props.item.id), {
+  form.put(route("inventory-categories.update", props.item.id), {
     errorBag: "updateItem",
     preserveScroll: true,
     onSuccess: () => {
-      $toast.success("Item Updated Successfully!");
+      $toast.success("Category Updated Successfully!");
     },
   });
+};
+
+const deleteCategory = () => {
+  if (confirm("Are you sure you want to delete?")) {
+    form.delete(route("inventory-categories.destroy", props.item.id), {
+      errorBag: "deleteCategory",
+      preserveScroll: true,
+      onSuccess: () => $toast.success("Patient Deleted Successfully!"),
+    });
+  }
 };
 </script>
 <template>
   <div>
-    <h1>Edit Inventory Item Form</h1>
+    <div class="flex lg:flex-row flex-col gap-[.5rem] justify-between">
+      <h1>Edit Inventory Category Form ({{ name }})</h1>
+      <DangerButton @click="deleteCategory">
+        Delete Category
+      </DangerButton>
+    </div>
     <form
       @submit.prevent="updateItem"
       class="bg-white rounded-md mt-2.5 mb-[6rem] md:px-[1.9rem] px-[1.25rem] md:py-[1.4rem] py-[1.125rem]"
     >
-      <h2 class="font-semibold md:mb-4 mb-2">Item Details</h2>
+      <h2 class="font-semibold md:mb-4 mb-2">Category Details</h2>
 
-      <!-- Name and Category -->
+      <!-- Name -->
       <TwoColumnWrapper>
         <template v-slot:col1>
           <InputLabel for="name" value="Name" />
-          <TextInput autofocus v-model="form.name" placeholder="Glucose" />
+          <TextInput autofocus v-model="form.name" />
           <InputError :message="form.errors.name" class="mt-1.5" />
         </template>
-
-        <template v-slot:col2>
-            <InputLabel for="category" value="Category" />
-            <SelectInput v-model="form.category_id">
-              <option value="">Select Category</option>
-              <option
-                :selected="category.id == form.category_id"
-                v-for="category in props.categories"
-                :key="category.slug"
-                :value="category.id"
-              >
-                {{ category.name }}
-              </option>
-            </SelectInput>
-            <InputError :message="form.errors.category_id" class="mt-1.5" />
-          </template>
       </TwoColumnWrapper>
 
       <ButtonWrapper>
         <Loader v-if="form.processing" />
         <Link
           v-if="!form.processing"
-          :href="route('inventory.show', props.item.id)"
+          :href="route('inventory-categories.index', props.item.id)"
           class="mr-4"
         >
           Cancel

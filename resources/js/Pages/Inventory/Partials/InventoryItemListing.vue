@@ -50,9 +50,14 @@ const rows = ref(props.transactions.data);
       <div class="flex md:flex-row flex-col md:gap-x-4 gap-x-3">
         <div class="w-full">
           <TitleAndButtonsWrapper>
-            <h2 class="leading-none md:text-[1.5rem] text-[1.2rem]">
-              {{ item.name }}
-            </h2>
+            <div class="flex items-center gap-[.5rem]">
+                <h2 class="leading-none md:text-[1.5rem] text-[1.2rem]">
+                {{ item.name }}
+                </h2>
+                <span class="text-xs font-semibold rounded-md px-[.5rem] py-[.25rem] bg-yellow-400 inline-block">
+                    {{ item.category.name }}
+                </span>
+            </div>
             <div>
               <PrimaryButton size="small"
                 ><Link :href="route('inventory.edit', item.id)"

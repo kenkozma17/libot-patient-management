@@ -1,15 +1,12 @@
 <script setup>
 import AdminContentWrapper from "@/Components/Partials/AdminContentWrapper.vue";
-import AddInventoryForm from "@/Pages/Inventory/Partials/AddInventoryForm.vue";
+import AddInventoryCategoryForm from "@/Pages/InventoryCategory/Partials/AddInventoryCategoryForm.vue";
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 
 defineOptions({ layout: AdminLayout  });
-const props = defineProps({
-    categories: Array,
-});
 </script>
 <template>
   <AdminContentWrapper>
-    <AddInventoryForm :categories="categories" />
+    <AddInventoryCategoryForm />
   </AdminContentWrapper>
 </template>

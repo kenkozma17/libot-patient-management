@@ -5,6 +5,7 @@ use App\Models\InventoryTransaction;
 use Inertia\Inertia;
 use App\Http\Requests\InventoryStoreRequest;
 use App\Models\InventoryItem;
+use App\Models\InventoryItemCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -24,6 +25,7 @@ class InventoryController extends Controller
                 }
             }]
         ])
+        ->with('category')
         ->orderBy('name', 'asc')
         ->paginate(config('pagination.default'))
         ->withQueryString();
@@ -39,8 +41,9 @@ class InventoryController extends Controller
      */
     public function create()
     {
+        $categories = InventoryItemCategory::orderByDesc('name')->get();
         return Inertia::render('Inventory/Create', [
-            /** Props */
+            'categories' => $categories
         ]);
     }
 
@@ -62,7 +65,7 @@ class InventoryController extends Controller
      */
     public function show(string $id)
     {
-        $item = InventoryItem::find($id);
+        $item = InventoryItem::where('id', $id)->with('category')->first();
         $inventoryTransactions = InventoryTransaction::
             where('inventory_item_id', $id)
             ->orderBy('created_at', 'desc')
@@ -81,8 +84,10 @@ class InventoryController extends Controller
     public function edit(string $id)
     {
         $item = InventoryItem::Find($id);
+        $categories = InventoryItemCategory::orderByDesc('name')->get();
         return Inertia::render('Inventory/Edit', [
-            'item' => $item
+            'item' => $item,
+            'categories' => $categories
         ]);
     }
 
@@ -93,6 +98,7 @@ class InventoryController extends Controller
     {
         $item = InventoryItem::find($id);
         $item->update($request->validated());
+        $item->slug = Str::slug($item->name);
         $item->save();
 
         return redirect()->route('inventory.show', $item->id);

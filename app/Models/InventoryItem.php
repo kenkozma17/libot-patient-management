@@ -13,10 +13,15 @@ class InventoryItem extends Model
     protected $fillable = [
         'name',
         'slug',
+        'category_id'
     ];
 
     public function invoiceItems()
     {
         return $this->morphMany(InvoiceItem::class, 'itemable');
+    }
+
+    public function category() {
+        return $this->belongsTo(InventoryItemCategory::class);
     }
 }

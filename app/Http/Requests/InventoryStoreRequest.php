@@ -21,8 +21,17 @@ class InventoryStoreRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'name' => 'required|string|max:100'
+        $rules = [
+            'name' => 'required|string|max:100|unique:inventory_items',
+            'category_id' => 'required',
         ];
+
+         // Apply the rule for update requests (ignores current post ID)
+         if ($this->isMethod('put') || $this->isMethod('patch')) {
+            $itemId = $this->route('inventory');
+            $rules['name'] = 'required|string|max:255|unique:inventory_items,name,' . $itemId;
+        }
+
+        return $rules;
     }
 }
