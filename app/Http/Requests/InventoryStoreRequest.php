@@ -24,6 +24,8 @@ class InventoryStoreRequest extends FormRequest
         $rules = [
             'name' => 'required|string|max:100|unique:inventory_items',
             'category_id' => 'required',
+            'days_before_expiration_limit' => 'numeric',
+            'low_stock_limit' => 'numeric',
         ];
 
          // Apply the rule for update requests (ignores current post ID)

@@ -18,6 +18,8 @@ const props = defineProps({
 const form = useForm({
   name: "",
   category_id: "",
+  low_stock_limit: 0,
+  days_before_expiration_limit: 0,
 });
 
 const addItem = () => {
@@ -60,6 +62,37 @@ const addItem = () => {
             </option>
           </SelectInput>
           <InputError :message="form.errors.category_id" class="mt-1.5" />
+        </template>
+      </TwoColumnWrapper>
+
+      <!-- Notice Limits -->
+      <TwoColumnWrapper>
+        <template v-slot:col1>
+          <InputLabel for="low_stock_limit" value="Low Stock Notice (Quantity)" />
+          <TextInput
+            type="number"
+            autofocus
+            v-model="form.low_stock_limit"
+            placeholder="0"
+          />
+          <InputError :message="form.errors.low_stock_limit" class="mt-1.5" />
+        </template>
+
+        <template v-slot:col2>
+          <InputLabel
+            for="days_before_expiration_limit"
+            value="Expiration Notice (Days)"
+          />
+          <TextInput
+            type="number"
+            autofocus
+            v-model="form.days_before_expiration_limit"
+            placeholder="0"
+          />
+          <InputError
+            :message="form.errors.days_before_expiration_limit"
+            class="mt-1.5"
+          />
         </template>
       </TwoColumnWrapper>
 

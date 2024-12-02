@@ -38,9 +38,9 @@ const deleteItem = () => {
 const columns = ref([
   { field: "lot_number", title: "Lot No." },
   { field: "quantity", title: "Quantity" },
-//   { field: "date_received", title: "Date Received" },
-//   { field: "date_opened", title: "Date Opened" },
-//   { field: "expiration_date", title: "Expiration" },
+  //   { field: "date_received", title: "Date Received" },
+  //   { field: "date_opened", title: "Date Opened" },
+  //   { field: "expiration_date", title: "Expiration" },
   { field: "notes", title: "Notes" },
   { field: "transaction_type", title: "Type" },
   { field: "stock", title: "Stock" },
@@ -59,7 +59,7 @@ const rows = ref(props.transactions.data);
       <div class="flex md:flex-row flex-col md:gap-x-4 gap-x-3">
         <div class="w-full">
           <TitleAndButtonsWrapper>
-            <div class="flex items-center gap-[.5rem]">
+            <div class="flex flex-wrap items-center gap-[.5rem]">
               <h2 class="leading-none md:text-[1.5rem] text-[1.2rem]">
                 {{ item.name }}
               </h2>
@@ -69,9 +69,24 @@ const rows = ref(props.transactions.data);
                 Current Stock: {{ item.current_stock }}
               </span>
               <span
+                v-if="item.category.name"
                 class="text-xs font-semibold rounded-md px-[.5rem] py-[.25rem] bg-yellow-400 inline-block"
               >
                 {{ item.category.name }}
+              </span>
+
+              <span
+                v-if="item.low_stock_limit"
+                class="text-xs font-semibold rounded-md px-[.5rem] py-[.25rem] bg-red-400 inline-block"
+              >
+                Low Stock Notice: {{ item.low_stock_limit }}
+              </span>
+
+              <span
+                v-if="item.days_before_expiration_limit"
+                class="text-xs font-semibold rounded-md px-[.5rem] py-[.25rem] bg-blue-400 inline-block"
+              >
+                Expiration Notice: {{ item.days_before_expiration_limit }} day/s
               </span>
             </div>
             <div>

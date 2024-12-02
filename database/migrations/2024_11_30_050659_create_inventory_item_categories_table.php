@@ -18,10 +18,17 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // Add new field to inventory items table
         Schema::table('inventory_items', function (Blueprint $table) {
             $table->foreignId('category_id')
                 ->after('slug')
+                ->nullable()
+                ->constrained('inventory_item_categories')
+                ->onDelete('cascade');
+        });
+
+        Schema::table('lab_tests', function (Blueprint $table) {
+            $table->foreignId('category_id')
+                ->after('name')
                 ->nullable()
                 ->constrained('inventory_item_categories')
                 ->onDelete('cascade');
@@ -33,6 +40,12 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('inventory_items', function (Blueprint $table) {
+            $table->dropForeign(['category_id']);
+        });
+        Schema::table('lab_tests', function (Blueprint $table) {
+            $table->dropForeign(['category_id']);
+        });
         Schema::dropIfExists('inventory_item_categories');
     }
 };

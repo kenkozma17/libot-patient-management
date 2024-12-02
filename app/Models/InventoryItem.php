@@ -13,7 +13,9 @@ class InventoryItem extends Model
     protected $fillable = [
         'name',
         'slug',
-        'category_id'
+        'category_id',
+        'low_stock_limit',
+        'days_before_expiration_limit'
     ];
 
     protected $appends = [

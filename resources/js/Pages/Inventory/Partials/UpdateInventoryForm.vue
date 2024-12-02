@@ -19,6 +19,8 @@ const props = defineProps({
 const form = useForm({
   name: props.item.name,
   category_id: props.item.category_id,
+  low_stock_limit: props.item.low_stock_limit,
+  days_before_expiration_limit: props.item.days_before_expiration_limit,
 });
 const updateItem = () => {
   form.put(route("inventory.update", props.item.id), {
@@ -62,6 +64,32 @@ const updateItem = () => {
             </SelectInput>
             <InputError :message="form.errors.category_id" class="mt-1.5" />
           </template>
+      </TwoColumnWrapper>
+
+      <!-- Notice Limits -->
+      <TwoColumnWrapper>
+        <template v-slot:col1>
+          <InputLabel for="low_stock_limit" value="Low Stock Notice (Quantity)" />
+          <TextInput autofocus  type="number" v-model="form.low_stock_limit" placeholder="0" />
+          <InputError :message="form.errors.low_stock_limit" class="mt-1.5" />
+        </template>
+
+        <template v-slot:col2>
+          <InputLabel
+            for="days_before_expiration_limit"
+            value="Expiration Notice (Days)"
+          />
+          <TextInput
+            autofocus
+            type="number"
+            v-model="form.days_before_expiration_limit"
+            placeholder="0"
+          />
+          <InputError
+            :message="form.errors.days_before_expiration_limit"
+            class="mt-1.5"
+          />
+        </template>
       </TwoColumnWrapper>
 
       <ButtonWrapper>

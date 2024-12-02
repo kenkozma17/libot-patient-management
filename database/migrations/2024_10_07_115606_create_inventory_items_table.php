@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('slug');
+            $table->integer('days_before_expiration_limit')->nullable();
+            $table->integer('low_stock_limit')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
