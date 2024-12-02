@@ -36,10 +36,13 @@ class InventoryTransactionController extends Controller
         $transaction->fill($request->validated());
 
         // Calculate Stock
+        $item = InventoryItem::find($transaction->inventory_item_id);
+        $currentStock = $item->current_stock;
         if($transaction->transaction_type === 'INCREASE') {
-            $item = InventoryItem::find($transaction->inventory_item_id);
-            $currentStock = $item->current_stock;
             $newStock = $currentStock + $transaction->quantity;
+            $transaction->stock = $newStock;
+        } elseif($transaction->transaction_type === 'DECREASE') {
+            $newStock = $currentStock - $transaction->quantity;
             $transaction->stock = $newStock;
         }
 

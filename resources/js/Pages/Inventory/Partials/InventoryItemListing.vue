@@ -7,6 +7,7 @@ import { useToast } from "vue-toast-notification";
 import InventoryTransactionForm from "./InventoryTransactionForm.vue";
 import TitleAndButtonsWrapper from "@/Components/Partials/TitleAndButtonsWrapper.vue";
 import DataTable from "@/Components/Data/DataTable.vue";
+import DangerButton from "@/Components/DangerButton.vue";
 
 const $toast = useToast({ position: "top-right" });
 
@@ -16,8 +17,12 @@ const props = defineProps({
 });
 
 const showForm = ref(false);
+const transactionType = ref("INCREASE");
 
-const toggleTransactionForm = () => (showForm.value = !showForm.value);
+const toggleTransactionForm = (type) => {
+  showForm.value = !showForm.value;
+  transactionType.value = type;
+};
 
 const form = useForm({});
 const deleteItem = () => {
@@ -33,10 +38,13 @@ const deleteItem = () => {
 const columns = ref([
   { field: "lot_number", title: "Lot No." },
   { field: "quantity", title: "Quantity" },
-  { field: "date_received", title: "Date Received" },
-  { field: "date_opened", title: "Date Opened" },
-  { field: "expiration_date", title: "Expiration" },
+//   { field: "date_received", title: "Date Received" },
+//   { field: "date_opened", title: "Date Opened" },
+//   { field: "expiration_date", title: "Expiration" },
+  { field: "notes", title: "Notes" },
+  { field: "transaction_type", title: "Type" },
   { field: "stock", title: "Stock" },
+  { field: "created_at", title: "Date" },
 ]);
 
 const rows = ref(props.transactions.data);
@@ -52,15 +60,19 @@ const rows = ref(props.transactions.data);
         <div class="w-full">
           <TitleAndButtonsWrapper>
             <div class="flex items-center gap-[.5rem]">
-                <h2 class="leading-none md:text-[1.5rem] text-[1.2rem]">
+              <h2 class="leading-none md:text-[1.5rem] text-[1.2rem]">
                 {{ item.name }}
-                </h2>
-                <span class="text-xs font-semibold rounded-md px-[.5rem] py-[.25rem] bg-green-300 inline-block">
-                    Current Stock: {{ item.current_stock }}
-                </span>
-                <span class="text-xs font-semibold rounded-md px-[.5rem] py-[.25rem] bg-yellow-400 inline-block">
-                    {{ item.category.name }}
-                </span>
+              </h2>
+              <span
+                class="text-xs font-semibold rounded-md px-[.5rem] py-[.25rem] bg-green-300 inline-block"
+              >
+                Current Stock: {{ item.current_stock }}
+              </span>
+              <span
+                class="text-xs font-semibold rounded-md px-[.5rem] py-[.25rem] bg-yellow-400 inline-block"
+              >
+                {{ item.category.name }}
+              </span>
             </div>
             <div>
               <PrimaryButton size="small"
@@ -83,26 +95,51 @@ const rows = ref(props.transactions.data);
     >
       <TitleAndButtonsWrapper>
         <h2 class="leading-none md:text-[1.5rem] text-[1.2rem]">Transactions</h2>
-        <PrimaryButton
-          v-if="!showForm"
-          class="md:mt-0 mt-2"
-          size="small"
-          @click="toggleTransactionForm"
-          >New Transaction
-        </PrimaryButton>
-        <a href="#" @click="toggleTransactionForm" v-else>Cancel</a>
+        <div class="flex gap-[0.5rem]">
+          <PrimaryButton
+            v-if="!showForm"
+            class="md:mt-0 mt-2"
+            size="small"
+            @click="toggleTransactionForm('INCREASE')"
+            >Increase
+          </PrimaryButton>
+          <PrimaryButton
+            v-if="!showForm"
+            class="md:mt-0 mt-2"
+            size="small"
+            color="red"
+            @click="toggleTransactionForm('DECREASE')"
+            >Decrease
+          </PrimaryButton>
+          <a href="#" @click="toggleTransactionForm" v-else>Cancel</a>
+        </div>
       </TitleAndButtonsWrapper>
+
       <div
         class="border-black border-t border-b border-opacity-20 md:mt-[2rem] mt-[1rem]"
         v-if="showForm"
       >
-        <InventoryTransactionForm :item="item" />
+        <InventoryTransactionForm :item="item" :transaction-type="transactionType" />
       </div>
+
       <DataTable class="mt-2.5" :rows="rows" :columns="columns">
         <template #lot_number="{ data }">
-          <Link class="hover:underline" :href="route('inventory-transactions.show', data.value.id)">{{
-            data.value.lot_number
-          }}</Link>
+          <Link
+            class="hover:underline"
+            :href="route('inventory-transactions.show', data.value.id)"
+            >{{ data.value.lot_number }}</Link
+          >
+        </template>
+        <template #quantity="{ data }">
+          <span
+            class="font-bold"
+            :class="
+              data.value.transaction_type === 'INCREASE'
+                ? 'text-green-400'
+                : 'text-red-400'
+            "
+            >{{ data.value.quantity }}</span
+          >
         </template>
       </DataTable>
     </div>

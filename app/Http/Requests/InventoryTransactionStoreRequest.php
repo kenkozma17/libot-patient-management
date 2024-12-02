@@ -21,15 +21,28 @@ class InventoryTransactionStoreRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'lot_number' => 'required|string|max:50',
-            'date_received' => 'required',
-            'expiration_date' => 'required',
-            'quantity' => 'required|string',
-            'date_opened' => 'required',
-            'transaction_type' => 'required',
-            'notes' => 'nullable|string|max:250',
-            'inventory_item_id' => 'required',
-        ];
+        $type = $this->input('transaction_type');
+
+        if ($type === 'INCREASE') {
+            $rules = [
+                'lot_number' => 'required|string|max:50',
+                'date_received' => 'required',
+                'expiration_date' => 'required',
+                'quantity' => 'required|string',
+                'date_opened' => 'required',
+                'transaction_type' => 'required',
+                'notes' => 'nullable|string|max:250',
+                'inventory_item_id' => 'required',
+            ];
+        } else {
+            $rules = [
+                'quantity' => 'required|string',
+                'transaction_type' => 'required',
+                'notes' => 'nullable|string|max:250',
+                'inventory_item_id' => 'required',
+            ];
+        }
+
+        return $rules;
     }
 }

@@ -8,10 +8,19 @@ import PrimaryButton from "@/Components/Forms/PrimaryButton.vue";
 import Loader from "@/Components/Forms/Loader.vue";
 import ButtonWrapper from "@/Components/Forms/ButtonWrapper.vue";
 import { useToast } from "vue-toast-notification";
+import { computed } from "vue";
 const $toast = useToast({ position: "top-right" });
 
 const props = defineProps({
   item: Object,
+  transactionType: String,
+});
+
+const isIncrease = computed(() => {
+  if (props.transactionType === "INCREASE") {
+    return true;
+  }
+  return false;
 });
 
 const form = useForm({
@@ -21,7 +30,7 @@ const form = useForm({
   lot_number: props.item.lot_number,
   quantity: props.item.quantity,
   date_opened: props.item.date_opened,
-  transaction_type: 'INCREASE',
+  transaction_type: props.transactionType,
   notes: props.item.notes,
 });
 
@@ -45,47 +54,64 @@ const AddTransaction = () => {
     >
       <h2 class="font-semibold md:mb-4 mb-2">Inventory Details</h2>
 
-      <!-- Lot Number and Quantity -->
-      <TwoColumnWrapper>
-        <template v-slot:col1>
-          <InputLabel for="lot_number" value="Lot Number" />
-          <TextInput autofocus v-model="form.lot_number" placeholder="12345" />
-          <InputError :message="form.errors.lot_number" class="mt-1.5" />
-        </template>
-        <template v-slot:col2>
-          <InputLabel for="quantity" value="Quantity" />
-          <TextInput type="number" v-model="form.quantity" placeholder="12" />
-          <InputError :message="form.errors.quantity" class="mt-1.5" />
-        </template>
-      </TwoColumnWrapper>
+      <template v-if="isIncrease">
+        <!-- Lot Number and Quantity -->
+        <TwoColumnWrapper>
+          <template v-slot:col1>
+            <InputLabel for="lot_number" value="Lot Number" />
+            <TextInput autofocus v-model="form.lot_number" placeholder="12345" />
+            <InputError :message="form.errors.lot_number" class="mt-1.5" />
+          </template>
+          <template v-slot:col2>
+            <InputLabel for="quantity" value="Quantity" />
+            <TextInput type="number" v-model="form.quantity" placeholder="12" />
+            <InputError :message="form.errors.quantity" class="mt-1.5" />
+          </template>
+        </TwoColumnWrapper>
 
-      <!-- Lot Number and Expiration Date -->
-      <TwoColumnWrapper>
-        <template v-slot:col1>
-          <InputLabel for="date_received" value="Date Received" />
-          <TextInput autofocus type="date" v-model="form.date_received" />
-          <InputError :message="form.errors.date_received" class="mt-1.5" />
-        </template>
-        <template v-slot:col2>
-          <InputLabel for="expiration_date" value="Expiration Date" />
-          <TextInput type="date" v-model="form.expiration_date" />
-          <InputError :message="form.errors.expiration_date" class="mt-1.5" />
-        </template>
-      </TwoColumnWrapper>
+        <!-- Lot Number and Expiration Date -->
+        <TwoColumnWrapper>
+          <template v-slot:col1>
+            <InputLabel for="date_received" value="Date Received" />
+            <TextInput autofocus type="date" v-model="form.date_received" />
+            <InputError :message="form.errors.date_received" class="mt-1.5" />
+          </template>
+          <template v-slot:col2>
+            <InputLabel for="expiration_date" value="Expiration Date" />
+            <TextInput type="date" v-model="form.expiration_date" />
+            <InputError :message="form.errors.expiration_date" class="mt-1.5" />
+          </template>
+        </TwoColumnWrapper>
 
-      <!-- Date Opened and Notes -->
-      <TwoColumnWrapper>
-        <template v-slot:col1>
-          <InputLabel for="date_opened" value="Date Opened" />
-          <TextInput autofocus type="date" v-model="form.date_opened" />
-          <InputError :message="form.errors.date_opened" class="mt-1.5" />
-        </template>
-        <template v-slot:col2>
-          <InputLabel for="notes" value="Notes" />
-          <TextInput v-model="form.notes" />
-          <InputError :message="form.errors.notes" class="mt-1.5" />
-        </template>
-      </TwoColumnWrapper>
+        <!-- Date Opened and Notes -->
+        <TwoColumnWrapper>
+          <template v-slot:col1>
+            <InputLabel for="date_opened" value="Date Opened" />
+            <TextInput autofocus type="date" v-model="form.date_opened" />
+            <InputError :message="form.errors.date_opened" class="mt-1.5" />
+          </template>
+          <template v-slot:col2>
+            <InputLabel for="notes" value="Notes" />
+            <TextInput v-model="form.notes" />
+            <InputError :message="form.errors.notes" class="mt-1.5" />
+          </template>
+        </TwoColumnWrapper>
+      </template>
+      <template v-if="isIncrease === false">
+        <!-- Quantity and Notes -->
+        <TwoColumnWrapper>
+          <template v-slot:col1>
+            <InputLabel for="quantity" value="Quantity" />
+            <TextInput type="number" v-model="form.quantity" placeholder="12" />
+            <InputError :message="form.errors.quantity" class="mt-1.5" />
+          </template>
+          <template v-slot:col2>
+            <InputLabel for="notes" value="Notes" />
+            <TextInput v-model="form.notes" />
+            <InputError :message="form.errors.notes" class="mt-1.5" />
+          </template>
+        </TwoColumnWrapper>
+      </template>
 
       <div class="w-full flex justify-end">
         <PrimaryButton :class="{ 'opacity-25': form.processing }">
