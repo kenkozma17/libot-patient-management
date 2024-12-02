@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('lot_number')->nullable();
             $table->integer('quantity')->nullable();
             $table->date('date_opened')->nullable();
+            $table->integer('stock')->nullable();
             $table->string('transaction_type')->nullable(); // INCREASE OR DECREASE
             $table->text('notes')->nullable();
             $table->timestamps();

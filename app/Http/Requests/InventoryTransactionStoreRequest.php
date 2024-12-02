@@ -27,6 +27,7 @@ class InventoryTransactionStoreRequest extends FormRequest
             'expiration_date' => 'required',
             'quantity' => 'required|string',
             'date_opened' => 'required',
+            'transaction_type' => 'required',
             'notes' => 'nullable|string|max:250',
             'inventory_item_id' => 'required',
         ];

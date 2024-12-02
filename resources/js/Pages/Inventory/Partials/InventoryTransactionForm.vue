@@ -21,7 +21,7 @@ const form = useForm({
   lot_number: props.item.lot_number,
   quantity: props.item.quantity,
   date_opened: props.item.date_opened,
-  transaction_type: props.item.transaction_type,
+  transaction_type: 'INCREASE',
   notes: props.item.notes,
 });
 

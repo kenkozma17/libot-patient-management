@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\InventoryTransactionStoreRequest;
 use App\Models\InventoryTransaction;
+use App\Models\InventoryItem;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
@@ -33,6 +34,15 @@ class InventoryTransactionController extends Controller
     {
         $transaction = new InventoryTransaction;
         $transaction->fill($request->validated());
+
+        // Calculate Stock
+        if($transaction->transaction_type === 'INCREASE') {
+            $item = InventoryItem::find($transaction->inventory_item_id);
+            $currentStock = $item->current_stock;
+            $newStock = $currentStock + $transaction->quantity;
+            $transaction->stock = $newStock;
+        }
+
         $transaction->save();
 
         return redirect()->route('inventory.show', $transaction->inventory_item_id);

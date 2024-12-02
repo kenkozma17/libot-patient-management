@@ -16,9 +16,21 @@ class InventoryItem extends Model
         'category_id'
     ];
 
+    protected $appends = [
+        'current_stock'
+    ];
+
     public function invoiceItems()
     {
         return $this->morphMany(InvoiceItem::class, 'itemable');
+    }
+
+    public function getCurrentStockAttribute() {
+        $latestTransaction = InventoryTransaction::latest()->first();
+        if ($latestTransaction) {
+            return $latestTransaction->stock ? $latestTransaction->stock : 0;
+        }
+        return 0;
     }
 
     public function category() {

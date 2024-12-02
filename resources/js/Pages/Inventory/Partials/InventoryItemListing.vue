@@ -36,6 +36,7 @@ const columns = ref([
   { field: "date_received", title: "Date Received" },
   { field: "date_opened", title: "Date Opened" },
   { field: "expiration_date", title: "Expiration" },
+  { field: "stock", title: "Stock" },
 ]);
 
 const rows = ref(props.transactions.data);
@@ -54,6 +55,9 @@ const rows = ref(props.transactions.data);
                 <h2 class="leading-none md:text-[1.5rem] text-[1.2rem]">
                 {{ item.name }}
                 </h2>
+                <span class="text-xs font-semibold rounded-md px-[.5rem] py-[.25rem] bg-green-300 inline-block">
+                    Current Stock: {{ item.current_stock }}
+                </span>
                 <span class="text-xs font-semibold rounded-md px-[.5rem] py-[.25rem] bg-yellow-400 inline-block">
                     {{ item.category.name }}
                 </span>
