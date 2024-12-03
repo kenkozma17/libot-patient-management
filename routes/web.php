@@ -3,6 +3,7 @@
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\InventoryTransactionController;
 use App\Http\Controllers\InventoryCategoryController;
+use App\Http\Controllers\LabTestController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -24,9 +25,6 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    // Route::get('/dashboard', function () {
-    //     return Inertia::render('Dashboard');
-    // })->name('dashboard');
 
     Route::get('/', function () {
         return Inertia::render('Home');
@@ -42,5 +40,8 @@ Route::middleware([
     Route::resource('inventory', InventoryController::class);
     Route::resource('inventory-transactions', InventoryTransactionController::class);
     Route::resource('inventory-categories', InventoryCategoryController::class);
+
+    /** Lab Tests */
+    Route::resource('lab-tests', LabTestController::class);
 
 });

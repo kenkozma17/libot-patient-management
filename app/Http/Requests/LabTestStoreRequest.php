@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class InventoryStoreRequest extends FormRequest
+class LabTestStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,15 +22,15 @@ class InventoryStoreRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            'name' => 'required|string|max:100|unique:inventory_items',
+            'name' => 'required|string|max:100|unique:lab_tests',
             'category_id' => 'required',
-            'days_before_expiration_limit' => 'numeric',
-            'low_stock_limit' => 'numeric',
+            'price' => 'required',
+            'senior_price' => 'required'
         ];
 
         if ($this->isMethod('put') || $this->isMethod('patch')) {
-            $itemId = $this->route('inventory');
-            $rules['name'] = 'required|string|max:255|unique:inventory_items,name,' . $itemId;
+            $itemId = $this->route('lab_test');
+            $rules['name'] = 'required|string|max:255|unique:lab_tests,name,' . $itemId;
         }
 
         return $rules;

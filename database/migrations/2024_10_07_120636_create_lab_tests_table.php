@@ -15,8 +15,10 @@ return new class extends Migration
         Schema::create('lab_tests', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('slug');
             $table->decimal('price', 10, 2);
             $table->decimal('senior_price', 10, 2);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

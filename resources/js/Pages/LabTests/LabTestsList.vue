@@ -6,23 +6,24 @@ import DataTable from "@/Components/Data/DataTable.vue";
 import { Link } from "@inertiajs/vue3";
 
 const props = defineProps({
-  inventory_items: Object,
+  lab_tests: Object,
   search: String,
 });
 
 const columns = ref([
   { field: "name", title: "Item Name" },
   { field: "category", title: "Category" },
-  { field: "current_stock", title: "Current Stock" },
+  { field: "price", title: "Regular Price" },
+  { field: "senior_price", title: "Senior/PWD Price" },
 ]);
 
-const rows = ref(props.inventory_items.data);
+const rows = ref(props.lab_tests.data);
 
 defineOptions({ layout: AdminLayout });
 </script>
 <template>
   <AdminContentWrapper>
-    <h1>Inventory List</h1>
+    <h1>Lab Tests List</h1>
     <DataTable
       class="mt-2.5 p-[1rem]"
       :search="props.search"
@@ -31,7 +32,7 @@ defineOptions({ layout: AdminLayout });
       :columns="columns"
     >
       <template #name="{ data }">
-        <Link class="hover:underline" :href="route('inventory.show', data.value.id)">{{
+        <Link class="hover:underline" :href="route('lab-tests.edit', data.value.id)">{{
           data.value.name
         }}</Link>
       </template>

@@ -5,6 +5,7 @@ import { route } from "ziggy-js";
 
 const patientMenu = useTemplateRef("patient-menu");
 const inventoryMenu = useTemplateRef("inventory-menu");
+const labMenu = useTemplateRef("lab-menu");
 const activeMenuClass = "menu__dropdown--active";
 
 const page = usePage();
@@ -29,6 +30,8 @@ onMounted(() => {
     patientMenu.value.classList.add(activeMenuClass);
   } else if (page.component.startsWith("Inventory")) {
     inventoryMenu.value.classList.add(activeMenuClass);
+  } else if (page.component.startsWith("Lab")) {
+    labMenu.value.classList.add(activeMenuClass);
   }
 });
 </script>
@@ -94,9 +97,33 @@ onMounted(() => {
           </li>
           <li>
             <Link
-              :class="{ active: isCurrentRoute('InventoryCategory/InventoryCategoryList') }"
+              :class="{
+                active: isCurrentRoute('InventoryCategory/InventoryCategoryList'),
+              }"
               :href="route('inventory-categories.index')"
               >Categories</Link
+            >
+          </li>
+        </ul>
+      </li>
+
+      <li>
+        <a href="#" ref="lab-menu" class="menu menu__dropdown" @click="toggleSubMenu"
+          >Lab Tests</a
+        >
+        <ul class="sub-menu flex flex-col mt-[.5rem] gap-[.5rem]">
+          <li>
+            <Link
+              :class="{ active: isCurrentRoute('LabTests/LabTestsList') }"
+              :href="route('lab-tests.index')"
+              >View Lab Tests</Link
+            >
+          </li>
+          <li>
+            <Link
+              :class="{ active: isCurrentRoute('LabTests/Create') }"
+              :href="route('lab-tests.create')"
+              >Add New Lab Test</Link
             >
           </li>
         </ul>
