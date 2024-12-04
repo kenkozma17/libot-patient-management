@@ -57,6 +57,7 @@ const deletePatient = () => {
           >
             <LabelAndValue
               label="Date of Birth"
+              v-if="patient && patient.date_of_birth_with_age"
               :value="patient.date_of_birth_with_age"
             />
 

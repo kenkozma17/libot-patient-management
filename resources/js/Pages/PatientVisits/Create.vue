@@ -3,10 +3,14 @@ import AdminContentWrapper from "@/Components/Partials/AdminContentWrapper.vue";
 import AddPatientVisitForm from "@/Pages/PatientVisits/Partials/AddPatientVisitForm.vue";
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 
+const props = defineProps({
+    patient: Object,
+});
+
 defineOptions({ layout: AdminLayout  });
 </script>
 <template>
   <AdminContentWrapper>
-    <AddPatientVisitForm />
+    <AddPatientVisitForm :patient="patient" />
   </AdminContentWrapper>
 </template>

@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PatientVisitStoreRequest;
+use App\Models\Patient;
+use App\Models\PatientVisit;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -20,17 +23,22 @@ class PatientVisitController extends Controller
      */
     public function create($patientId)
     {
+        $patient = Patient::find($patientId);
         return Inertia::render('PatientVisits/Create', props: [
-
+            'patient' => $patient,
         ]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(PatientVisitStoreRequest $request)
     {
-        //
+        $patientVist = new PatientVisit;
+        $patientVist->fill($request->validated());
+        $patientVist->save();
+
+        return redirect()->route('patients.show', $patientVist->patient_id);
     }
 
     /**

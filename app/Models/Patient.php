@@ -31,7 +31,8 @@ class Patient extends Model
     protected $appends = [
         'full_name',
         'date_of_birth_with_age',
-        'address'
+        'address',
+        'age'
     ];
 
     public function getFullNameAttribute() {
@@ -42,6 +43,11 @@ class Patient extends Model
         $birthdate = Carbon::parse($this->birthdate);
         return Carbon::parse($birthdate)
             ->format('M d, Y') . ' (' . $birthdate->age  .' years) ';
+    }
+
+    public function getAgeAttribute() {
+        $birthdate = Carbon::parse($this->birthdate);
+        return $birthdate->age;
     }
 
     public function getAddressAttribute() {
