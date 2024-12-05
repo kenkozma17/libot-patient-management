@@ -28,7 +28,6 @@ return new class extends Migration
 
         Schema::table('lab_tests', function (Blueprint $table) {
             $table->foreignId('category_id')
-                ->after('name')
                 ->nullable()
                 ->constrained('inventory_item_categories')
                 ->onDelete('cascade');
