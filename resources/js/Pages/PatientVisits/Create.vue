@@ -5,12 +5,14 @@ import AdminLayout from '@/Layouts/AdminLayout.vue';
 
 const props = defineProps({
     patient: Object,
+    tests: Array,
+    inventory_items: Array,
 });
 
 defineOptions({ layout: AdminLayout  });
 </script>
 <template>
   <AdminContentWrapper>
-    <AddPatientVisitForm :patient="patient" />
+    <AddPatientVisitForm :patient="patient" :tests="tests" :inventory_items="inventory_items" />
   </AdminContentWrapper>
 </template>

@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\InventoryItemCategory;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Http\Requests\PatientStoreRequest;
+use App\Models\LabTest;
 use App\Models\Patient;
+use App\Models\PatientVisit;
 
 class PatientController extends Controller
 {
@@ -40,7 +43,7 @@ class PatientController extends Controller
     public function create()
     {
         return Inertia::render('Patients/Create', [
-            /** Props */
+
         ]);
     }
 
@@ -62,8 +65,14 @@ class PatientController extends Controller
     public function show(string $id)
     {
         $patient = Patient::find($id);
+        $visits = PatientVisit::where('patient_id', $id)
+            ->with('patient')
+            ->orderBy('created_at', 'desc')
+            ->paginate(config('pagination.default'))
+            ->withQueryString();
         return Inertia::render('Patients/Show', props: [
             'patient' => $patient,
+            'visits' => $visits
         ]);
     }
 

@@ -5,12 +5,26 @@ import PrimaryButton from "@/Components/Forms/PrimaryButton.vue";
 import { Link, useForm } from "@inertiajs/vue3";
 import { useToast } from "vue-toast-notification";
 import TitleAndButtonsWrapper from "@/Components/Partials/TitleAndButtonsWrapper.vue";
+import DataTable from "@/Components/Data/DataTable.vue";
+import { ref } from "vue";
 
 const $toast = useToast({ position: "top-right" });
 
 const props = defineProps({
   patient: Object,
+  visits: Object,
 });
+
+const columns = ref([
+  { field: "patient.full_name", title: "Patient" },
+  { field: "diagnosis", title: "Diagnosis" },
+  { field: "requesting_physician", title: "Requesting Physician" },
+  { field: "patient_type", title: "Type" },
+  { field: "patient_status", title: "Status" },
+  { field: "visit_date_formatted", title: "Visit Date" },
+]);
+
+const rows = ref(props.visits.data);
 
 const form = useForm({});
 
@@ -83,6 +97,10 @@ const deletePatient = () => {
           ><PrimaryButton size="small">New Transaction</PrimaryButton>
         </Link>
       </TitleAndButtonsWrapper>
+
+      <DataTable class="mt-2.5" :rows="rows" :columns="columns">
+
+      </DataTable>
     </div>
   </div>
 </template>

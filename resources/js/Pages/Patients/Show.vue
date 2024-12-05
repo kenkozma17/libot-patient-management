@@ -6,10 +6,11 @@ import AdminLayout from "@/Layouts/AdminLayout.vue";
 defineOptions({ layout: AdminLayout });
 const props = defineProps({
   patient: Object,
+  visits: Object,
 });
 </script>
 <template>
   <AdminContentWrapper>
-    <PatientListing :patient="patient" />
+    <PatientListing :patient="patient" :visits="visits" />
   </AdminContentWrapper>
 </template>

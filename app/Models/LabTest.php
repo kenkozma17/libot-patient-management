@@ -22,6 +22,28 @@ class LabTest extends Model
         return $this->belongsTo(InventoryItemCategory::class);
     }
 
+    // A lab test belongs to many patient visits through the pivot table
+    public function patient_visits()
+    {
+        return $this->belongsToMany(
+            PatientVisit::class,
+            'patient_visit_lab_tests',
+            'lab_test_id',
+            'patient_visit_id'
+        )->withTimestamps();
+    }
+
+    // A lab test has many inventory items through the pivot table
+    public function inventory_items()
+    {
+        return $this->belongsToMany(
+            InventoryItem::class,
+            'patient_visit_lab_test_inventory_items',
+            'visit_lab_test_id',
+            'inventory_item_id'
+        )->withPivot('quantity')->withTimestamps();
+    }
+
     // public function invoiceItems()
     // {
     //     return $this->morphMany(InvoiceItem::class, 'itemable');

@@ -25,10 +25,11 @@ class PatientVisitStoreRequest extends FormRequest
             'patient_id' => 'required',
             // 'invoice_id' => 'required',
             // 'diagnosis' => 'required',
-            'requesting_physician' => 'string',
+            'requesting_physician' => '',
             'visit_date' => 'required',
             'patient_age' => 'required|numeric',
             'patient_status' => 'required|string',
+            'patient_type' => 'required|string',
         ];
 
         if ($this->isMethod('put') || $this->isMethod('patch')) {

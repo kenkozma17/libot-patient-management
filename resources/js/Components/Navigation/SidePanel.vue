@@ -42,7 +42,7 @@ onMounted(() => {
       <p class="md:text-[2.5rem] text-[1.5rem] font-semibold text-white">PMS</p>
     </div>
     <ul
-      class="md:my-[3.25rem] my-[2.5rem] md:px-[2rem] px-[1.25rem] text-white flex flex-col md:gap-[.9rem]"
+      class="md:my-[3.25rem] my-[2.5rem] md:px-[2rem] px-[1.25rem] text-white flex flex-col md:gap-[.25rem]"
     >
       <li>
         <Link class="menu" href="/" :class="{ 'menu--active': isCurrentRoute('Home') }"

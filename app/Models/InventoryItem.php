@@ -38,4 +38,15 @@ class InventoryItem extends Model
     public function category() {
         return $this->belongsTo(InventoryItemCategory::class);
     }
+
+    // Inventory items belong to many lab tests through the pivot table
+    public function lab_tests()
+    {
+        return $this->belongsToMany(
+            LabTest::class,
+            'patient_visit_lab_test_inventory_items',
+            'inventory_item_id',
+            'lab_test_id'
+        )->withPivot('quantity')->withTimestamps();
+    }
 }
