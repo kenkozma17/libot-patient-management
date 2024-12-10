@@ -38,6 +38,10 @@ const addInventoryItem = (labTestIndex) => {
   });
 };
 
+const removeInventoryItem = (index, itemIndex) => {
+    form.lab_tests_and_items[index].items.splice(itemIndex);
+};
+
 const addLabTest = () => {
   form.lab_tests.push(form.selected_test);
   form.lab_tests_and_items.push({
@@ -50,6 +54,11 @@ const addLabTest = () => {
       },
     ],
   });
+};
+
+const removeLabTest = (index) => {
+  form.lab_tests.splice(index, 1);
+  form.lab_tests_and_items.splice(index, 1);
 };
 
 const addPatientVisit = () => {
@@ -168,35 +177,54 @@ const addPatientVisit = () => {
           <li v-for="(test, index) in form.lab_tests_and_items" :key="test.slug">
             <div class="flex justify-between items-end md:mb-[1rem]">
               <span class="w-1/2 font-bold">{{ index + 1 + ". " + test.name }}</span>
-              <PrimaryButton
-                type="button"
-                @click="addInventoryItem(index)"
-                class="py-[.25rem] px-2"
-                >Add Item</PrimaryButton
-              >
+              <div class="flex gap-2">
+                <PrimaryButton
+                  type="button"
+                  @click="removeLabTest(index)"
+                  class="py-[.25rem] px-2"
+                  color="red"
+                  >Remove Lab Test</PrimaryButton
+                >
+                <PrimaryButton
+                  type="button"
+                  @click="addInventoryItem(index)"
+                  class="py-[.25rem] px-2"
+                  >Add Item</PrimaryButton
+                >
+              </div>
             </div>
-            <div class="md:ml-4 ml-2" v-for="item in form.lab_tests_and_items[index].items">
-              <TwoColumnWrapper class="items-end">
-                <template v-slot:col1>
-                  <InputLabel for="inventory_item" value="Inventory Item" />
-                  <SelectInput v-model="item.id" required>
-                    <option value="">Select Inventory Item</option>
-                    <option
-                      v-for="item in inventory_items"
-                      :key="item.slug"
-                      :value="item.id"
-                    >
-                      {{ item.name }}
-                    </option>
-                  </SelectInput>
-                  <InputError :message="form.errors.inventory_item" class="mt-1.5" />
-                </template>
-                <template v-slot:col2>
-                  <InputLabel for="quantity" value="Quantity" />
-                  <TextInput required type="number" v-model="item.quantity" />
-                  <InputError :message="form.errors.quantity" class="mt-1.5" />
-                </template>
-              </TwoColumnWrapper>
+            <div
+              class="md:ml-4 ml-2 grid lg:grid-cols-12 gap-4 items-end"
+              v-for="(item, itemIndex) in form.lab_tests_and_items[index].items"
+            >
+              <div class="col-span-5">
+                <InputLabel for="inventory_item" value="Inventory Item" />
+                <SelectInput v-model="item.id" required>
+                  <option value="">Select Inventory Item</option>
+                  <option
+                    v-for="item in inventory_items"
+                    :key="item.slug"
+                    :value="item.id"
+                  >
+                    {{ item.name }}
+                  </option>
+                </SelectInput>
+                <InputError :message="form.errors.inventory_item" class="mt-1.5" />
+              </div>
+              <div class="col-span-5">
+                <InputLabel for="quantity" value="Quantity" />
+                <TextInput required type="number" v-model="item.quantity" />
+                <InputError :message="form.errors.quantity" class="mt-1.5" />
+              </div>
+              <div class="col-span-2" v-if="itemIndex !== 0">
+                <PrimaryButton
+                  type="button"
+                  @click="removeInventoryItem(index, itemIndex)"
+                  class="w-full justify-center"
+                  color="red"
+                  >Remove</PrimaryButton
+                >
+              </div>
             </div>
           </li>
         </ul>
