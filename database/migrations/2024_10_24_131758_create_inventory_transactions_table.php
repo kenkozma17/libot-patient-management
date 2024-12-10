@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('inventory_transactions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('inventory_item_id')->constrained('inventory_items');
+            $table->foreignId('patient_visit_id')->constrained('patient_visits');
             $table->date('date_received')->nullable();
             $table->date('expiration_date')->nullable();
             $table->string('lot_number')->nullable();

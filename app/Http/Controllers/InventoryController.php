@@ -68,6 +68,7 @@ class InventoryController extends Controller
         $item = InventoryItem::where('id', $id)->with('category')->first();
         $inventoryTransactions = InventoryTransaction::
             where('inventory_item_id', $id)
+            ->with('patient_visit')
             ->orderBy('created_at', 'desc')
             ->paginate(config('pagination.default'))
             ->withQueryString();

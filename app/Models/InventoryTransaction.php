@@ -17,10 +17,15 @@ class InventoryTransaction extends Model
         'date_opened',
         'transaction_type',
         'notes',
-        'inventory_item_id'
+        'inventory_item_id',
+        'patient_visit_id'
     ];
 
     public function inventory_item() {
         return $this->belongsTo(InventoryItem::class);
     }
-}
+
+    public function patient_visit() {
+        return $this->belongsTo(PatientVisit::class);
+    }
+ }

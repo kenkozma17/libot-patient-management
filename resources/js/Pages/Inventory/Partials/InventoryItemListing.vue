@@ -37,6 +37,7 @@ const deleteItem = () => {
 
 const columns = ref([
   { field: "lot_number", title: "Lot No." },
+  { field: "patient_visit", title: "Patient Transaction ID" },
   { field: "quantity", title: "Quantity" },
   //   { field: "date_received", title: "Date Received" },
   //   { field: "date_opened", title: "Date Opened" },
@@ -154,6 +155,14 @@ const rows = ref(props.transactions.data);
                 : 'text-red-400'
             "
             >{{ data.value.quantity }}</span
+          >
+        </template>
+        <template #patient_visit="{ data }">
+          <Link
+            class="hover:underline hover:text-blue-500"
+            v-if="data.value.patient_visit_id"
+            :href="route('patient-visits.show', data.value.patient_visit_id)"
+            >{{ data.value.patient_visit_id }}</Link
           >
         </template>
       </DataTable>

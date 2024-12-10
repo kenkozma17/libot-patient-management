@@ -28,7 +28,10 @@ class InventoryItem extends Model
     }
 
     public function getCurrentStockAttribute() {
-        $latestTransaction = InventoryTransaction::where('inventory_item_id', $this->id)->latest()->first();
+        $latestTransaction = InventoryTransaction::where('inventory_item_id', $this->id)
+            ->latest()
+            ->orderBy('id','desc')
+            ->first();
         if ($latestTransaction) {
             return $latestTransaction->stock ? $latestTransaction->stock : 0;
         }

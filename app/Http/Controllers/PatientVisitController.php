@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\PatientVisitStoreRequest;
 use App\Models\InventoryItem;
 use App\Models\InventoryItemCategory;
+use App\Models\InventoryTransaction;
 use App\Models\LabTest;
 use App\Models\Patient;
 use App\Models\PatientVisit;
@@ -51,16 +52,12 @@ class PatientVisitController extends Controller
         $patientVisit->fill($request->validated());
         $patientVisit->save();
 
-        # Attach Lab Tests to Visit
-        // if($request->lab_tests) {
-        //     $patientVisit->lab_tests()->attach($request->lab_tests);
-        // }
-
         # Attach Inventory Items to Lab Tests
         $labTestsAndItems = $request->lab_tests_and_items;
         if($labTestsAndItems) {
             foreach($labTestsAndItems as $labTest) {
 
+                # Create new patient visit lab test
                 $patientVisitLabTest = new PatientVisitLabTest;
                 $patientVisitLabTest->fill([
                     'patient_visit_id' => $patientVisit->id,
@@ -68,6 +65,7 @@ class PatientVisitController extends Controller
                 ]);
                 $patientVisitLabTest->save();
 
+                # Attach items to specific lab test
                 foreach($labTest['items'] as $item) {
                     PatientVisitLabTestInventoryItem::create([
                         'visit_lab_test_id' => $patientVisitLabTest->id,
@@ -76,6 +74,19 @@ class PatientVisitController extends Controller
                         'created_at' => now(),
                         'updated_at' => now(),
                     ]);
+
+                    # Create new transaciton for inventory item
+                    $transaction = new InventoryTransaction;
+                    $transaction->inventory_item_id = $item['id'];
+                    $transaction->quantity = $item['quantity'];
+                    $transaction->patient_visit_id = $patientVisit->id;
+                    $transaction->transaction_type = 'DECREASE';
+
+                    $inventoryItem = InventoryItem::find($item['id']);
+                    $currentStock = $inventoryItem->current_stock;
+                    $newStock = $currentStock - $item['quantity'];
+                    $transaction->stock = $newStock;
+                    $transaction->save();
                 }
 
             }

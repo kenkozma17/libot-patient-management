@@ -173,7 +173,7 @@ const addPatientVisit = () => {
           for="lab_tests"
           :value="'Selected Lab Tests' + ' (' + form.lab_tests_and_items.length + ')'"
         />
-        <ul>
+        <ul class="flex flex-col gap-[1.5rem]">
           <li v-for="(test, index) in form.lab_tests_and_items" :key="test.slug">
             <div class="flex justify-between items-end md:mb-[1rem]">
               <span class="w-1/2 font-bold">{{ index + 1 + ". " + test.name }}</span>
