@@ -69,6 +69,13 @@ onMounted(() => {
               >Add New Patient</Link
             >
           </li>
+          <li>
+            <Link
+              :class="{ active: isCurrentRoute('PatientVisits/Index') }"
+              :href="route('patient-visits.index')"
+              >Patient Transactions</Link
+            >
+          </li>
         </ul>
       </li>
 

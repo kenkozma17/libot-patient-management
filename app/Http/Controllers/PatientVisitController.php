@@ -19,9 +19,26 @@ class PatientVisitController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $search = $request->get('search');
+        $visits = PatientVisit::with('patient')->whereHas('patient',
+            function ($query) use ($request) {
+                if (($s = $request->search)) {
+                    $query->where('last_name', 'LIKE', '%' . $s . '%')
+                        ->orWhere('first_name', 'LIKE', '%' . $s . '%')
+                        ->orWhere('phone', 'LIKE', '%' . $s . '%');
+                }
+            }
+        )
+        ->orderBy('created_at', 'desc')
+        ->paginate(config('pagination.default'))
+        ->withQueryString();
+
+        return Inertia::render('PatientVisits/PatientVisitsList', [
+            'visits' => $visits,
+            'search' => $search,
+        ]);
     }
 
     /**
