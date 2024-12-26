@@ -14,7 +14,7 @@ const columns = ref([
   { field: "name", title: "Item Name" },
   { field: "category", title: "Category" },
   { field: "price", title: "Regular Price" },
-  { field: "senior_price", title: "Senior/PWD Price" },
+//   { field: "senior_price", title: "Senior/PWD Price" },
 ]);
 
 const rows = ref(props.lab_tests.data);

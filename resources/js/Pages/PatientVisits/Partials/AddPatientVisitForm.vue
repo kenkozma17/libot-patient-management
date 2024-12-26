@@ -39,7 +39,7 @@ const addInventoryItem = (labTestIndex) => {
 };
 
 const removeInventoryItem = (index, itemIndex) => {
-    form.lab_tests_and_items[index].items.splice(itemIndex);
+  form.lab_tests_and_items[index].items.splice(itemIndex);
 };
 
 const addLabTest = () => {
@@ -47,6 +47,7 @@ const addLabTest = () => {
   form.lab_tests_and_items.push({
     id: form.selected_test,
     name: props.tests.find((t) => t.id == form.selected_test).name,
+    discount_percentage: 0,
     items: [
       {
         id: "",
@@ -175,8 +176,19 @@ const addPatientVisit = () => {
         />
         <ul class="flex flex-col gap-[1.5rem]">
           <li v-for="(test, index) in form.lab_tests_and_items" :key="test.slug">
-            <div class="flex justify-between items-end md:mb-[1rem]">
-              <span class="w-1/2 font-bold">{{ index + 1 + ". " + test.name }}</span>
+            <div class="flex md:flex-row flex-col justify-between md:items-end mb-[1rem] gap-[.5rem]">
+              <div class="flex md:flex-row flex-col md:items-center gap-[.5rem]">
+                <span class="w-1/2 font-bold">{{ index + 1 + ". " + test.name }}</span>
+                <TextInput
+                  required
+                  type="number"
+                  min="0"
+                  max="100"
+                  v-model="test.discount_percentage"
+                  class="py-[.10rem] text-sm md:w-[4rem] w-full"
+                />
+                <span class="text-xs w-full text-nowrap">Senior/PWD Discount (%)</span>
+              </div>
               <div class="flex gap-2">
                 <PrimaryButton
                   type="button"
@@ -242,3 +254,16 @@ const addPatientVisit = () => {
     </form>
   </div>
 </template>
+<style scoped>
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+</style>

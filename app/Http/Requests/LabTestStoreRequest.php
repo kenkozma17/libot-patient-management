@@ -25,7 +25,7 @@ class LabTestStoreRequest extends FormRequest
             'name' => 'required|string|max:100|unique:lab_tests',
             'category_id' => 'required',
             'price' => 'required',
-            'senior_price' => 'required'
+            // 'senior_price' => 'required'
         ];
 
         if ($this->isMethod('put') || $this->isMethod('patch')) {

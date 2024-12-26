@@ -93,11 +93,11 @@ const updateTest = () => {
           <TextInput v-model="form.price" type="number" placeholder="" />
           <InputError :message="form.errors.price" class="mt-1.5" />
         </template>
-        <template v-slot:col2>
+        <!-- <template v-slot:col2>
           <InputLabel for="senior_price" value="Senior/PWD Price (PHP)" />
           <TextInput v-model="form.senior_price" placeholder="" type="number" />
           <InputError :message="form.errors.senior_price" class="mt-1.5" />
-        </template>
+        </template> -->
       </TwoColumnWrapper>
 
       <ButtonWrapper>

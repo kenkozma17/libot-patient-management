@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug');
             $table->decimal('price', 10, 2);
-            $table->decimal('senior_price', 10, 2);
+            $table->decimal('senior_price', 10, 2)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

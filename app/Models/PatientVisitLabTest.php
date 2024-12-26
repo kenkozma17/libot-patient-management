@@ -13,7 +13,8 @@ class PatientVisitLabTest extends Model
 
     protected $fillable = [
         'patient_visit_id',
-        'lab_test_id'
+        'lab_test_id',
+        'discount_percentage'
     ];
 
     public function inventory_items() {

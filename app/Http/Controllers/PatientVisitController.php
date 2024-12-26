@@ -79,6 +79,7 @@ class PatientVisitController extends Controller
                 $patientVisitLabTest->fill([
                     'patient_visit_id' => $patientVisit->id,
                     'lab_test_id' => $labTest['id'],
+                    'discount_percentage' => $labTest['discount_percentage']
                 ]);
                 $patientVisitLabTest->save();
 
