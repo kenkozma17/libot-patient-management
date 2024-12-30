@@ -9,13 +9,22 @@ class InvoiceItem extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'invoice_id',
+        'description',
+        'quantity',
+        'unit_price',
+        'total_price',
+        'discount_percentage'
+    ];
+
     public function itemable()
     {
         return $this->morphTo();
     }
 
-    public function invoice()
-    {
-        return $this->belongsTo(Invoice::class);
-    }
+    // public function invoice()
+    // {
+    //     return $this->belongsTo(Invoice::class);
+    // }
 }

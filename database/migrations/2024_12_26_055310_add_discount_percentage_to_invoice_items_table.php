@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('invoices', function (Blueprint $table) {
-            $table->id();
-            $table->decimal('amount_payable', 10, 2)->nullable();
-            $table->string('type')->nullable();
-            $table->timestamps();
+        Schema::table('invoice_items', function (Blueprint $table) {
+            $table->integer('discount_percentage')->default(0)->after('total_price');
         });
     }
 
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('invoices');
+        Schema::table('invoice_items', function (Blueprint $table) {
+            $table->dropColumn('discount_percentage');
+        });
     }
 };

@@ -48,4 +48,8 @@ class PatientVisit extends Model
         return Carbon::parse($this->visit_date)
             ->format('M d, Y');
     }
+
+    public function invoice() {
+        return $this->belongsTo(Invoice::class);
+    }
 }

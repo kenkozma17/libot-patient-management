@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId(column: 'invoice_id')->constrained()->onDelete('cascade');
             $table->morphs('itemable'); // Inventory Item or Laboratory Test Polymorphic
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->integer('quantity')->default(1);
             $table->decimal('unit_price', 10, 2);
             $table->decimal('total_price', 10, 2);

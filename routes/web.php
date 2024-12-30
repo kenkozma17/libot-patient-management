@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\PatientVisitController;
+use App\Models\Invoice;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,6 +21,7 @@ use App\Http\Controllers\PatientVisitController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),

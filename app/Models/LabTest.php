@@ -44,8 +44,8 @@ class LabTest extends Model
         )->withPivot('quantity')->withTimestamps();
     }
 
-    // public function invoiceItems()
-    // {
-    //     return $this->morphMany(InvoiceItem::class, 'itemable');
-    // }
+    public function invoiceItems()
+    {
+        return $this->morphMany(InvoiceItem::class, 'itemable');
+    }
 }
