@@ -93,13 +93,19 @@ const deletePatient = () => {
     >
       <TitleAndButtonsWrapper>
         <h2 class="leading-none md:text-[1.5rem] text-[1.2rem]">Patient Transactions</h2>
-        <Link :href="route('patient-visits.create', { id: 1 })"
+        <Link :href="route('patient-visits.create', { id: props.patient.id })"
           ><PrimaryButton size="small">New Transaction</PrimaryButton>
         </Link>
       </TitleAndButtonsWrapper>
 
       <DataTable class="mt-2.5" :rows="rows" :columns="columns">
-
+        <template #patient.full_name="{ data }">
+          <Link
+            class="hover:underline"
+            :href="route('patient-visits.show', data.value.id)"
+            >{{ data.value.patient.full_name }}</Link
+          >
+        </template>
       </DataTable>
     </div>
   </div>

@@ -18,13 +18,16 @@ class InvoiceItem extends Model
         'discount_percentage'
     ];
 
+    protected $appends = [
+        'discount_amount'
+    ];
+
     public function itemable()
     {
         return $this->morphTo();
     }
 
-    // public function invoice()
-    // {
-    //     return $this->belongsTo(Invoice::class);
-    // }
+    public function getDiscountAmountAttribute() {
+        return number_format(($this->unit_price * $this->discount_percentage) / 100, 2);
+    }
 }

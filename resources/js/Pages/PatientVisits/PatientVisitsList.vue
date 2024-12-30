@@ -34,7 +34,7 @@ defineOptions({ layout: AdminLayout });
       :columns="columns"
     >
       <template #patient.full_name="{ data }">
-        <Link class="hover:underline" :href="route('patient-visits.show', data.value.patient.id)">{{
+        <Link class="hover:underline" :href="route('patient-visits.show', data.value.id)">{{
           data.value.patient.full_name
         }}</Link>
       </template>

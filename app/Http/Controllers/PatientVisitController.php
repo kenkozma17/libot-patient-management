@@ -153,7 +153,31 @@ class PatientVisitController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $visit = PatientVisit::with(['patient', 'lab_tests'])->find($id);
+        $invoice = Invoice::with(['invoice_items'])->where('id',$visit->invoice_id)->first();
+        $invoiceItems = [];
+        if($invoice) {
+            $invoiceItems = $invoice->invoice_items->map(function($item) use ($id) {
+                return [
+                    'invoice_id' => $item->invoice_id,
+                    'description' => $item->description,
+                    'unit_price' => 'PHP ' . $item->unit_price,
+                    'total_price' => 'PHP ' . $item->total_price,
+                    'discount_percentage' => $item->discount_percentage,
+                    'discount_amount' => 'PHP ' . $item->discount_amount,
+                    'lab_test' => $item->itemable,
+                    'inventory_items' => PatientVisitLabTest::where('patient_visit_id', $id)
+                        ->where('lab_test_id', $item->itemable->id)
+                        ->first()
+                        ->inventory_items
+                ];
+            });
+        }
+
+        return Inertia::render('PatientVisits/Show', props: [
+            'visit' => $visit,
+            'invoiceItems' => $invoiceItems,
+        ]);
     }
 
     /**

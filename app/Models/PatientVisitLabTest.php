@@ -17,6 +17,8 @@ class PatientVisitLabTest extends Model
         'discount_percentage'
     ];
 
+    protected $with = ['inventory_items'];
+
     public function inventory_items() {
         return $this->belongsToMany(
             InventoryItem::class,
