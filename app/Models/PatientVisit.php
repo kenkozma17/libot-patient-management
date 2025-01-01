@@ -52,4 +52,8 @@ class PatientVisit extends Model
     public function invoice() {
         return $this->belongsTo(Invoice::class);
     }
+
+    public function results() {
+        return $this->hasMany(PatientVisitLabTestResult::class);
+    }
 }

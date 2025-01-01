@@ -37,6 +37,10 @@ Route::middleware([
     Route::resource('patient-visits', PatientVisitController::class);
     Route::get('patient-visits/create/{patientId?}', [PatientVisitController::class, 'create'])
         ->name('patient-visits.create');
+    Route::post('patient-visits/upload-results/{patientVisitId}', [PatientVisitController::class, 'uploadResults'])
+        ->name('patient-visits.upload-results');
+    Route::delete('patient-visits/delete-file/{fileId}', [PatientVisitController::class, 'destroyFile'])
+        ->name('patient-visits.destroy-file');
 
     /** Inventory */
     Route::resource('inventory', InventoryController::class);

@@ -13,8 +13,11 @@ use App\Models\Patient;
 use App\Models\PatientVisit;
 use App\Models\PatientVisitLabTest;
 use App\Models\PatientVisitLabTestInventoryItem;
+use App\Models\PatientVisitLabTestResult;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Storage;
+
 
 class PatientVisitController extends Controller
 {
@@ -153,7 +156,7 @@ class PatientVisitController extends Controller
      */
     public function show(string $id)
     {
-        $visit = PatientVisit::with(['patient', 'lab_tests'])->find($id);
+        $visit = PatientVisit::with(['patient', 'lab_tests', 'results'])->find($id);
         $invoice = Invoice::with(['invoice_items'])->where('id',$visit->invoice_id)->first();
         $invoiceItems = [];
         if($invoice) {
@@ -194,6 +197,40 @@ class PatientVisitController extends Controller
     public function update(Request $request, string $id)
     {
         //
+    }
+
+    /**
+     * Upload Lab Test Result Files
+     */
+    public function uploadResults(Request $request, $patientVisitId) {
+        $request->validate([
+            'files' => 'required|array',
+            'files.*' => 'file|max:10000',
+        ]);
+
+        $files = $request->file('files');
+        if($files) {
+            foreach($files as $file) {
+                $fileName = uniqid().time().'.'.$file->getClientOriginalExtension();
+                $path = $file->move(public_path('uploads'), $fileName);
+
+                if($path) {
+                    $newFile = new PatientVisitLabTestResult([
+                        'patient_visit_id' => $patientVisitId,
+                        'result_name' => $file->getClientOriginalName(),
+                        'result_path' => 'uploads/' . $fileName,
+                    ]);
+                    $newFile->save();
+                }
+            }
+        }
+    }
+
+    /**
+     * Delete Lab Result File
+     */
+    public function destroyFile($fileId) {
+        PatientVisitLabTestResult::destroy($fileId);
     }
 
     /**
