@@ -9,7 +9,7 @@ class Invoice extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['amount_payable', 'type'];
+    protected $fillable = ['amount_payable', 'type', 'or_number', 'amount_discounted', 'is_paid', 'discount_percentage'];
 
     public function patientVisit() {
         return $this->hasOne(PatientVisit::class);

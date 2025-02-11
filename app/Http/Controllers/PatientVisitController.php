@@ -81,6 +81,8 @@ class PatientVisitController extends Controller
         $patientVisit->invoice()->associate($invoice);
         $patientVisit->save();
 
+        $totalAmountPayable = 0;
+
         # Attach Inventory Items to Lab Tests
         $labTestsAndItems = $request->lab_tests_and_items;
         if($labTestsAndItems) {
@@ -91,7 +93,6 @@ class PatientVisitController extends Controller
                 $patientVisitLabTest->fill([
                     'patient_visit_id' => $patientVisit->id,
                     'lab_test_id' => $labTest['id'],
-                    'discount_percentage' => $labTest['discount_percentage']
                 ]);
                 $patientVisitLabTest->save();
 
@@ -122,8 +123,20 @@ class PatientVisitController extends Controller
                     $transaction->save();
                 }
 
+                # Get total amount payable from lab test prices
+                $totalAmountPayable += LabTest::find($labTest['id'])->price;
             }
         }
+
+        # Save Invoice with total amount to pay
+        $invoice->update([
+            'amount_payable' => $totalAmountPayable,
+            'or_number' => $request->or_number,
+            'discount_percentage' => $request->discount_percentage,
+            'amount_discounted' => ($totalAmountPayable * $request->discount_percentage) / 100,
+            'is_paid' => $request->is_paid ? 1 : 0,
+        ]);
+        $invoice->save();
 
         return redirect()->route('patients.show', $patientVisit->patient_id);
     }
@@ -136,16 +149,11 @@ class PatientVisitController extends Controller
 
         # Calculate total price
         $totalPrice = $test['price'];
-        if($labTest['discount_percentage']) {
-            $discountAmt = ($test['price'] * $labTest['discount_percentage']) / 100;
-            $totalPrice = $totalPrice - $discountAmt;
-        }
 
         $invoiceItem = new InvoiceItem([
             'invoice_id' => $invoice['id'],
             'quantity' => 1,
             'unit_price' => $test['price'],
-            'discount_percentage' => $labTest['discount_percentage'],
             'total_price' => $totalPrice,
         ]);
         $test->invoiceItems()->save($invoiceItem);

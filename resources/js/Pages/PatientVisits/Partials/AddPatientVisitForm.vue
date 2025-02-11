@@ -9,7 +9,8 @@ import SelectInput from "@/Components/Forms/SelectInput.vue";
 import PrimaryButton from "@/Components/Forms/PrimaryButton.vue";
 import Loader from "@/Components/Forms/Loader.vue";
 import { useToast } from "vue-toast-notification";
-import { ref } from "vue";
+import { ref, computed } from "vue";
+import Checkbox from "@/Components/Checkbox.vue";
 
 const $toast = useToast({ position: "top-right" });
 
@@ -29,6 +30,36 @@ const form = useForm({
   selected_test: "",
   lab_tests: [],
   lab_tests_and_items: [],
+  discount_percentage: 0,
+  or_number: "",
+  is_paid: false,
+});
+
+// Gets the total amount (price) of all lab tests selected
+const totalAmount = computed(() => {
+  let total = 0;
+  if (form.lab_tests.length) {
+    form.lab_tests_and_items.forEach((labTest) => (total += Number(labTest["price"])));
+  }
+  return total;
+});
+
+// Gets the amount discounted after adding discount percentage
+const discountAmount = computed(() => {
+  let discount = 0;
+  if (form.discount_percentage > 0) {
+    discount = (totalAmount.value * form.discount_percentage) / 100;
+  }
+  return discount;
+});
+
+// Gets total amount due after discounts
+const totalAmountDue = computed(() => {
+  let totalAmountDue = totalAmount.value;
+  if (discountAmount.value > 0) {
+    totalAmountDue = totalAmount.value - discountAmount.value;
+  }
+  return totalAmountDue;
 });
 
 const addInventoryItem = (labTestIndex) => {
@@ -47,7 +78,7 @@ const addLabTest = () => {
   form.lab_tests_and_items.push({
     id: form.selected_test,
     name: props.tests.find((t) => t.id == form.selected_test).name,
-    discount_percentage: 0,
+    price: props.tests.find((t) => t.id == form.selected_test).price,
     items: [
       {
         id: "",
@@ -176,10 +207,14 @@ const addPatientVisit = () => {
         />
         <ul class="flex flex-col gap-[1.5rem]">
           <li v-for="(test, index) in form.lab_tests_and_items" :key="test.slug">
-            <div class="flex md:flex-row flex-col justify-between md:items-end mb-[1rem] gap-[.5rem]">
-              <div class="flex md:flex-row flex-col md:items-center gap-[.5rem]">
-                <span class="w-1/2 font-bold">{{ index + 1 + ". " + test.name }}</span>
-                <TextInput
+            <div
+              class="flex md:flex-row flex-col justify-between md:items-end mb-[1rem] gap-[.5rem]"
+            >
+              <div>
+                <span class="w-1/2 font-bold"
+                  >{{ index + 1 + ". " + test.name }} (P{{ test.price }})</span
+                >
+                <!-- <TextInput
                   required
                   type="number"
                   min="0"
@@ -187,7 +222,7 @@ const addPatientVisit = () => {
                   v-model="test.discount_percentage"
                   class="py-[.10rem] text-sm md:w-[4rem] w-full"
                 />
-                <span class="text-xs w-full text-nowrap">Senior/PWD Discount (%)</span>
+                <span class="text-xs w-full text-nowrap">Senior/PWD Discount (%)</span> -->
               </div>
               <div class="flex gap-2">
                 <PrimaryButton
@@ -240,6 +275,42 @@ const addPatientVisit = () => {
             </div>
           </li>
         </ul>
+
+        <!-- Summary -->
+        <div class="ml-auto rounded md:mt-[2rem] md:w-1/2 w-full bg-light-gray p-[1rem]">
+          <p class="font-bold">Transaction Summary</p>
+          <ul class="flex flex-col gap-[.75rem] md:mt-[1rem]">
+            <li>
+              <InputLabel for="total_amount" value="Total Amount" />
+              <TextInput :value="'P' + totalAmount" disabled />
+            </li>
+            <li>
+              <InputLabel for="discount_percentage" value="Senior/PWD/Disc (%)" />
+              <TextInput
+                type="number"
+                min="0"
+                max="100"
+                v-model="form.discount_percentage"
+              />
+            </li>
+            <li>
+              <InputLabel for="discount_amount" value="Discount Amount" />
+              <TextInput :value="'P' + discountAmount" disabled />
+            </li>
+            <li>
+              <InputLabel for="total_amount_due" value="Total Amount Due" />
+              <TextInput :value="'P' + totalAmountDue" />
+            </li>
+            <li>
+              <InputLabel for="or_number" value="OR No." required />
+              <TextInput v-model="form.or_number" />
+            </li>
+            <li>
+              <InputLabel for="is_paid" value="Has this been paid for?" />
+              <Checkbox :checked="form.is_paid" @change="form.is_paid = !form.is_paid" />
+            </li>
+          </ul>
+        </div>
       </div>
 
       <div
