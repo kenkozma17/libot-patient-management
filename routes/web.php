@@ -3,6 +3,7 @@
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\InventoryTransactionController;
 use App\Http\Controllers\InventoryCategoryController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LabTestController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -46,6 +47,9 @@ Route::middleware([
     Route::resource('inventory', InventoryController::class);
     Route::resource('inventory-transactions', InventoryTransactionController::class);
     Route::resource('inventory-categories', InventoryCategoryController::class);
+
+    /** Invoices */
+    Route::resource('invoices', InvoiceController::class);
 
     /** Lab Tests */
     Route::resource('lab-tests', LabTestController::class);

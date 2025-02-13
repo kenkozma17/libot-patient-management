@@ -6,12 +6,18 @@ import { useToast } from "vue-toast-notification";
 import TitleAndButtonsWrapper from "@/Components/Partials/TitleAndButtonsWrapper.vue";
 import Loader from "@/Components/Forms/Loader.vue";
 import Close from "@/Components/Icons/Close.vue";
+import TextInput from "@/Components/Forms/TextInput.vue";
+import Checkbox from "@/Components/Checkbox.vue";
+import InputLabel from "@/Components/Forms/InputLabel.vue";
+import { ref } from "vue";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
 
 const $toast = useToast({ position: "top-right" });
 
 const props = defineProps({
   visit: Object,
   invoiceItems: Array,
+  invoice: Object,
 });
 
 const uploadFiles = (e) => {
@@ -36,6 +42,29 @@ const deleteFile = (fileId) => {
       onSuccess: () => $toast.success("File Deleted Successfully!"),
     });
   }
+};
+
+// Patient Visit Form
+const isEditMode = ref(false);
+const invoiceForm = useForm({
+  invoice_id: props.invoice.id,
+  patient_visit_id: props.visit.id,
+  discount_percentage: props.invoice.discount_percentage,
+  or_number: props.invoice.or_number,
+  is_paid: props.invoice.is_paid ? true : false,
+});
+
+const updateinvoiceForm = () => {
+  invoiceForm.put(route("invoices.update", props.invoice.id), {
+    errorBag: "updateInvoice",
+    preserveScroll: true,
+    onSuccess: () => {
+      $toast.success("Invoice Details Updated Successfully!");
+    },
+    onFinish: () => {
+      isEditMode.value = false;
+    },
+  });
 };
 
 const form = useForm({
@@ -84,6 +113,9 @@ const form = useForm({
             label="Requesting Physician"
             :value="visit.requesting_physician ?? 'N/A'"
           />
+
+          <LabelAndValue label="Paid" :value="invoice.is_paid ? 'YES' : 'NO'" />
+
 
           <div class="flex flex-col" v-if="visit.results.length">
             <span class="text-xs font-semibold uppercase text-gray-500">Lab Results</span>
@@ -150,17 +182,78 @@ const form = useForm({
                 {{ visitItem.discount_amount }}</span
               >
             </div>
-            <div
-              class="md:w-[200px] w-full flex justify-between border-t border-light-gray pt-2 mt-2"
-            >
-              <span class="text-xs font-semibold uppercase text-gray-500">Sub Total</span>
-              <span class="text-xs font-semibold uppercase text-gray-500">{{
-                visitItem.total_price
-              }}</span>
-            </div>
           </div>
         </li>
       </ul>
+
+      <!-- Transaction Summary -->
+      <form
+        @submit.prevent="updateinvoiceForm"
+        class="md:mt-[1rem] mt-[.7rem] lg:w-1/2 w-full ml-auto shadow-lg bg-white rounded-md border-2 border-blue-100 md:py-[1rem] md: py-[.75rem] md:px-[1.5rem] px-[1rem]"
+      >
+        <p class="font-bold">Transaction Summary</p>
+        <ul class="flex flex-col gap-[.75rem] md:mt-[1rem]">
+          <li>
+            <InputLabel for="total_amount" value="Total Amount" />
+            <TextInput :value="'P' + invoice.total_amount" disabled />
+          </li>
+          <li>
+            <InputLabel for="discount_percentage" value="Senior/PWD/Disc (%)" />
+            <TextInput
+              type="number"
+              min="0"
+              max="100"
+              v-model="invoiceForm.discount_percentage"
+              disabled
+            />
+          </li>
+          <li>
+            <InputLabel for="discount_amount" value="Discount Amount" />
+            <TextInput :value="'P' + invoice.discount_amount" disabled />
+          </li>
+          <li>
+            <InputLabel for="total_amount_due" value="Total Amount Due" />
+            <TextInput :value="'P' + invoice.total_amount_due" disabled />
+          </li>
+          <li>
+            <InputLabel for="or_number" value="OR No." required />
+            <TextInput v-model="invoiceForm.or_number" :disabled="!isEditMode" />
+          </li>
+          <li>
+            <InputLabel for="is_paid" value="Has this been paid for?" />
+            <Checkbox
+              :disabled="!isEditMode"
+              :checked="invoiceForm.is_paid"
+              @change="invoiceForm.is_paid = !invoiceForm.is_paid"
+            />
+          </li>
+        </ul>
+        <div class="mt-[1rem] flex gap-[.5rem]">
+          <SecondaryButton
+            size="small"
+            type="button"
+            v-if="isEditMode"
+            @click="isEditMode = false"
+            >Cancel</SecondaryButton
+          >
+          <PrimaryButton
+            size="small"
+            type="button"
+            @click="isEditMode = true"
+            v-if="!isEditMode"
+          >
+            <span> Edit </span>
+          </PrimaryButton>
+          <PrimaryButton
+            :class="{ 'opacity-25': invoiceForm.processing }"
+            size="small"
+            v-if="isEditMode"
+          >
+            <span v-if="!invoiceForm.processing"> Save </span>
+            <span v-else> Saving... </span>
+          </PrimaryButton>
+        </div>
+      </form>
     </div>
   </div>
 </template>

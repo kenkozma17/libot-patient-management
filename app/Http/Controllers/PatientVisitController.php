@@ -188,6 +188,7 @@ class PatientVisitController extends Controller
         return Inertia::render('PatientVisits/Show', props: [
             'visit' => $visit,
             'invoiceItems' => $invoiceItems,
+            'invoice' => $invoice,
         ]);
     }
 

@@ -7,11 +7,12 @@ defineOptions({ layout: AdminLayout });
 const props = defineProps({
   visit: Object,
   invoiceItems: Array,
+  invoice: Object,
 });
 </script>
 <template>
   <AdminContentWrapper>
     <h1>Patient Transaction</h1>
-    <PatientVisitListing :visit="visit" :invoice-items="invoiceItems" />
+    <PatientVisitListing :visit="visit" :invoice-items="invoiceItems" :invoice="invoice" />
   </AdminContentWrapper>
 </template>
