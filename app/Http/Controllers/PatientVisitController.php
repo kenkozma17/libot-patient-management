@@ -168,7 +168,7 @@ class PatientVisitController extends Controller
         $invoice = Invoice::with(['invoice_items'])->where('id',$visit->invoice_id)->first();
         $invoiceItems = [];
         if($invoice) {
-            $invoiceItems = $invoice->invoice_items->map(function($item) use ($id) {
+            $invoiceItems = $invoice->invoice_items->map(function($item, $key) use ($id, $visit) {
                 return [
                     'invoice_id' => $item->invoice_id,
                     'description' => $item->description,
@@ -177,6 +177,8 @@ class PatientVisitController extends Controller
                     'discount_percentage' => $item->discount_percentage,
                     'discount_amount' => 'PHP ' . $item->discount_amount,
                     'lab_test' => $item->itemable,
+                    'patient_visit_lab_test_id' => $visit->lab_tests[$key]->pivot->id,
+                    'invoice_item_id' => $item->id,
                     'inventory_items' => PatientVisitLabTest::where('patient_visit_id', $id)
                         ->where('lab_test_id', $item->itemable->id)
                         ->first()
@@ -232,6 +234,49 @@ class PatientVisitController extends Controller
                     $newFile->save();
                 }
             }
+        }
+    }
+
+    /**
+     * Delete Lab Test within Patient Transaction
+     */
+    public function destroyLabTest(Request $request, $patientVisitLabTestId) {
+        $invoiceId = $request->invoice_id;
+        $invoiceItemId = $request->invoice_item_id;
+
+        if($invoiceItemId) {
+            InvoiceItem::destroy($invoiceItemId);
+            PatientVisitLabTest::destroy($patientVisitLabTestId);
+        }
+
+        # Update Inventory if not marked as consumed
+
+        # Update amounts
+        if($invoiceId) {
+            $invoice = Invoice::find($invoiceId);
+
+            # Adjust invoice totals
+            if($invoice->invoice_items()->exists()) {
+                $invoiceItems = $invoice->invoice_items()->get();
+                $amountPayable = 0;
+                foreach($invoiceItems as $item) {
+                    $amountPayable += $item->unit_price;
+                }
+                $discountAmount = ($amountPayable * $invoice->discount_percentage) / 100;
+                $amountDue = $amountPayable - $discountAmount;
+                $invoice->update([
+                    'amount_payable' => $amountDue,
+                    'amount_discounted' => $discountAmount
+                ]);
+            } else {
+                # Set invoice to nothing if no more items exist.
+                $invoice->update([
+                    'amount_payable' => 0,
+                    'discount_percentage' => 0,
+                    'amount_didscounted' => 0
+                ]);
+            }
+            $invoice->save();
         }
     }
 

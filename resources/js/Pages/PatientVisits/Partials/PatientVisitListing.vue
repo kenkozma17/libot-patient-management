@@ -44,6 +44,21 @@ const deleteFile = (fileId) => {
   }
 };
 
+const deleteLabTest = (patientVisitLabTestId, invoiceItemId) => {
+  const deleteLabTestForm = useForm({
+    invoice_item_id: invoiceItemId,
+    patient_visit_id: props.visit.id,
+    invoice_id: props.invoice.id,
+  });
+  if (confirm("Are you sure you want to delete this lab test?")) {
+    deleteLabTestForm.delete(route("patient-visits.destroy-lab-test", patientVisitLabTestId), {
+      errorBag: "deleteLabTest",
+      preserveScroll: true,
+      onSuccess: () => $toast.success("Lab Test Removed Successfully!"),
+    });
+  }
+};
+
 // Patient Visit Form
 const isEditMode = ref(false);
 const invoiceForm = useForm({
@@ -116,7 +131,6 @@ const form = useForm({
 
           <LabelAndValue label="Paid" :value="invoice.is_paid ? 'YES' : 'NO'" />
 
-
           <div class="flex flex-col" v-if="visit.results.length">
             <span class="text-xs font-semibold uppercase text-gray-500">Lab Results</span>
             <div v-for="result in visit.results" class="flex justify-between">
@@ -148,8 +162,17 @@ const form = useForm({
           class="shadow-lg bg-white rounded-md border-2 border-blue-100 md:py-[1rem] md: py-[.75rem] md:px-[1.5rem] px-[1rem]"
           v-for="(visitItem, key) in invoiceItems"
         >
-          <span class="font-medium">#{{ visitItem.invoice_id }}</span> -
-          <span class="font-bold">{{ visitItem.lab_test.name }}</span>
+          <div class="flex justify-between">
+            <div>
+              <span class="font-medium">#{{ visitItem.invoice_id }}</span> -
+              <span class="font-bold">{{ visitItem.lab_test.name }}</span>
+            </div>
+            <div>
+              <PrimaryButton size="small" type="button" color="red" @click="deleteLabTest(visitItem.patient_visit_lab_test_id, visitItem.invoice_item_id)"
+                >Delete</PrimaryButton
+              >
+            </div>
+          </div>
 
           <!-- Inventory Items -->
           <ul
@@ -164,14 +187,18 @@ const form = useForm({
           </ul>
 
           <!-- Pricing -->
-          <div class="flex flex-col items-end">
+          <div class="flex md:flex-row flex-col gap-[1rem] items-start justify-between">
+            <div class="flex items-start justify-center gap-[.5rem]">
+              <Checkbox checked="" @change="" />
+              <InputLabel for="consumed" value="Consumed?" />
+            </div>
             <div class="md:w-[200px] w-full flex justify-between">
               <span class="text-xs font-semibold uppercase text-gray-500">Price</span>
               <span class="text-xs font-semibold uppercase text-gray-500">{{
                 visitItem.unit_price
               }}</span>
             </div>
-            <div
+            <!-- <div
               class="md:w-[200px] w-full flex justify-between"
               v-if="visitItem.discount_percentage > 0"
             >
@@ -181,7 +208,7 @@ const form = useForm({
               <span class="text-xs font-semibold uppercase text-gray-500">
                 {{ visitItem.discount_amount }}</span
               >
-            </div>
+            </div> -->
           </div>
         </li>
       </ul>

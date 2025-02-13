@@ -22,7 +22,7 @@ class InvoiceStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'or_number' => 'required|',
+            // 'or_number' => 'required',
             'discount_percentage' => 'required',
         ];
     }

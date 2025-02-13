@@ -36,7 +36,7 @@ class PatientVisit extends Model
             'patient_visit_lab_tests',
             'patient_visit_id',
             'lab_test_id'
-        )->withTimestamps();
+        )->withPivot('id')->withTimestamps();
     }
 
     // Access the pivot model directly
