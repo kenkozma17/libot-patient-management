@@ -10,14 +10,18 @@ import Loader from "@/Components/Forms/Loader.vue";
 import ButtonWrapper from "@/Components/Forms/ButtonWrapper.vue";
 import { useToast } from "vue-toast-notification";
 const $toast = useToast({ position: "top-right" });
+import { ref } from "vue";
 
 const props = defineProps({
   categories: Array,
 });
 
+const units = ref(["pcs", "boxes", "liters"]);
+
 const form = useForm({
   name: "",
   category_id: "",
+  unit: "",
   low_stock_limit: 0,
   days_before_expiration_limit: 0,
 });
@@ -93,6 +97,20 @@ const addItem = () => {
             :message="form.errors.days_before_expiration_limit"
             class="mt-1.5"
           />
+        </template>
+      </TwoColumnWrapper>
+
+      <!-- Unit -->
+      <TwoColumnWrapper>
+        <template v-slot:col1>
+          <InputLabel for="unit" value="Unit" />
+          <SelectInput v-model="form.unit">
+            <option value="">Select Unit</option>
+            <option v-for="(unit, key) in units" :key="unit" :value="unit">
+              {{ unit }}
+            </option>
+          </SelectInput>
+          <InputError :message="form.errors.unit" class="mt-1.5" />
         </template>
       </TwoColumnWrapper>
 

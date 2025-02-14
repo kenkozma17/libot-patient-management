@@ -12,6 +12,7 @@ const props = defineProps({
 
 const columns = ref([
   { field: "name", title: "Item Name" },
+  { field: "unit", title: "Unit" },
   { field: "category", title: "Category" },
   { field: "current_stock", title: "Current Stock" },
 ]);

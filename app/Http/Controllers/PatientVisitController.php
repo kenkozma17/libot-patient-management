@@ -108,19 +108,6 @@ class PatientVisitController extends Controller
                         'created_at' => now(),
                         'updated_at' => now(),
                     ]);
-
-                    # Create new transaciton for inventory item
-                    $transaction = new InventoryTransaction;
-                    $transaction->inventory_item_id = $item['id'];
-                    $transaction->quantity = $item['quantity'];
-                    $transaction->patient_visit_id = $patientVisit->id;
-                    $transaction->transaction_type = 'DECREASE';
-
-                    $inventoryItem = InventoryItem::find($item['id']);
-                    $currentStock = $inventoryItem->current_stock;
-                    $newStock = $currentStock - $item['quantity'];
-                    $transaction->stock = $newStock;
-                    $transaction->save();
                 }
 
                 # Get total amount payable from lab test prices
@@ -178,6 +165,7 @@ class PatientVisitController extends Controller
                     'discount_amount' => 'PHP ' . $item->discount_amount,
                     'lab_test' => $item->itemable,
                     'patient_visit_lab_test_id' => $visit->lab_tests[$key]->pivot->id,
+                    'is_consumed' => $visit->lab_tests[$key]->pivot->is_consumed ? true : false,
                     'invoice_item_id' => $item->id,
                     'inventory_items' => PatientVisitLabTest::where('patient_visit_id', $id)
                         ->where('lab_test_id', $item->itemable->id)
@@ -238,6 +226,34 @@ class PatientVisitController extends Controller
     }
 
     /**
+     * Update consumption status of lab test
+     */
+    public function updateConsumption(Request $request, $patientVisitLabTestId) {
+        $isConsumed = $request->is_consumed;
+        $visitLabTest = PatientVisitLabTest::find($patientVisitLabTestId);
+        $visitLabTest->is_consumed = $isConsumed ? 1 : 0;
+        $visitLabTest->save();
+
+        # Fetch inventory item that will be used for transaction
+        $pLabTestInventoryItem = PatientVisitLabTestInventoryItem::
+            where('visit_lab_test_id', $patientVisitLabTestId)
+            ->first();
+
+        # Create new transaciton for inventory item that was consumed
+        $transaction = new InventoryTransaction;
+        $transaction->inventory_item_id = $pLabTestInventoryItem->inventory_item_id;
+        $transaction->quantity = $pLabTestInventoryItem->quantity;
+        $transaction->patient_visit_id = $request->patient_visit_id;
+        $transaction->transaction_type = 'DECREASE';
+
+        $inventoryItem = InventoryItem::find($pLabTestInventoryItem->inventory_item_id);
+        $currentStock = $inventoryItem->current_stock;
+        $newStock = $currentStock - $pLabTestInventoryItem->quantity;
+        $transaction->stock = $newStock;
+        $transaction->save();
+    }
+
+    /**
      * Delete Lab Test within Patient Transaction
      */
     public function destroyLabTest(Request $request, $patientVisitLabTestId) {
@@ -248,8 +264,6 @@ class PatientVisitController extends Controller
             InvoiceItem::destroy($invoiceItemId);
             PatientVisitLabTest::destroy($patientVisitLabTestId);
         }
-
-        # Update Inventory if not marked as consumed
 
         # Update amounts
         if($invoiceId) {

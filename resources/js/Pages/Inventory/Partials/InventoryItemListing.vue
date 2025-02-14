@@ -67,7 +67,7 @@ const rows = ref(props.transactions.data);
               <span
                 class="text-xs font-semibold rounded-md px-[.5rem] py-[.25rem] bg-green-300 inline-block"
               >
-                Current Stock: {{ item.current_stock }}
+                Current Stock: {{ item.current_stock }} {{ item.unit }}
               </span>
               <span
                 v-if="item.category.name"

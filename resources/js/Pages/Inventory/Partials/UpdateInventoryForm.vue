@@ -10,15 +10,19 @@ import ButtonWrapper from "@/Components/Forms/ButtonWrapper.vue";
 import SelectInput from "@/Components/Forms/SelectInput.vue";
 import { useToast } from "vue-toast-notification";
 const $toast = useToast({ position: "top-right" });
+import { ref } from "vue";
 
 const props = defineProps({
   item: Object,
   categories: Array,
 });
 
+const units = ref(["pcs", "boxes", "liters"]);
+
 const form = useForm({
   name: props.item.name,
   category_id: props.item.category_id,
+  unit: props.item.unit,
   low_stock_limit: props.item.low_stock_limit,
   days_before_expiration_limit: props.item.days_before_expiration_limit,
 });
@@ -50,27 +54,32 @@ const updateItem = () => {
         </template>
 
         <template v-slot:col2>
-            <InputLabel for="category" value="Category" />
-            <SelectInput v-model="form.category_id">
-              <option value="">Select Category</option>
-              <option
-                :selected="category.id == form.category_id"
-                v-for="category in props.categories"
-                :key="category.slug"
-                :value="category.id"
-              >
-                {{ category.name }}
-              </option>
-            </SelectInput>
-            <InputError :message="form.errors.category_id" class="mt-1.5" />
-          </template>
+          <InputLabel for="category" value="Category" />
+          <SelectInput v-model="form.category_id">
+            <option value="">Select Category</option>
+            <option
+              :selected="category.id == form.category_id"
+              v-for="category in props.categories"
+              :key="category.slug"
+              :value="category.id"
+            >
+              {{ category.name }}
+            </option>
+          </SelectInput>
+          <InputError :message="form.errors.category_id" class="mt-1.5" />
+        </template>
       </TwoColumnWrapper>
 
       <!-- Notice Limits -->
       <TwoColumnWrapper>
         <template v-slot:col1>
           <InputLabel for="low_stock_limit" value="Low Stock Notice (Quantity)" />
-          <TextInput autofocus  type="number" v-model="form.low_stock_limit" placeholder="0" />
+          <TextInput
+            autofocus
+            type="number"
+            v-model="form.low_stock_limit"
+            placeholder="0"
+          />
           <InputError :message="form.errors.low_stock_limit" class="mt-1.5" />
         </template>
 
@@ -89,6 +98,20 @@ const updateItem = () => {
             :message="form.errors.days_before_expiration_limit"
             class="mt-1.5"
           />
+        </template>
+      </TwoColumnWrapper>
+
+      <!-- Unit -->
+      <TwoColumnWrapper>
+        <template v-slot:col1>
+          <InputLabel for="unit" value="Unit" />
+          <SelectInput v-model="form.unit">
+            <option value="">Select Unit</option>
+            <option v-for="(unit, key) in units" :key="unit" :value="unit">
+              {{ unit }}
+            </option>
+          </SelectInput>
+          <InputError :message="form.errors.unit" class="mt-1.5" />
         </template>
       </TwoColumnWrapper>
 

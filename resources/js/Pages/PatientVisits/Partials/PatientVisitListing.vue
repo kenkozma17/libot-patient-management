@@ -51,12 +51,37 @@ const deleteLabTest = (patientVisitLabTestId, invoiceItemId) => {
     invoice_id: props.invoice.id,
   });
   if (confirm("Are you sure you want to delete this lab test?")) {
-    deleteLabTestForm.delete(route("patient-visits.destroy-lab-test", patientVisitLabTestId), {
-      errorBag: "deleteLabTest",
-      preserveScroll: true,
-      onSuccess: () => $toast.success("Lab Test Removed Successfully!"),
-    });
+    deleteLabTestForm.delete(
+      route("patient-visits.destroy-lab-test", patientVisitLabTestId),
+      {
+        errorBag: "deleteLabTest",
+        preserveScroll: true,
+        onSuccess: () => $toast.success("Lab Test Removed Successfully!"),
+      }
+    );
   }
+};
+
+const updateConsumption = (patientVisitLabTestId, event) => {
+  const is_consumed = event.target.checked;
+  const consumptionForm = useForm({
+    is_consumed,
+    patient_visit_id: props.visit.id,
+ });
+
+  if (!confirm("Are you sure you want to mark this lab test as consumed?")) {
+    // Revert checkbox state if the user cancels
+    event.target.checked = !is_consumed;
+    return;
+  }
+
+  consumptionForm.put(route("patient-visits.update-consumption", patientVisitLabTestId), {
+    errorBag: "updateConsumption",
+    preserveScroll: true,
+    onSuccess: () => {
+      $toast.success("Lab Test Details Updated Successfully!");
+    },
+  });
 };
 
 // Patient Visit Form
@@ -167,8 +192,17 @@ const form = useForm({
               <span class="font-medium">#{{ visitItem.invoice_id }}</span> -
               <span class="font-bold">{{ visitItem.lab_test.name }}</span>
             </div>
-            <div>
-              <PrimaryButton size="small" type="button" color="red" @click="deleteLabTest(visitItem.patient_visit_lab_test_id, visitItem.invoice_item_id)"
+            <div v-if="visitItem.is_consumed === false">
+              <PrimaryButton
+                size="small"
+                type="button"
+                color="red"
+                @click="
+                  deleteLabTest(
+                    visitItem.patient_visit_lab_test_id,
+                    visitItem.invoice_item_id
+                  )
+                "
                 >Delete</PrimaryButton
               >
             </div>
@@ -189,7 +223,11 @@ const form = useForm({
           <!-- Pricing -->
           <div class="flex md:flex-row flex-col gap-[1rem] items-start justify-between">
             <div class="flex items-start justify-center gap-[.5rem]">
-              <Checkbox checked="" @change="" />
+              <Checkbox
+                :disabled="visitItem.is_consumed"
+                :checked="visitItem.is_consumed"
+                @change="updateConsumption(visitItem.patient_visit_lab_test_id, $event)"
+              />
               <InputLabel for="consumed" value="Consumed?" />
             </div>
             <div class="md:w-[200px] w-full flex justify-between">

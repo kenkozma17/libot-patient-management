@@ -19,6 +19,13 @@ class PatientVisitLabTest extends Model
 
     protected $with = ['inventory_items'];
 
+    protected function casts(): array
+    {
+        return [
+            'is_consumed' => 'boolean',
+        ];
+    }
+
     public function inventory_items() {
         return $this->belongsToMany(
             InventoryItem::class,

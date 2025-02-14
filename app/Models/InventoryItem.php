@@ -14,6 +14,7 @@ class InventoryItem extends Model
         'name',
         'slug',
         'category_id',
+        'unit',
         'low_stock_limit',
         'days_before_expiration_limit'
     ];

@@ -44,6 +44,8 @@ Route::middleware([
         ->name('patient-visits.destroy-file');
     Route::delete('patient-visits/delete-lab-test/{fileId}', [PatientVisitController::class, 'destroyLabTest'])
         ->name('patient-visits.destroy-lab-test');
+    Route::put('patient-visits/update-consumption/{fileId}', [PatientVisitController::class, 'updateConsumption'])
+        ->name('patient-visits.update-consumption');
 
     /** Inventory */
     Route::resource('inventory', InventoryController::class);
