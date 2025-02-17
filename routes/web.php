@@ -5,6 +5,7 @@ use App\Http\Controllers\InventoryTransactionController;
 use App\Http\Controllers\InventoryCategoryController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LabTestController;
+use App\Http\Controllers\NotificationsController;
 use App\Notifications\LowInventory;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -59,5 +60,10 @@ Route::middleware([
 
     /** Lab Tests */
     Route::resource('lab-tests', LabTestController::class);
+
+    /** Notifications */
+    Route::resource('notifications', NotificationsController::class);
+    Route::post('notifications/mark-as-read/{notificationId}', [NotificationsController::class, 'markAsRead'])
+        ->name('notifications.mark-as-read');
 
 });

@@ -7,7 +7,7 @@ import { computed } from "vue";
 
 const page = usePage()
 const unreadNotificationsCount = computed(() => {
-    return page.props.notifications.filter(notification => notification.read_at === null).length;
+    return page.props.unreadNotifications;
 });
 
 
@@ -23,7 +23,7 @@ const unreadNotificationsCount = computed(() => {
       Tue, 6 Apr 2022
     </div>
     <div class="flex gap-[1rem]">
-      <Link href="/notifications">
+      <Link :href="route('notifications.index')">
         <NotificationBell :notification-count="unreadNotificationsCount" />
       </Link>
       <HamburgerMenu @click="$emit('toggleSidePanel')" class="md:hidden block" />

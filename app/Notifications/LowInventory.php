@@ -49,7 +49,8 @@ class LowInventory extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            'data' => 'Low Stock Alert: ' . $this->inventoryItem->name . ' has dropped below the minimum stock level. Only ' . $this->inventoryItem->current_stock  . ' ' . $this->inventoryItem->unit . ' left in stock. Please restock soon!'
+            'type' => 'Low Inventory Alert',
+            'message' => $this->inventoryItem->name . ' has dropped below the minimum stock level. Only ' . $this->inventoryItem->current_stock  . ' ' . $this->inventoryItem->unit . ' left in stock. Please restock soon!'
         ];
     }
 }

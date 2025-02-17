@@ -37,10 +37,10 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        $notifications = DatabaseNotification::all();
+        $notifications = DatabaseNotification::where('read_at', null)->get();
 
         return array_merge(parent::share($request), [
-            'notifications' => $notifications
+            'unreadNotifications' => count($notifications)
         ]);
     }
 }
