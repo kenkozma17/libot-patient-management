@@ -2,7 +2,16 @@
 import AdminContentWrapper from "@/Components/Partials/AdminContentWrapper.vue";
 import HamburgerMenu from "@/Components/Navigation/HambugerMenu.vue";
 import NotificationBell from "../Icons/NotificationBell.vue";
-import { Link } from "@inertiajs/vue3";
+import { Link, usePage } from "@inertiajs/vue3";
+import { computed } from "vue";
+
+const page = usePage()
+const unreadNotificationsCount = computed(() => {
+    return page.props.notifications.filter(notification => notification.read_at === null).length;
+});
+
+
+
 </script>
 <template>
   <nav
@@ -15,7 +24,7 @@ import { Link } from "@inertiajs/vue3";
     </div>
     <div class="flex gap-[1rem]">
       <Link href="/notifications">
-        <NotificationBell :notification-count="90" />
+        <NotificationBell :notification-count="unreadNotificationsCount" />
       </Link>
       <HamburgerMenu @click="$emit('toggleSidePanel')" class="md:hidden block" />
     </div>

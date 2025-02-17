@@ -52,7 +52,7 @@ const AddTransaction = () => {
       @submit.prevent="AddTransaction"
       class="bg-white rounded-md mt-2.5 md:py-[1.4rem] py-[1.125rem]"
     >
-      <h2 class="font-semibold md:mb-4 mb-2">Inventory Details</h2>
+      <h2 class="font-semibold md:mb-4 mb-2">Inventory Details (<span :class="{'text-red-600' : transactionType === 'DECREASE', 'text-green-600' : transactionType === 'INCREASE'}">{{ transactionType }}</span>)</h2>
 
       <template v-if="isIncrease">
         <!-- Lot Number and Quantity -->

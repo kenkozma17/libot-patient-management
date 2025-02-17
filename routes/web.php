@@ -5,11 +5,13 @@ use App\Http\Controllers\InventoryTransactionController;
 use App\Http\Controllers\InventoryCategoryController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LabTestController;
+use App\Notifications\LowInventory;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\PatientVisitController;
+use App\Models\InventoryItem;
 use App\Models\Invoice;
 
 /*

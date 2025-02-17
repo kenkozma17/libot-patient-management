@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\InventoryTransactionStoreRequest;
 use App\Models\InventoryTransaction;
 use App\Models\InventoryItem;
+use App\Notifications\LowInventory;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
@@ -45,8 +46,12 @@ class InventoryTransactionController extends Controller
             $newStock = $currentStock - $transaction->quantity;
             $transaction->stock = $newStock;
         }
-
         $transaction->save();
+
+        // Create notification if low stock level is met
+        if($newStock <= $item->low_stock_limit) {
+            $item->notify(new LowInventory($item));
+        }
 
         return redirect()->route('inventory.show', $transaction->inventory_item_id);
     }

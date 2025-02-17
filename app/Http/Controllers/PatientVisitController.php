@@ -14,6 +14,7 @@ use App\Models\PatientVisit;
 use App\Models\PatientVisitLabTest;
 use App\Models\PatientVisitLabTestInventoryItem;
 use App\Models\PatientVisitLabTestResult;
+use App\Notifications\LowInventory;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Storage;
@@ -258,6 +259,11 @@ class PatientVisitController extends Controller
         $newStock = $currentStock - $pLabTestInventoryItem->quantity;
         $transaction->stock = $newStock;
         $transaction->save();
+
+        // Create notification if low stock level is met
+        if($newStock <= $inventoryItem->low_stock_limit) {
+            $inventoryItem->notify(new LowInventory($inventoryItem));
+        }
     }
 
     /**
