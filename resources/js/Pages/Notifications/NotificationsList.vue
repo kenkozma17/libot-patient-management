@@ -6,7 +6,7 @@ import Pagination from "@/Components/Pagination.vue";
 import { ref, computed } from "vue";
 import Trash from "@/Components/Icons/Trash.vue";
 import EyeBall from "@/Components/Icons/EyeBall.vue";
-import { useForm } from "@inertiajs/vue3";
+import { useForm, Link } from "@inertiajs/vue3";
 
 const props = defineProps({
   notifications: Object,
@@ -52,6 +52,7 @@ defineOptions({ layout: AdminLayout });
           <p class="text-sm" :class="{ 'font-bold': notification.read_at === null }">
             {{ notification.data.message }}
           </p>
+          <Link class="mt-[1rem] text-xs text-blue-600 font-bold hover:underline" :href="route('inventory.show', notification.notifiable_id)">View Item</Link>
         </div>
         <div class="lg:col-span-4 col-span-12 flex flex-col gap-[.5rem] items-end">
           <p class="text-xs" :class="{ 'font-bold': notification.read_at === null }">

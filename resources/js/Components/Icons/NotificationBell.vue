@@ -14,7 +14,7 @@ const notificationCountFormatted = computed(() => {
 });
 </script>
 <template>
-  <div class="relative hover:scale-[1.025] transition-transform">
+  <div class="relative hover:scale-[1.05] transition-transform">
     <span
       class="absolute top-0 right-[-10px] bg-red-600 rounded-full h-4 text-white text-xs text-center"
       :class="{ 'w-[2.5rem] right-[-25px]' : props.notificationCount > 100, 'w-6' : props.notificationCount < 100}"
