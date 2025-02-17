@@ -32,11 +32,6 @@ class PatientVisitStoreRequest extends FormRequest
             'patient_type' => 'required|string',
         ];
 
-        if ($this->isMethod('put') || $this->isMethod('patch')) {
-            $itemId = $this->route('patient-visits');
-            $rules['name'] = 'required|string|max:255|unique:inventory_items,name,' . $itemId;
-        }
-
         return $rules;
     }
 }

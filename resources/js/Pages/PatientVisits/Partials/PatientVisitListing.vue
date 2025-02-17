@@ -11,6 +11,7 @@ import Checkbox from "@/Components/Checkbox.vue";
 import InputLabel from "@/Components/Forms/InputLabel.vue";
 import { ref } from "vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
+import { Link } from "@inertiajs/vue3";
 
 const $toast = useToast({ position: "top-right" });
 
@@ -67,7 +68,7 @@ const updateConsumption = (patientVisitLabTestId, event) => {
   const consumptionForm = useForm({
     is_consumed,
     patient_visit_id: props.visit.id,
- });
+  });
 
   if (!confirm("Are you sure you want to mark this lab test as consumed?")) {
     // Revert checkbox state if the user cancels
@@ -122,20 +123,23 @@ const form = useForm({
           <h2 class="leading-none md:text-[1.5rem] text-[1.2rem] md:mt-0 mt-[.5rem]">
             {{ visit.patient.full_name }}
           </h2>
-          <div class="relative overflow-hidden inline-block flex gap-[1rem]">
-            <Loader v-if="form.processing" />
-            <PrimaryButton size="small" type="button">
-              <span v-if="form.processing">Uploading</span>
-              <span v-else>Upload Lab Results</span>
-            </PrimaryButton>
-            <input
-              @input="form.files = $event.target.files"
-              @change="uploadFiles"
-              accept=".pdf,.jpg,.docx,.doc,.png"
-              type="file"
-              multiple
-              class="absolute top-0 left-0 opacity-0 cursor-pointer"
-            />
+          <div class="flex gap-[.5rem]">
+            <Link :href="route('patient-visits.edit', visit.id)"><SecondaryButton size="small">Edit</SecondaryButton></Link>
+            <div class="relative overflow-hidden inline-block flex gap-[1rem]">
+              <Loader v-if="form.processing" />
+              <PrimaryButton size="small" type="button">
+                <span v-if="form.processing">Uploading</span>
+                <span v-else>Upload Lab Results</span>
+              </PrimaryButton>
+              <input
+                @input="form.files = $event.target.files"
+                @change="uploadFiles"
+                accept=".pdf,.jpg,.docx,.doc,.png"
+                type="file"
+                multiple
+                class="absolute top-0 left-0 opacity-0 cursor-pointer"
+              />
+            </div>
           </div>
         </TitleAndButtonsWrapper>
         <div

@@ -187,15 +187,22 @@ class PatientVisitController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $visit = PatientVisit::with('patient')->find($id);
+        return Inertia::render('PatientVisits/Edit', props: [
+            'visit' => $visit,
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(PatientVisitStoreRequest $request, string $id)
     {
-        //
+        $item = PatientVisit::find($id);
+        $item->update($request->validated());
+        $item->save();
+
+        return redirect()->route('patient-visits.show', $id);
     }
 
     /**
