@@ -1,6 +1,8 @@
 <script setup>
 import AdminContentWrapper from "@/Components/Partials/AdminContentWrapper.vue";
 import HamburgerMenu from "@/Components/Navigation/HambugerMenu.vue";
+import NotificationBell from "../Icons/NotificationBell.vue";
+import { Link } from "@inertiajs/vue3";
 </script>
 <template>
   <nav
@@ -11,7 +13,10 @@ import HamburgerMenu from "@/Components/Navigation/HambugerMenu.vue";
     >
       Tue, 6 Apr 2022
     </div>
-    <div>
+    <div class="flex gap-[1rem]">
+      <Link href="/notifications">
+        <NotificationBell :notification-count="90" />
+      </Link>
       <HamburgerMenu @click="$emit('toggleSidePanel')" class="md:hidden block" />
     </div>
   </nav>
