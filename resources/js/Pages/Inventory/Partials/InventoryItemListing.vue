@@ -70,6 +70,11 @@ const rows = ref(props.transactions.data);
                 Current Stock: {{ item.current_stock }} {{ item.unit }}
               </span>
               <span
+                class="text-xs font-semibold rounded-md px-[.5rem] py-[.25rem] bg-purple-300 inline-block"
+              >
+                {{ item.classification.toUpperCase() }}
+              </span>
+              <span
                 v-if="item.category.name"
                 class="text-xs font-semibold rounded-md px-[.5rem] py-[.25rem] bg-yellow-400 inline-block"
               >

@@ -18,6 +18,7 @@ const props = defineProps({
 });
 
 const units = ref(["pcs", "boxes", "liters"]);
+const classifications = ref(["reagent", "supplies"]);
 
 const form = useForm({
   name: props.item.name,
@@ -25,6 +26,7 @@ const form = useForm({
   unit: props.item.unit,
   low_stock_limit: props.item.low_stock_limit,
   days_before_expiration_limit: props.item.days_before_expiration_limit,
+  classification: props.item.classification,
 });
 const updateItem = () => {
   form.put(route("inventory.update", props.item.id), {
@@ -101,7 +103,7 @@ const updateItem = () => {
         </template>
       </TwoColumnWrapper>
 
-      <!-- Unit -->
+      <!-- Unit and Classification -->
       <TwoColumnWrapper>
         <template v-slot:col1>
           <InputLabel for="unit" value="Unit" />
@@ -113,6 +115,21 @@ const updateItem = () => {
           </SelectInput>
           <InputError :message="form.errors.unit" class="mt-1.5" />
         </template>
+
+        <template v-slot:col2>
+            <InputLabel for="classifications" value="Classification" />
+            <SelectInput v-model="form.classification">
+              <option value="">Select Classification</option>
+              <option
+                v-for="(classification, key) in classifications"
+                :key="classification"
+                :value="classification"
+              >
+                {{ classification }}
+              </option>
+            </SelectInput>
+            <InputError :message="form.errors.classification" class="mt-1.5" />
+          </template>
       </TwoColumnWrapper>
 
       <ButtonWrapper>

@@ -17,16 +17,22 @@ class InventoryItem extends Model
         'category_id',
         'unit',
         'low_stock_limit',
-        'days_before_expiration_limit'
+        'days_before_expiration_limit',
+        'classification'
     ];
 
     protected $appends = [
-        'current_stock'
+        'current_stock',
+        'classification_formatted'
     ];
 
     public function invoiceItems()
     {
         return $this->morphMany(InvoiceItem::class, 'itemable');
+    }
+
+    public function getClassificationFormattedAttribute() {
+        return ucfirst($this->classification);
     }
 
     public function getCurrentStockAttribute() {

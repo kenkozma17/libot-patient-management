@@ -12,6 +12,10 @@ const props = defineProps({
     default: false,
   },
   search: String,
+  columnFilter: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const s = ref(props.search);
@@ -21,7 +25,7 @@ const s = ref(props.search);
     <form v-if="hasSearch" class="md:mb-4 mb-3 md:w-1/2 w-full">
       <TextInput name="search" placeholder="Search" v-model="s" />
     </form>
-    <vue3-datatable :rows="rows" :columns="columns">
+    <vue3-datatable :rows="rows" :columns="columns" :columnFilter="columnFilter">
       <template v-for="(slotFn, slotName) in slots" v-slot:[slotName]="data">
         <slot :name="slotName" :data="data"></slot>
       </template>

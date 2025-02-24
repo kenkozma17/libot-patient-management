@@ -27,6 +27,7 @@ class InventoryStoreRequest extends FormRequest
             'unit' => 'required',
             'days_before_expiration_limit' => 'numeric',
             'low_stock_limit' => 'numeric',
+            'classification' => 'required|string'
         ];
 
         if ($this->isMethod('put') || $this->isMethod('patch')) {

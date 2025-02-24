@@ -14,6 +14,7 @@ const columns = ref([
   { field: "name", title: "Item Name" },
   { field: "unit", title: "Unit" },
   { field: "category", title: "Category" },
+  { field: "classification_formatted", title: "Classification" },
   { field: "current_stock", title: "Current Stock" },
 ]);
 
@@ -30,6 +31,7 @@ defineOptions({ layout: AdminLayout });
       :hasSearch="true"
       :rows="rows"
       :columns="columns"
+      :column-filter="true"
     >
       <template #name="{ data }">
         <Link class="hover:underline" :href="route('inventory.show', data.value.id)">{{
