@@ -39,13 +39,13 @@ const columns = ref([
   { field: "lot_number", title: "Lot No." },
   { field: "patient_visit", title: "Patient Transaction ID" },
   { field: "quantity", title: "Quantity" },
-  //   { field: "date_received", title: "Date Received" },
-  //   { field: "date_opened", title: "Date Opened" },
-  //   { field: "expiration_date", title: "Expiration" },
+    { field: "date_received", title: "Date Received" },
+    { field: "date_opened", title: "Date Opened" },
+    { field: "expiration_date", title: "Expiration" },
   { field: "notes", title: "Notes" },
   { field: "transaction_type", title: "Type" },
   { field: "stock", title: "Stock" },
-  { field: "created_at", title: "Date" },
+  { field: "created_at_formatted", title: "Date" },
 ]);
 
 const rows = ref(props.transactions.data);

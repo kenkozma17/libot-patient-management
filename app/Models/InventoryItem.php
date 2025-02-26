@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
+use Carbon\Carbon;
 
 class InventoryItem extends Model
 {
@@ -23,8 +24,12 @@ class InventoryItem extends Model
 
     protected $appends = [
         'current_stock',
-        'classification_formatted'
+        'classification_formatted',
     ];
+
+    public function transactions() {
+        return $this->hasMany(InventoryTransaction::class);
+    }
 
     public function invoiceItems()
     {

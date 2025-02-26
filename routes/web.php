@@ -6,6 +6,7 @@ use App\Http\Controllers\InventoryCategoryController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LabTestController;
 use App\Http\Controllers\NotificationsController;
+use App\Notifications\ExpirationNotice;
 use App\Notifications\LowInventory;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -14,6 +15,7 @@ use App\Http\Controllers\PatientController;
 use App\Http\Controllers\PatientVisitController;
 use App\Models\InventoryItem;
 use App\Models\Invoice;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -33,6 +35,34 @@ Route::middleware([
 ])->group(function () {
 
     Route::get('/', function () {
+        // Check for expiration notice
+        $inventoryItems = InventoryItem::where('days_before_expiration_limit', '>', 0)
+            ->with(['transactions'])
+            ->get();
+        foreach($inventoryItems as $item) {
+            $today = Carbon\Carbon::now();
+
+            foreach($item->transactions as $transaction) {
+                $expirationDate = Carbon\Carbon::parse($transaction->expiration_date);
+                $isTodayBeforeExpiration = $today->lessThanOrEqualTo($expirationDate);
+                $isDiffInDaysBeforeExpiration = $today->diffInDays($expirationDate) <= $item->days_before_expiration_limit;
+                $checkedExpirationToday = $today->isSameDay($item->expiry_date_check);
+
+                // This is null for some reason.
+                // dd($item->expiry_date_check);
+
+                if($isTodayBeforeExpiration) {
+                    // dd($checkedExpirationToday);
+                    if($isDiffInDaysBeforeExpiration && $checkedExpirationToday === false) {
+                        // $item->notify(new ExpirationNotice($item));
+
+                    }
+                }
+            }
+            $item->update(['expiry_date_check' => Carbon\Carbon::now()]);
+            $item->save();
+        }
+
         return Inertia::render('Home');
     });
 

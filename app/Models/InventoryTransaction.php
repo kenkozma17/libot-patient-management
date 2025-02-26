@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class InventoryTransaction extends Model
 {
@@ -18,8 +19,16 @@ class InventoryTransaction extends Model
         'transaction_type',
         'notes',
         'inventory_item_id',
-        'patient_visit_id'
+        'patient_visit_id',
     ];
+
+    protected $appends = [
+        'created_at_formatted'
+    ];
+
+    public function getCreatedAtFormattedAttribute($value) {
+        return Carbon::parse($value)->format('Y-m-d');
+    }
 
     public function inventory_item() {
         return $this->belongsTo(InventoryItem::class);
