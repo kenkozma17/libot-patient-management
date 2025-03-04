@@ -7,10 +7,11 @@ defineOptions({ layout: AdminLayout });
 const props = defineProps({
   item: Object,
   transactions: Object,
+  itemLotNumbers: Array,
 });
 </script>
 <template>
   <AdminContentWrapper>
-    <InventoryItemListing :transactions="transactions" :item="item" />
+    <InventoryItemListing :transactions="transactions" :item="item" :item-lot-numbers="itemLotNumbers" />
   </AdminContentWrapper>
 </template>

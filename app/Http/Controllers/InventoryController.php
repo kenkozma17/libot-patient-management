@@ -73,9 +73,17 @@ class InventoryController extends Controller
             ->paginate(config('pagination.default'))
             ->withQueryString();
 
+        $itemLotNumbers = InventoryTransaction::where('inventory_item_id', $id)
+            ->whereNotNull('lot_number')
+            ->orderBy('lot_number', 'asc')
+            ->pluck('lot_number')
+            ->unique()
+            ->toArray();
+
         return Inertia::render('Inventory/Show', props: [
             'item' => $item,
-            'transactions' => $inventoryTransactions
+            'transactions' => $inventoryTransactions,
+            'itemLotNumbers' => $itemLotNumbers,
         ]);
     }
 

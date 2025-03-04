@@ -40,6 +40,7 @@ class InventoryTransactionStoreRequest extends FormRequest
                 'transaction_type' => 'required',
                 'notes' => 'nullable|string|max:250',
                 'inventory_item_id' => 'required',
+                'lot_number' => 'required|string'
             ];
         }
 

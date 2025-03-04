@@ -14,6 +14,7 @@ const $toast = useToast({ position: "top-right" });
 const props = defineProps({
   item: Object,
   transactions: Object,
+  itemLotNumbers: Array,
 });
 
 const showForm = ref(false);
@@ -39,9 +40,9 @@ const columns = ref([
   { field: "lot_number", title: "Lot No." },
   { field: "patient_visit", title: "Patient Transaction ID" },
   { field: "quantity", title: "Quantity" },
-    { field: "date_received", title: "Date Received" },
-    { field: "date_opened", title: "Date Opened" },
-    { field: "expiration_date", title: "Expiration" },
+  { field: "date_received", title: "Date Received" },
+  { field: "date_opened", title: "Date Opened" },
+  { field: "expiration_date", title: "Expiration" },
   { field: "notes", title: "Notes" },
   { field: "transaction_type", title: "Type" },
   { field: "stock", title: "Stock" },
@@ -140,7 +141,7 @@ const rows = ref(props.transactions.data);
         class="border-black border-t border-b border-opacity-20 md:mt-[2rem] mt-[1rem]"
         v-if="showForm"
       >
-        <InventoryTransactionForm :item="item" :transaction-type="transactionType" />
+        <InventoryTransactionForm :item="item" :transaction-type="transactionType" :item-lot-numbers="itemLotNumbers" />
       </div>
 
       <DataTable class="mt-2.5" :rows="rows" :columns="columns">

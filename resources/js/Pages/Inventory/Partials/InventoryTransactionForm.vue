@@ -5,6 +5,7 @@ import InputLabel from "@/Components/Forms/InputLabel.vue";
 import InputError from "@/Components/Forms/InputError.vue";
 import TwoColumnWrapper from "@/Components/Forms/TwoColumnWrapper.vue";
 import PrimaryButton from "@/Components/Forms/PrimaryButton.vue";
+import SelectInput from "@/Components/Forms/SelectInput.vue";
 import Loader from "@/Components/Forms/Loader.vue";
 import ButtonWrapper from "@/Components/Forms/ButtonWrapper.vue";
 import { useToast } from "vue-toast-notification";
@@ -14,6 +15,7 @@ const $toast = useToast({ position: "top-right" });
 const props = defineProps({
   item: Object,
   transactionType: String,
+  itemLotNumbers: Array,
 });
 
 const isIncrease = computed(() => {
@@ -110,6 +112,23 @@ const AddTransaction = () => {
             <TextInput v-model="form.notes" />
             <InputError :message="form.errors.notes" class="mt-1.5" />
           </template>
+        </TwoColumnWrapper>
+
+        <TwoColumnWrapper>
+            <template v-slot:col1>
+                <InputLabel for="lot_number" value="Lot Number" />
+                <SelectInput v-model="form.lot_number" required>
+                    <option value="">Select Lot Number</option>
+                    <option
+                      v-for="lot in props.itemLotNumbers"
+                      :key="lot"
+                      :value="lot"
+                    >
+                      {{ lot }}
+                    </option>
+                  </SelectInput>
+                <InputError :message="form.errors.lot_number" class="mt-1.5" />
+            </template>
         </TwoColumnWrapper>
       </template>
 
