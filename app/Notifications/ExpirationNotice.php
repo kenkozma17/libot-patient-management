@@ -15,9 +15,13 @@ class ExpirationNotice extends Notification
      * Create a new notification instance.
      */
     protected $inventoryItem;
-    public function __construct($inventoryItem)
+    protected $isTodayBeforeExpiration;
+    protected $lotNumber;
+    public function __construct($inventoryItem, $lotNumber, $isTodayBeforeExpiration)
     {
         $this->inventoryItem = $inventoryItem;
+        $this->isTodayBeforeExpiration = $isTodayBeforeExpiration;
+        $this->lotNumber = $lotNumber;
     }
 
     /**
@@ -48,9 +52,16 @@ class ExpirationNotice extends Notification
      */
     public function toArray(object $notifiable): array
     {
-        return [
-            'type' => 'Expiration Notice Alert',
-            'message' => $this->inventoryItem->name . ' expiration date is less than ' . $this->inventoryItem->days_before_expiration_limit . ' days away.'
-        ];
+        $notification = ['type' => 'Expiration Notice Alert', 'message' => ''];
+
+        if($this->isTodayBeforeExpiration) {
+            // To Expire
+            $notification['message'] = $this->inventoryItem->name . ' expiration date is less than '
+                . $this->inventoryItem->days_before_expiration_limit . ' days away. - Lot Number: ' . $this->lotNumber;
+        } else {
+            // Past Expiration
+            $notification['message'] = $this->inventoryItem->name . ' is past the expiration date. - Lot Number: ' . $this->lotNumber;
+        }
+        return $notification;
     }
 }

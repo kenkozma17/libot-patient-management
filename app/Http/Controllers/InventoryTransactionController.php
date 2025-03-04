@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Requests\InventoryTransactionStoreRequest;
 use App\Models\InventoryTransaction;
 use App\Models\InventoryItem;
+use App\Notifications\ExpirationNotice;
 use App\Notifications\LowInventory;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class InventoryTransactionController extends Controller
 {
@@ -48,7 +50,7 @@ class InventoryTransactionController extends Controller
         }
         $transaction->save();
 
-        // Create notification if low stock level is met
+        # Create notification if low stock level is met
         if($newStock <= $item->low_stock_limit) {
             $item->notify(new LowInventory($item));
         }

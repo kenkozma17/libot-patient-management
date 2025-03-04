@@ -19,7 +19,8 @@ class InventoryItem extends Model
         'unit',
         'low_stock_limit',
         'days_before_expiration_limit',
-        'classification'
+        'classification',
+        'expiry_check_date'
     ];
 
     protected $appends = [
