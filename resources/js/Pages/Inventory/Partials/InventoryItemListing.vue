@@ -1,33 +1,74 @@
 <script setup>
-import LabelAndValue from "@/Components/Patients/LabelAndValue.vue";
 import PrimaryButton from "@/Components/Forms/PrimaryButton.vue";
-import { Link, useForm } from "@inertiajs/vue3";
-import { ref } from "vue";
+import { Link, useForm, router } from "@inertiajs/vue3";
+import { ref, watch } from "vue";
 import { useToast } from "vue-toast-notification";
 import InventoryTransactionForm from "./InventoryTransactionForm.vue";
 import TitleAndButtonsWrapper from "@/Components/Partials/TitleAndButtonsWrapper.vue";
 import DataTable from "@/Components/Data/DataTable.vue";
-import DangerButton from "@/Components/DangerButton.vue";
-
+import dayjs from "dayjs";
+import { debounce } from 'lodash';
 const $toast = useToast({ position: "top-right" });
 
+/* Props Definitions */
 const props = defineProps({
   item: Object,
   transactions: Object,
-  itemLotNumbers: Array,
+  itemLotNumbers: Object,
 });
 
+/**
+ * Data Definitions
+*/
+
+/* DataTable: Pagination and Filters */
+const urlParams = new URLSearchParams(window.location.search);
+const currentPage = Number(urlParams.get("page")) || 1;
+const filters = JSON.parse(urlParams.get("column_filters"));
+
+/* DataTable Data: Transactions Definitions (For DataTable) */
+const transactions = ref(props.transactions);
+
+/* DataTable Filtering: Return Filter Value by ID */
+const getFilter = (id) => filters?.find((filter) => filter.field === id)?.value;
+
+/* DataTable: Field Columns */
+const columns = ref([
+  { field: "id", title: "ID", value: getFilter("id") },
+  { field: "lot_number", title: "Lot No.", value: getFilter("lot_number") },
+  { field: "quantity", title: "Quantity", value: getFilter("quantity") },
+  { field: "date_received", title: "Date Received", value: getFilter("date_received") },
+  { field: "date_opened", title: "Date Opened", value: getFilter("date_opened") },
+  { field: "expiration_date", title: "Expiration", value: getFilter("expiration_date") },
+  { field: "stock", title: "Stock", filter: false },
+  { field: "created_at", title: "Date", value: getFilter("created_at") },
+]);
+
+/* Transaction Form: Increase or Decrease Toggle Definitions */
 const showForm = ref(false);
 const transactionType = ref("INCREASE");
 
+/**
+ *  Methods
+ */
+
+/* Transaction Form: Transaction Form Toggle */
 const toggleTransactionForm = (type) => {
   showForm.value = !showForm.value;
   transactionType.value = type;
 };
 
-const form = useForm({});
+/* Transaction Form: Refresh transactions when new ones are added */
+const refreshItems = () => {
+  router.visit(route("inventory.show", props.item.id), {
+    only: ["transactions"],
+  });
+};
+
+/* Inventory Item: Delete Inventory Item */
 const deleteItem = () => {
   if (confirm("Are you sure you want to delete?")) {
+    const form = useForm({});
     form.delete(route("inventory.destroy", props.item.id), {
       errorBag: "deleteItem",
       preserveScroll: true,
@@ -36,20 +77,26 @@ const deleteItem = () => {
   }
 };
 
-const columns = ref([
-  { field: "lot_number", title: "Lot No." },
-  { field: "patient_visit", title: "Patient Transaction ID" },
-  { field: "quantity", title: "Quantity" },
-  { field: "date_received", title: "Date Received" },
-  { field: "date_opened", title: "Date Opened" },
-  { field: "expiration_date", title: "Expiration" },
-  { field: "notes", title: "Notes" },
-  { field: "transaction_type", title: "Type" },
-  { field: "stock", title: "Stock" },
-  { field: "created_at_formatted", title: "Date" },
-]);
+/* DataTable: Fetch Updated Data upon Filtering or Page Change */
+const updateRows = debounce((event) => {
+  const column_filters = JSON.stringify(event.column_filters);
+  router.get(
+    route("inventory.show", props.item.id),
+    { page: event.current_page, column_filters },
+    {
+      preserveScroll: true,
+      preserveState: true,
+    }
+  );
+}, 500);
 
-const rows = ref(props.transactions.data);
+/* DataTable: Update Transactions on Table Change */
+watch(
+  () => props.transactions,
+  (newData) => {
+    transactions.value = newData;
+  }
+);
 </script>
 <template>
   <div>
@@ -141,15 +188,29 @@ const rows = ref(props.transactions.data);
         class="border-black border-t border-b border-opacity-20 md:mt-[2rem] mt-[1rem]"
         v-if="showForm"
       >
-        <InventoryTransactionForm :item="item" :transaction-type="transactionType" :item-lot-numbers="itemLotNumbers" />
+        <InventoryTransactionForm
+          :item="item"
+          :transaction-type="transactionType"
+          :item-lot-numbers="itemLotNumbers"
+          @form-submitted="refreshItems"
+        />
       </div>
 
-      <DataTable class="mt-2.5" :rows="rows" :columns="columns">
-        <template #lot_number="{ data }">
+      <DataTable
+        class="mt-2.5"
+        :rows="transactions.data"
+        :columns="columns"
+        :total-rows="transactions.total"
+        :current-page="currentPage"
+        :page-size="transactions.per_page"
+        :column-filter="true"
+        :page-change-fn="updateRows"
+      >
+        <template #id="{ data }">
           <Link
             class="hover:underline"
             :href="route('inventory-transactions.show', data.value.id)"
-            >{{ data.value.lot_number }}</Link
+            >{{ data.value.id }}</Link
           >
         </template>
         <template #quantity="{ data }">
@@ -170,6 +231,10 @@ const rows = ref(props.transactions.data);
             :href="route('patient-visits.show', data.value.patient_visit_id)"
             >{{ data.value.patient_visit_id }}</Link
           >
+        </template>
+
+        <template #created_at="{ data }">
+          <span>{{ dayjs(data.value.created_at).format("YYYY-MM-DD") }}</span>
         </template>
       </DataTable>
     </div>

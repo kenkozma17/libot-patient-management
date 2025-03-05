@@ -7,7 +7,7 @@ defineOptions({ layout: AdminLayout });
 const props = defineProps({
   item: Object,
   transactions: Object,
-  itemLotNumbers: Array,
+  itemLotNumbers: Object,
 });
 </script>
 <template>

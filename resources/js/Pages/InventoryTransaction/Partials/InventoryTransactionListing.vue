@@ -50,19 +50,57 @@ const props = defineProps({
         <div class="w-full">
           <TitleAndButtonsWrapper>
             <h2 class="leading-none md:text-[1.5rem] text-[1.2rem]">
-              {{ transaction.lot_number }}
+              {{ transaction.id }} - {{ transaction.transaction_type }}
             </h2>
             <div>
-              <PrimaryButton size="small"
-                ><Link :href="route('inventory-transactions.edit', transaction.id)"
+              <!-- <PrimaryButton size="small"
+                >
+                <Link :href="route('inventory-transactions.edit', transaction.id)"
                   >Edit Item</Link
                 ></PrimaryButton
               >
               <PrimaryButton @click="deleteItem" size="small" class="ml-2" color="red"
                 >Delete</PrimaryButton
-              >
+              > -->
             </div>
           </TitleAndButtonsWrapper>
+          <div
+            class="grid lg:grid-cols-3 md:grid-cols-2 md:gap-x-6 md:gap-y-4 gap-3 md:mt-4 mt-6"
+          >
+            <LabelAndValue
+              label="Inventory Item"
+              v-if="transaction.inventory_item.name"
+              :value="transaction.inventory_item.name"
+            />
+
+            <LabelAndValue
+              label="Lot Number"
+              v-if="transaction.lot_number"
+              :value="transaction.lot_number"
+            />
+
+            <LabelAndValue
+              label="Quantity"
+              v-if="transaction.quantity"
+              :value="transaction.quantity"
+            />
+
+            <LabelAndValue
+              label="Stock"
+              v-if="transaction.stock"
+              :value="transaction.stock"
+            />
+
+            <LabelAndValue
+              label="Transaction Date"
+              :value="transaction.created_at_formatted"
+            />
+
+            <LabelAndValue
+              label="Notes"
+              :value="transaction.notes"
+            />
+          </div>
         </div>
       </div>
     </div>

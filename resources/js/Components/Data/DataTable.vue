@@ -16,6 +16,22 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  totalRows: {
+    type: Number,
+    default: 0,
+  },
+  pageChangeFn: {
+    type: Function,
+    default: () => {}
+  },
+  currentPage: {
+    type: Number,
+    default: 1,
+  },
+  pageSize: {
+    type: Number,
+    default: 1,
+  }
 });
 
 const s = ref(props.search);
@@ -25,7 +41,16 @@ const s = ref(props.search);
     <form v-if="hasSearch" class="md:mb-4 mb-3 md:w-1/2 w-full">
       <TextInput name="search" placeholder="Search" v-model="s" />
     </form>
-    <vue3-datatable :rows="rows" :columns="columns" :columnFilter="columnFilter">
+    <vue3-datatable
+      :rows="rows"
+      :columns="columns"
+      :columnFilter="columnFilter"
+      :totalRows="totalRows"
+      :page="currentPage"
+      @change="pageChangeFn"
+      :isServerMode="true"
+      :pageSize="pageSize"
+    >
       <template v-for="(slotFn, slotName) in slots" v-slot:[slotName]="data">
         <slot :name="slotName" :data="data"></slot>
       </template>

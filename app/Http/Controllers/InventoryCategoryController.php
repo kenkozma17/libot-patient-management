@@ -15,8 +15,9 @@ class InventoryCategoryController extends Controller
      */
     public function index()
     {
-        $categories = InventoryItemCategory::orderByDesc('name')
-            ->paginate(config('pagination.default'));
+        $categories = InventoryItemCategory::orderBy('name', 'asc')
+        ->paginate(config('pagination.default'))
+        ->withQueryString();
 
         return Inertia::render('InventoryCategory/InventoryCategoryList', [
             'categories' => $categories,

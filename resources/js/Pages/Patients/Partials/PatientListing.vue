@@ -2,11 +2,13 @@
 import Profile from "@/Components/Icons/Profile.vue";
 import LabelAndValue from "@/Components/Patients/LabelAndValue.vue";
 import PrimaryButton from "@/Components/Forms/PrimaryButton.vue";
-import { Link, useForm } from "@inertiajs/vue3";
+import { Link, useForm, router } from "@inertiajs/vue3";
 import { useToast } from "vue-toast-notification";
 import TitleAndButtonsWrapper from "@/Components/Partials/TitleAndButtonsWrapper.vue";
 import DataTable from "@/Components/Data/DataTable.vue";
-import { ref } from "vue";
+import { ref, watch } from "vue";
+import { debounce } from "lodash"
+import dayjs from "dayjs";
 
 const $toast = useToast({ position: "top-right" });
 
@@ -15,21 +17,29 @@ const props = defineProps({
   visits: Object,
 });
 
+/* DataTable: Pagination and Filters */
+const urlParams = new URLSearchParams(window.location.search);
+const currentPage = Number(urlParams.get("page")) || 1;
+const filters = JSON.parse(urlParams.get("column_filters"));
+
+/* DataTable Data: Transactions Definitions (For DataTable) */
+const visits = ref(props.visits);
+
+/* DataTable Filtering: Return Filter Value by ID */
+const getFilter = (id) => filters?.find((filter) => filter.field === id)?.value;
+
 const columns = ref([
-  { field: "patient.full_name", title: "Patient" },
-  { field: "diagnosis", title: "Diagnosis" },
-  { field: "requesting_physician", title: "Requesting Physician" },
-  { field: "patient_type", title: "Type" },
-  { field: "patient_status", title: "Status" },
-  { field: "visit_date_formatted", title: "Visit Date" },
+  { field: "patient.full_name", title: "Patient", filter: false, },
+  { field: "diagnosis", title: "Diagnosis", value: getFilter('diagnosis') },
+  { field: "requesting_physician", title: "Requesting Physician", value: getFilter('requesting_physician') },
+  { field: "patient_type", title: "Type", value: getFilter('patient_type') },
+  { field: "patient_status", title: "Status", value: getFilter('patient_status') },
+  { field: "visit_date", title: "Visit Date", value: getFilter('visit_date') },
 ]);
-
-const rows = ref(props.visits.data);
-
-const form = useForm({});
 
 const deletePatient = () => {
   if (confirm("Are you sure you want to delete?")) {
+    const form = useForm({});
     form.delete(route("patients.destroy", props.patient.id), {
       errorBag: "deletePatient",
       preserveScroll: true,
@@ -37,6 +47,27 @@ const deletePatient = () => {
     });
   }
 };
+
+/* DataTable: Fetch Updated Data upon Filtering or Page Change */
+const updateRows = debounce((event) => {
+  const column_filters = JSON.stringify(event.column_filters);
+  router.get(
+    route("patients.show", props.patient.id),
+    { page: event.current_page, column_filters },
+    {
+      preserveScroll: true,
+      preserveState: true,
+    }
+  );
+}, 500);
+
+/* DataTable: Update Data on Table Change */
+watch(
+  () => props.visits,
+  (newData) => {
+    visits.value = newData;
+  }
+);
 </script>
 <template>
   <div>
@@ -98,7 +129,16 @@ const deletePatient = () => {
         </Link>
       </TitleAndButtonsWrapper>
 
-      <DataTable class="mt-2.5" :rows="rows" :columns="columns">
+      <DataTable
+        class="mt-2.5"
+        :rows="visits.data"
+        :columns="columns"
+        :total-rows="visits.total"
+        :current-page="currentPage"
+        :page-size="visits.per_page"
+        :column-filter="true"
+        :page-change-fn="updateRows"
+      >
         <template #patient.full_name="{ data }">
           <Link
             class="hover:underline"
@@ -106,6 +146,9 @@ const deletePatient = () => {
             >{{ data.value.patient.full_name }}</Link
           >
         </template>
+        <template #visit_date="{ data }">
+            <span>{{ dayjs(data.value.visit_date).format('YYYY-MM-DD') }}</span>
+          </template>
       </DataTable>
     </div>
   </div>

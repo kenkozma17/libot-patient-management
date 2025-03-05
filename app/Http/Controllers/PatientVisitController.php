@@ -37,9 +37,26 @@ class PatientVisitController extends Controller
                 }
             }
         )
-        ->orderBy('created_at', 'desc')
-        ->paginate(config('pagination.default'))
-        ->withQueryString();
+        ->orderBy('created_at', 'desc');
+
+        # Filtering
+        $columnFilters = $request->column_filters ? json_decode($request->column_filters, true) : [];
+        if($columnFilters) {
+            foreach ($columnFilters as $column) {
+                if (!empty($column['value'])) {
+                    if($column['field'] === 'patient.last_name') {
+                        $visits
+                            ->whereRelation('patient', 'last_name', 'like', "%{$column['value']}%");
+                    } else {
+                        $visits
+                            ->where($column['field'], 'like', "%{$column['value']}%");
+                    }
+                }
+            }
+        }
+        $visits = $visits
+            ->paginate(config('pagination.default'))
+            ->withQueryString();
 
         return Inertia::render('PatientVisits/PatientVisitsList', [
             'visits' => $visits,

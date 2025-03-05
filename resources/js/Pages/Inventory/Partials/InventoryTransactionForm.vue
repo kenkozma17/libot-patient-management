@@ -7,7 +7,6 @@ import TwoColumnWrapper from "@/Components/Forms/TwoColumnWrapper.vue";
 import PrimaryButton from "@/Components/Forms/PrimaryButton.vue";
 import SelectInput from "@/Components/Forms/SelectInput.vue";
 import Loader from "@/Components/Forms/Loader.vue";
-import ButtonWrapper from "@/Components/Forms/ButtonWrapper.vue";
 import { useToast } from "vue-toast-notification";
 import { computed } from "vue";
 const $toast = useToast({ position: "top-right" });
@@ -15,7 +14,7 @@ const $toast = useToast({ position: "top-right" });
 const props = defineProps({
   item: Object,
   transactionType: String,
-  itemLotNumbers: Array,
+  itemLotNumbers: Object,
 });
 
 const isIncrease = computed(() => {
@@ -36,11 +35,14 @@ const form = useForm({
   notes: props.item.notes,
 });
 
+const emit = defineEmits(["form-submitted"]);
+
 const AddTransaction = () => {
   form.post(route("inventory-transactions.store"), {
     errorBag: "AddTransaction",
     preserveScroll: true,
     onSuccess: () => {
+      emit("form-submitted");
       $toast.success("Inventory Transaction Created Successfully!");
       form.reset();
     },

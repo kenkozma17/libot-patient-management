@@ -27,9 +27,26 @@ class LabTestController extends Controller
             }]
         ])
         ->with('category')
-        ->orderBy('name', 'asc')
-        ->paginate(config('pagination.default'))
-        ->withQueryString();
+        ->orderBy('name', 'asc');
+
+        # Filtering
+        $columnFilters = $request->column_filters ? json_decode($request->column_filters, true) : [];
+        if($columnFilters) {
+            foreach ($columnFilters as $column) {
+                if (!empty($column['value'])) {
+                    if($column['field'] === 'category') {
+                        $labTests
+                            ->whereRelation('category', 'name', 'like', "%{$column['value']}%");
+                    } else {
+                        $labTests
+                            ->where($column['field'], 'like', "%{$column['value']}%");
+                    }
+                }
+            }
+        }
+        $labTests = $labTests
+            ->paginate(config('pagination.default'))
+            ->withQueryString();
 
         return Inertia::render('LabTests/LabTestsList', [
             'lab_tests' => $labTests,

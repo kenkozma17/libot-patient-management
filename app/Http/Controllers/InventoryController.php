@@ -26,9 +26,27 @@ class InventoryController extends Controller
             }]
         ])
         ->with('category')
-        ->orderBy('name', 'asc')
-        ->paginate(config('pagination.default'))
-        ->withQueryString();
+        ->orderBy('name', 'asc');
+
+        # Filtering
+        $columnFilters = $request->column_filters ? json_decode($request->column_filters, true) : [];
+        if($columnFilters) {
+            foreach ($columnFilters as $column) {
+                if (!empty($column['value'])) {
+                    if($column['field'] === 'category') {
+                        $inventoryItems
+                            ->whereRelation('category', 'name', 'like', "%{$column['value']}%");
+                    } else {
+                        $inventoryItems
+                            ->where($column['field'], 'like', "%{$column['value']}%");
+                    }
+                }
+            }
+        }
+
+        $inventoryItems = $inventoryItems
+            ->paginate(config('pagination.default'))
+            ->withQueryString();
 
         return Inertia::render('Inventory/InventoryList', [
             'inventory_items' => $inventoryItems,
@@ -63,13 +81,25 @@ class InventoryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request, string $id)
     {
         $item = InventoryItem::where('id', $id)->with('category')->first();
         $inventoryTransactions = InventoryTransaction::
             where('inventory_item_id', $id)
             ->with('patient_visit')
-            ->orderBy('created_at', 'desc')
+            ->orderBy('created_at', 'desc');
+
+        # Filtering
+        $columnFilters = $request->column_filters ? json_decode($request->column_filters, true) : [];
+        if($columnFilters) {
+            foreach ($columnFilters as $column) {
+                if (!empty($column['value'])) {
+                    $inventoryTransactions
+                        ->where($column['field'], 'like', "%{$column['value']}%");
+                }
+            }
+        }
+        $inventoryTransactions = $inventoryTransactions
             ->paginate(config('pagination.default'))
             ->withQueryString();
 

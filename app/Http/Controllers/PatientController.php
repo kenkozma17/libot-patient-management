@@ -28,9 +28,22 @@ class PatientController extends Controller
                 }
             }]
         ])
-        ->orderBy('last_name', 'asc')
-        ->paginate(config('pagination.default'))
-        ->withQueryString();
+        ->orderBy('last_name', 'asc');
+
+        # Filtering
+        $columnFilters = $request->column_filters ? json_decode($request->column_filters, true) : [];
+        if($columnFilters) {
+            foreach ($columnFilters as $column) {
+                if (!empty($column['value'])) {
+                    $patients
+                        ->where($column['field'], 'like', "%{$column['value']}%");
+                }
+            }
+        }
+        $patients = $patients
+            ->paginate(config('pagination.default'))
+            ->withQueryString();
+
         return Inertia::render('Patients/PatientsList', [
             'patients' => $patients,
             'search' => $search,
@@ -62,14 +75,26 @@ class PatientController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request, string $id)
     {
         $patient = Patient::find($id);
         $visits = PatientVisit::where('patient_id', $id)
             ->with('patient')
-            ->orderBy('created_at', 'desc')
-            ->paginate(config('pagination.default'))
-            ->withQueryString();
+            ->orderBy('created_at', 'desc');
+
+        # Filtering
+        $columnFilters = $request->column_filters ? json_decode($request->column_filters, true) : [];
+        if($columnFilters) {
+            foreach ($columnFilters as $column) {
+                if (!empty($column['value'])) {
+                    $visits
+                        ->where($column['field'], 'like', "%{$column['value']}%");
+                }
+            }
+        }
+            $visits = $visits
+                ->paginate(config('pagination.default'))
+                ->withQueryString();
         return Inertia::render('Patients/Show', props: [
             'patient' => $patient,
             'visits' => $visits
