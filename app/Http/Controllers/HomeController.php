@@ -23,7 +23,7 @@ class HomeController extends Controller
         $inventoryItems = InventoryItem::where('expiry_check_date', '!=', Carbon::today())
         ->where('days_before_expiration_limit', '>', 0)
         ->with(['transactions' => function($query) {
-            $query->whereNotNull('expiration_date');
+            $query->whereNotNull('expiration_date')->where('is_archived', '=', 0);
         }])->get();
 
         foreach($inventoryItems as $item) {

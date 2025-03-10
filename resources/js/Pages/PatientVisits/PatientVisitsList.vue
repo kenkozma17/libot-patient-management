@@ -5,6 +5,7 @@ import { ref, watch } from "vue";
 import DataTable from "@/Components/Data/DataTable.vue";
 import { Link, router } from "@inertiajs/vue3";
 import { debounce } from "lodash";
+import dayjs from "dayjs";
 
 const props = defineProps({
   visits: Object,
@@ -30,7 +31,7 @@ const columns = ref([
   { field: "requesting_physician", title: "Requesting Physician" },
   { field: "patient_type", title: "Type" },
   { field: "patient_status", title: "Status" },
-  { field: "visit_date_formatted", title: "Visit Date", filter: false, },
+  { field: "visit_date", title: "Visit Date", value: getFilter("vist_date") },
 ]);
 
 /* DataTable: Fetch Updated Data upon Filtering or Page Change */
@@ -77,6 +78,9 @@ defineOptions({ layout: AdminLayout });
           :href="route('patient-visits.show', data.value.id)"
           >{{ data.value.patient.last_name }}</Link
         >
+      </template>
+      <template #visit_date="{ data }">
+        <span>{{ dayjs(data.value.visit_date).format('YYYY-MM-DD')}}</span>
       </template>
     </DataTable>
   </AdminContentWrapper>

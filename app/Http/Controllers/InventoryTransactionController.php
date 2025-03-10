@@ -94,11 +94,43 @@ class InventoryTransactionController extends Controller
         //
     }
 
-    public function getLotListing($lotNumber) {
-        $lotTransactions = [];
+    public function archiveLot($lotNumber) {
+        $transaction = InventoryTransaction::where('lot_number', $lotNumber)
+            ->whereNotNull('date_opened')
+            ->whereNotNull('date_received')
+            ->first();
+
+        $transaction->update(['is_archived' => 1]);
+        $transaction->save();
+    }
+
+    public function getLotListing(Request $request, $lotNumber) {
+        $lotTransactions = InventoryTransaction::where('lot_number', $lotNumber)
+            ->orderBy('created_at', 'desc');
+
+            # Filtering
+        $columnFilters = $request->column_filters ? json_decode($request->column_filters, true) : [];
+        if($columnFilters) {
+            foreach ($columnFilters as $column) {
+                if (!empty($column['value'])) {
+                    $lotTransactions
+                        ->where($column['field'], 'like', "%{$column['value']}%");
+                }
+            }
+        }
+
+        $lotTransactions = $lotTransactions
+            ->paginate(config('pagination.default'))
+            ->withQueryString();
+
+        $primaryTransaction = InventoryTransaction::where('lot_number', $lotNumber)
+            ->whereNotNull('date_opened')
+            ->whereNotNull('date_received')
+            ->first();
 
         return Inertia::render('Lot/Show', props: [
             'lotTransactions' => $lotTransactions,
+            'primaryTransaction' => $primaryTransaction
         ]);
     }
 }

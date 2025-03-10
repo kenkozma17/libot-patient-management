@@ -54,7 +54,10 @@ Route::middleware([
     /** Inventory */
     Route::resource('inventory', InventoryController::class);
     Route::resource('inventory-transactions', InventoryTransactionController::class);
-    Route::get('inventory-transactions/lot/{lot-number}', [InventoryTransactionController::class, 'getLotListing']);
+    Route::get('inventory-transactions/lot/{lotNumber}', [InventoryTransactionController::class, 'getLotListing'])
+        ->name('inventory-transactions.lot-listing');
+    Route::post('inventory-transactions/lot/{lotNumber}', [InventoryTransactionController::class, 'archiveLot'])
+        ->name('inventory-transactions.archive-lot');
     Route::resource('inventory-categories', InventoryCategoryController::class);
 
     /** Invoices */

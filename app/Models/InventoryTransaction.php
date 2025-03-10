@@ -12,6 +12,7 @@ class InventoryTransaction extends Model
 
     protected $fillable = [
         'date_received',
+        'is_archived',
         'expiration_date',
         'lot_number',
         'quantity',
@@ -26,8 +27,8 @@ class InventoryTransaction extends Model
         'created_at_formatted'
     ];
 
-    public function getCreatedAtFormattedAttribute($value) {
-        return Carbon::parse($value)->format('Y-m-d');
+    public function getCreatedAtFormattedAttribute() {
+        return Carbon::parse($this->created_at)->format('Y-m-d');
     }
 
     public function inventory_item() {

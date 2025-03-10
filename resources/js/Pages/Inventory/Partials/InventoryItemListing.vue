@@ -7,7 +7,7 @@ import InventoryTransactionForm from "./InventoryTransactionForm.vue";
 import TitleAndButtonsWrapper from "@/Components/Partials/TitleAndButtonsWrapper.vue";
 import DataTable from "@/Components/Data/DataTable.vue";
 import dayjs from "dayjs";
-import { debounce } from 'lodash';
+import { debounce } from "lodash";
 const $toast = useToast({ position: "top-right" });
 
 /* Props Definitions */
@@ -19,7 +19,7 @@ const props = defineProps({
 
 /**
  * Data Definitions
-*/
+ */
 
 /* DataTable: Pagination and Filters */
 const urlParams = new URLSearchParams(window.location.search);
@@ -212,6 +212,15 @@ watch(
             :href="route('inventory-transactions.show', data.value.id)"
             >{{ data.value.id }}</Link
           >
+        </template>
+        <template #lot_number="{ data }">
+          <Link
+            v-if="data.value.lot_number"
+            class="hover:underline text-blue-600"
+            :href="route('inventory-transactions.lot-listing', data.value.lot_number)"
+            >{{ data.value.lot_number }}</Link
+          >
+          <span v-else>{{ data.value.lot_number }}</span>
         </template>
         <template #quantity="{ data }">
           <span

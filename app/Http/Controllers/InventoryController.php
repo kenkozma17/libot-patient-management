@@ -104,7 +104,8 @@ class InventoryController extends Controller
             ->withQueryString();
 
         $itemLotNumbers = InventoryTransaction::where('inventory_item_id', $id)
-            ->whereNotNull('lot_number')
+            ->whereNotNull(['lot_number', 'date_opened', 'date_received'])
+            ->where('is_archived', '=', 0)
             ->orderBy('lot_number', 'asc')
             ->pluck('lot_number')
             ->unique()
