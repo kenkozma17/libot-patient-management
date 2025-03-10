@@ -1,6 +1,7 @@
 <script setup>
 import { useForm } from "@inertiajs/vue3";
 import TextInput from "@/Components/Forms/TextInput.vue";
+import TextArea from "@/Components/Forms/TextArea.vue";
 import InputLabel from "@/Components/Forms/InputLabel.vue";
 import InputError from "@/Components/Forms/InputError.vue";
 import TwoColumnWrapper from "@/Components/Forms/TwoColumnWrapper.vue";
@@ -23,6 +24,7 @@ const props = defineProps({
 const form = useForm({
   patient_id: props.patient.id,
   requesting_physician: "",
+  diagnosis: "",
   visit_date: "",
   patient_age: String(props.patient.age),
   patient_type: "",
@@ -178,6 +180,15 @@ const addPatientVisit = () => {
           <InputLabel for="visit_date" value="Visit Date" />
           <TextInput type="date" v-model="form.visit_date" placeholder="Visit Date" />
           <InputError :message="form.errors.visit_date" class="mt-1.5" />
+        </template>
+      </TwoColumnWrapper>
+
+      <!-- Diagnosis -->
+      <TwoColumnWrapper>
+        <template v-slot:col1>
+          <InputLabel for="diagnosis" value="Diagnosis" />
+          <TextArea v-model="form.diagnosis" placeholder="" />
+          <InputError :message="form.errors.diagnosis" class="mt-1.5" />
         </template>
       </TwoColumnWrapper>
 

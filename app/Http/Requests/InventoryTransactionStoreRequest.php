@@ -27,7 +27,7 @@ class InventoryTransactionStoreRequest extends FormRequest
             $rules = [
                 'lot_number' => 'required|string|max:50',
                 'date_received' => 'required',
-                'expiration_date' => 'required',
+                'expiration_date' => 'nullable',
                 'quantity' => 'required|string',
                 'date_opened' => 'required',
                 'transaction_type' => 'required',

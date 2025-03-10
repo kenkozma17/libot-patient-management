@@ -13,7 +13,7 @@ class PatientVisit extends Model
     protected $fillable = [
         'patient_id',
         // 'invoice_id',
-        // 'diagnosis',
+        'diagnosis',
         'requesting_physician',
         'visit_date',
         'patient_age',

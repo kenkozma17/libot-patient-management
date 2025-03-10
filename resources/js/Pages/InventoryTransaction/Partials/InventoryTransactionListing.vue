@@ -97,6 +97,24 @@ const props = defineProps({
             />
 
             <LabelAndValue
+              label="Expiration Date"
+              v-if="transaction.expiration_date"
+              :value="transaction.expiration_date"
+            />
+
+            <LabelAndValue
+              label="Date Received"
+              v-if="transaction.date_received"
+              :value="transaction.date_received"
+            />
+
+            <LabelAndValue
+              label="Date Opened"
+              v-if="transaction.date_opened"
+              :value="transaction.date_opened"
+            />
+
+            <LabelAndValue
               label="Notes"
               :value="transaction.notes"
             />

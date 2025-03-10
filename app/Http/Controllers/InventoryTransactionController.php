@@ -93,4 +93,12 @@ class InventoryTransactionController extends Controller
     {
         //
     }
+
+    public function getLotListing($lotNumber) {
+        $lotTransactions = [];
+
+        return Inertia::render('Lot/Show', props: [
+            'lotTransactions' => $lotTransactions,
+        ]);
+    }
 }

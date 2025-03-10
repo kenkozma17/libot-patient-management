@@ -54,6 +54,7 @@ Route::middleware([
     /** Inventory */
     Route::resource('inventory', InventoryController::class);
     Route::resource('inventory-transactions', InventoryTransactionController::class);
+    Route::get('inventory-transactions/lot/{lot-number}', [InventoryTransactionController::class, 'getLotListing']);
     Route::resource('inventory-categories', InventoryCategoryController::class);
 
     /** Invoices */

@@ -24,7 +24,7 @@ class PatientVisitStoreRequest extends FormRequest
         $rules = [
             'patient_id' => 'required',
             // 'invoice_id' => 'required',
-            // 'diagnosis' => 'required',
+            'diagnosis' => 'nullable',
             'requesting_physician' => '',
             'visit_date' => 'required',
             'patient_age' => 'required|numeric',
