@@ -24,8 +24,8 @@ class HomeController extends Controller
     public function resetMemberCredits() {
         $currentYear = Carbon::now()->year;
 
-        $members = Patient::where('is_member', true)->get();
-        if($members) {
+        $members = Patient::where('is_member', '=', 1)->get();
+        if($members->isNotEmpty()) {
             if($members[0]->credit_reset_at != $currentYear) {
                 foreach($members as $member) {
                     $member->update(['credit_reset_at' => $currentYear, 'credits' => '5000']);
