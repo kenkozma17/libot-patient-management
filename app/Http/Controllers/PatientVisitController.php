@@ -37,7 +37,7 @@ class PatientVisitController extends Controller
                 }
             }
         )
-        ->orderBy('created_at', 'desc');
+        ->orderBy('visit_date', 'desc');
 
         # Filtering
         $columnFilters = $request->column_filters ? json_decode($request->column_filters, true) : [];
