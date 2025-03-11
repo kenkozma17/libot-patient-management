@@ -25,10 +25,12 @@ class HomeController extends Controller
         $currentYear = Carbon::now()->year;
 
         $members = Patient::where('is_member', true)->get();
-        if($members[0]->credit_reset_at != $currentYear) {
-            foreach($members as $member) {
-                $member->update(['credit_reset_at' => $currentYear, 'credits' => '5000']);
-                $member->save();
+        if($members) {
+            if($members[0]->credit_reset_at != $currentYear) {
+                foreach($members as $member) {
+                    $member->update(['credit_reset_at' => $currentYear, 'credits' => '5000']);
+                    $member->save();
+                }
             }
         }
     }
