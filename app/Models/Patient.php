@@ -26,7 +26,9 @@ class Patient extends Model
         'phone',
         'email',
         'country',
-        'is_member'
+        'is_member',
+        'credit_reset_at',
+        'credits'
     ];
 
     protected $appends = [

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\InventoryItem;
+use App\Models\Patient;
 use App\Notifications\ExpirationNotice;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -16,7 +17,20 @@ class HomeController extends Controller
     public function index()
     {
         $this->checkForExpiration();
+        $this->resetMemberCredits();
         return Inertia::render('Home');
+    }
+
+    public function resetMemberCredits() {
+        $currentYear = Carbon::now()->year;
+
+        $members = Patient::where('is_member', true)->get();
+        if($members[0]->credit_reset_at != $currentYear) {
+            foreach($members as $member) {
+                $member->update(['credit_reset_at' => $currentYear, 'credits' => '5000']);
+                $member->save();
+            }
+        }
     }
 
     public function checkForExpiration () {

@@ -89,11 +89,6 @@ const AddTransaction = () => {
 
         <!-- Date Opened and Notes -->
         <TwoColumnWrapper>
-          <template v-slot:col1>
-            <InputLabel for="date_opened" value="Date Opened" />
-            <TextInput autofocus type="date" v-model="form.date_opened" />
-            <InputError :message="form.errors.date_opened" class="mt-1.5" />
-          </template>
           <template v-slot:col2>
             <InputLabel for="notes" value="Notes" />
             <TextInput v-model="form.notes" />
@@ -131,6 +126,11 @@ const AddTransaction = () => {
                   </SelectInput>
                 <InputError :message="form.errors.lot_number" class="mt-1.5" />
             </template>
+            <template v-slot:col2>
+                <InputLabel for="date_opened" value="Date Opened" />
+                <TextInput autofocus type="date" v-model="form.date_opened" />
+                <InputError :message="form.errors.date_opened" class="mt-1.5" />
+              </template>
         </TwoColumnWrapper>
       </template>
 

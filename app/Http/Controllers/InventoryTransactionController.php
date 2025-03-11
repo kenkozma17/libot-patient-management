@@ -96,7 +96,6 @@ class InventoryTransactionController extends Controller
 
     public function archiveLot($lotNumber) {
         $transaction = InventoryTransaction::where('lot_number', $lotNumber)
-            ->whereNotNull('date_opened')
             ->whereNotNull('date_received')
             ->first();
 
@@ -124,7 +123,6 @@ class InventoryTransactionController extends Controller
             ->withQueryString();
 
         $primaryTransaction = InventoryTransaction::where('lot_number', $lotNumber)
-            ->whereNotNull('date_opened')
             ->whereNotNull('date_received')
             ->first();
 

@@ -29,7 +29,6 @@ class InventoryTransactionStoreRequest extends FormRequest
                 'date_received' => 'required',
                 'expiration_date' => 'nullable',
                 'quantity' => 'required|string',
-                'date_opened' => 'required',
                 'transaction_type' => 'required',
                 'notes' => 'nullable|string|max:250',
                 'inventory_item_id' => 'required',
@@ -40,7 +39,8 @@ class InventoryTransactionStoreRequest extends FormRequest
                 'transaction_type' => 'required',
                 'notes' => 'nullable|string|max:250',
                 'inventory_item_id' => 'required',
-                'lot_number' => 'required|string'
+                'lot_number' => 'required|string',
+                'date_opened' => 'nullable|date',
             ];
         }
 
