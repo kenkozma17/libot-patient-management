@@ -88,6 +88,8 @@ class PatientVisitController extends Controller
      */
     public function store(PatientVisitStoreRequest $request)
     {
+        $patient = Patient::find($request->patient_id);
+        $newBalance = $patient->credits - $request->credits_applied;
 
         # Create new invoice
         $invoice = new Invoice();
@@ -143,6 +145,12 @@ class PatientVisitController extends Controller
             'credits_applied' => $request->credits_applied
         ]);
         $invoice->save();
+
+        # Subtract credits applied from credits of patient
+        $patient = Patient::find($request->patient_id);
+        $newBalance = $patient->credits - $request->credits_applied;
+        $patient->update(['credits' => $newBalance]);
+        $patient->save();
 
         return redirect()->route('patients.show', $patientVisit->patient_id);
     }
