@@ -35,6 +35,7 @@ const form = useForm({
   discount_percentage: 0,
   or_number: "",
   is_paid: false,
+  credits_applied: "",
 });
 
 // Gets the total amount (price) of all lab tests selected
@@ -58,9 +59,12 @@ const discountAmount = computed(() => {
 // Gets total amount due after discounts
 const totalAmountDue = computed(() => {
   let totalAmountDue = totalAmount.value;
-  if (discountAmount.value > 0) {
-    totalAmountDue = totalAmount.value - discountAmount.value;
+  let creditsApplied = Number(form.credits_applied);
+
+  if (discountAmount.value > 0 || creditsApplied > 0) {
+    totalAmountDue = totalAmount.value - (discountAmount.value + creditsApplied);
   }
+
   return totalAmountDue;
 });
 
@@ -105,6 +109,13 @@ const addPatientVisit = () => {
     },
   });
 };
+
+const patientBalance = computed(() => {
+  if (props.patient.credits - form.credits_applied < 0) {
+    return "Exceeded current balance of P" + props.patient.credits.toLocaleString();
+  }
+  return 'P' + (props.patient.credits - form.credits_applied).toLocaleString();
+});
 </script>
 <template>
   <div>
@@ -307,6 +318,13 @@ const addPatientVisit = () => {
             <li>
               <InputLabel for="discount_amount" value="Discount Amount" />
               <TextInput :value="'P' + discountAmount" disabled />
+            </li>
+            <li v-if="patient.is_member">
+              <InputLabel
+                for="credits"
+                :value="'Staff/Member Credits (' + patientBalance.toLocaleString() + ')'"
+              />
+              <TextInput type="number" :max="patient.credits" v-model="form.credits_applied" />
             </li>
             <li>
               <InputLabel for="total_amount_due" value="Total Amount Due" />

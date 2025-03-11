@@ -93,6 +93,7 @@ const invoiceForm = useForm({
   discount_percentage: props.invoice.discount_percentage,
   or_number: props.invoice.or_number,
   is_paid: props.invoice.is_paid ? true : false,
+  credits_applied: props.invoice.credits_applied,
 });
 
 const updateinvoiceForm = () => {
@@ -124,7 +125,9 @@ const form = useForm({
             {{ visit.patient.full_name }}
           </h2>
           <div class="flex gap-[.5rem]">
-            <Link :href="route('patient-visits.edit', visit.id)"><SecondaryButton size="small">Edit</SecondaryButton></Link>
+            <Link :href="route('patient-visits.edit', visit.id)"
+              ><SecondaryButton size="small">Edit</SecondaryButton></Link
+            >
             <div class="relative overflow-hidden inline-block flex gap-[1rem]">
               <Loader v-if="form.processing" />
               <PrimaryButton size="small" type="button">
@@ -279,6 +282,17 @@ const form = useForm({
           <li>
             <InputLabel for="discount_amount" value="Discount Amount" />
             <TextInput :value="'P' + invoice.discount_amount" disabled />
+          </li>
+          <li v-if="visit.patient.is_member">
+            <InputLabel
+              for="credits"
+              value="Staff/Member Credits Applied"
+            />
+            <TextInput
+              type="number"
+              disabled
+              v-model="invoiceForm.credits_applied"
+            />
           </li>
           <li>
             <InputLabel for="total_amount_due" value="Total Amount Due" />

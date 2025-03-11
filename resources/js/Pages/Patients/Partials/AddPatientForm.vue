@@ -12,6 +12,7 @@ import ButtonWrapper from "@/Components/Forms/ButtonWrapper.vue";
 import regions from "@/regions";
 import provinces from "@/provinces";
 import { useToast } from "vue-toast-notification";
+import Checkbox from "@/Components/Checkbox.vue";
 
 const regionsList = reactive(regions);
 const provincesList = reactive(provinces);
@@ -32,6 +33,7 @@ const form = useForm({
   country: "Philippines",
   phone: "",
   email: "",
+  is_member: false,
 });
 
 const addPatient = () => {
@@ -92,6 +94,10 @@ const addPatient = () => {
           <InputLabel for="birthdate" value="Birthdate" />
           <TextInput type="date" v-model="form.birthdate" placeholder="Birthdate" />
           <InputError :message="form.errors.birthdate" class="mt-1.5" />
+        </template>
+        <template v-slot:col2>
+            <InputLabel for="Member" value="Is this patient a Coop Member or Staff?" />
+            <Checkbox :checked="form.is_member" @change="form.is_member = !form.is_member" />
         </template>
       </TwoColumnWrapper>
 

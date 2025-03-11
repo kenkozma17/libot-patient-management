@@ -7,7 +7,7 @@ import { useToast } from "vue-toast-notification";
 import TitleAndButtonsWrapper from "@/Components/Partials/TitleAndButtonsWrapper.vue";
 import DataTable from "@/Components/Data/DataTable.vue";
 import { ref, watch } from "vue";
-import { debounce } from "lodash"
+import { debounce } from "lodash";
 import dayjs from "dayjs";
 
 const $toast = useToast({ position: "top-right" });
@@ -29,12 +29,16 @@ const visits = ref(props.visits);
 const getFilter = (id) => filters?.find((filter) => filter.field === id)?.value;
 
 const columns = ref([
-  { field: "patient.full_name", title: "Patient", filter: false, },
-  { field: "diagnosis", title: "Diagnosis", value: getFilter('diagnosis') },
-  { field: "requesting_physician", title: "Requesting Physician", value: getFilter('requesting_physician') },
-  { field: "patient_type", title: "Type", value: getFilter('patient_type') },
-  { field: "patient_status", title: "Status", value: getFilter('patient_status') },
-  { field: "visit_date", title: "Visit Date", value: getFilter('visit_date') },
+  { field: "patient.full_name", title: "Patient", filter: false },
+  { field: "diagnosis", title: "Diagnosis", value: getFilter("diagnosis") },
+  {
+    field: "requesting_physician",
+    title: "Requesting Physician",
+    value: getFilter("requesting_physician"),
+  },
+  { field: "patient_type", title: "Type", value: getFilter("patient_type") },
+  { field: "patient_status", title: "Status", value: getFilter("patient_status") },
+  { field: "visit_date", title: "Visit Date", value: getFilter("visit_date") },
 ]);
 
 const deletePatient = () => {
@@ -113,6 +117,17 @@ watch(
             <LabelAndValue label="Phone" :value="patient.phone" />
 
             <LabelAndValue label="Email" :value="patient.email ?? 'N/A'" />
+
+            <LabelAndValue
+              label="Member/Staff?"
+              :value="patient.is_member ? 'Yes' : 'No'"
+            />
+
+            <LabelAndValue
+              v-if="patient.is_member"
+              label="Staff/Member Annual Credits Balance"
+              :value="patient.credits_formatted"
+            />
           </div>
         </div>
       </div>
@@ -147,8 +162,8 @@ watch(
           >
         </template>
         <template #visit_date="{ data }">
-            <span>{{ dayjs(data.value.visit_date).format('YYYY-MM-DD') }}</span>
-          </template>
+          <span>{{ dayjs(data.value.visit_date).format("YYYY-MM-DD") }}</span>
+        </template>
       </DataTable>
     </div>
   </div>

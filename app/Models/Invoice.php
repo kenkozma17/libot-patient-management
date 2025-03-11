@@ -9,7 +9,7 @@ class Invoice extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['amount_payable', 'type', 'or_number', 'amount_discounted', 'is_paid', 'discount_percentage'];
+    protected $fillable = ['amount_payable', 'type', 'or_number', 'amount_discounted', 'is_paid', 'discount_percentage', 'credits_applied'];
 
     protected $appends = ['total_amount', 'discount_amount', 'total_amount_due'];
 

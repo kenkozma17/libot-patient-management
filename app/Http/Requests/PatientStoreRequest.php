@@ -35,7 +35,8 @@ class PatientStoreRequest extends FormRequest
             'postal_code' => 'required|string',
             'phone' => 'required',
             'email' => 'nullable|email',
-            'country' => 'nullable|string'
+            'country' => 'nullable|string',
+            'is_member' => 'nullable'
         ];
     }
 }

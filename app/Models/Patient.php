@@ -25,15 +25,21 @@ class Patient extends Model
         'postal_code',
         'phone',
         'email',
-        'country'
+        'country',
+        'is_member'
     ];
 
     protected $appends = [
         'full_name',
         'date_of_birth_with_age',
         'address',
-        'age'
+        'age',
+        'credits_formatted'
     ];
+
+    public function getCreditsFormattedAttribute() {
+        return 'P' . number_format($this->credits, 2);
+    }
 
     public function getFullNameAttribute() {
         return $this->last_name . ', ' . $this->first_name . ' ' . $this->middle_name;
