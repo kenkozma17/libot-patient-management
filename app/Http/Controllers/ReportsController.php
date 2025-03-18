@@ -51,7 +51,7 @@ class ReportsController extends Controller
                     && $invoice->patientVisit->patient_type === 'Send Out';
             })->sum('amount_payable');
 
-            $total = $income + $accounts_receivable;
+            $total = $income + $accounts_receivable + $sendOutPayments;
             return [
                 'date' => $date,
                 'or_number' => $invoices->first()->or_number . ' - ' . $invoices->last()->or_number,
