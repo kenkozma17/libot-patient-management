@@ -142,7 +142,7 @@ class PatientVisitController extends Controller
             'discount_percentage' => $request->discount_percentage,
             'amount_discounted' => ($totalAmountPayable * $request->discount_percentage) / 100,
             'is_paid' => $request->is_paid ? 1 : 0,
-            'credits_applied' => $request->credits_applied
+            'credits_applied' => $request->credits_applied ? $request->credits_applied : 0,
         ]);
         $invoice->save();
 
