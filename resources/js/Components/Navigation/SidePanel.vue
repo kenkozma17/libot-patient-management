@@ -135,6 +135,21 @@ onMounted(() => {
           </li>
         </ul>
       </li>
+
+      <li>
+        <a :href="route('reports.index')" ref="reports" class="menu" @click="toggleSubMenu"
+          >Reports</a
+        >
+        <!-- <ul class="sub-menu flex flex-col mt-[.5rem] gap-[.5rem]">
+          <li>
+            <Link
+              :class="{ active: isCurrentRoute('LabTests/LabTestsList') }"
+              :href="route('lab-tests.index')"
+              >View Lab Tests</Link
+            >
+          </li>
+        </ul> -->
+      </li>
     </ul>
   </aside>
 </template>

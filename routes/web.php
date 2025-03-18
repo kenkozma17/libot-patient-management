@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\PatientVisitController;
+use App\Http\Controllers\ReportsController;
 use App\Models\InventoryItem;
 use App\Models\Invoice;
 
@@ -70,5 +71,10 @@ Route::middleware([
     Route::resource('notifications', NotificationsController::class);
     Route::post('notifications/mark-as-read/{notificationId}', [NotificationsController::class, 'markAsRead'])
         ->name('notifications.mark-as-read');
+
+    /** Reports */
+    Route::get('reports', [ReportsController::class, 'index'])->name('reports.index');
+    Route::get('reports/generate', [ReportsController::class, 'generateReport'])
+        ->name('reports.generate');
 
 });
