@@ -45,7 +45,11 @@ class PatientLoansController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $patientLoan = PatientLoan::where('id', $id)
+            ->with('patient')->first();
+        return Inertia::render('PatientLoans/Show', [
+            'loan' => $patientLoan
+        ]);
     }
 
     /**

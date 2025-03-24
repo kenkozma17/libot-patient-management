@@ -26,7 +26,7 @@ const loans = ref(props.loans);
 const urlParams = new URLSearchParams(window.location.search);
 const currentLoansPage = ref(loans.value.current_page);
 const currentVisitsPage = ref(visits.value.current_page);
-const filters = reactive(JSON.parse(urlParams.get("column_filters")));
+const filters = reactive(JSON.parse(urlParams.get("column_filters")) || []);
 
 /* DataTable Filtering: Return Filter Value by ID */
 const getFilter = (id) => filters?.find((filter) => filter.field === id)?.value;
@@ -219,9 +219,9 @@ watch(
         :page-change-fn="(e) => updateRows(e, 'loans')"
       >
         <template #id="{ data }">
-          <a href="#" class="text-blue-600 cursor-pointer hover:underline">{{
+          <Link :href="route('patient-loans.show', data.value.id)" class="text-blue-600 cursor-pointer hover:underline">{{
             data.value.id
-          }}</a>
+          }}</Link>
         </template>
         <template #start_date="{ data }">
           <span>{{ dayjs(data.value.start_date).format("YYYY-MM-DD") }}</span>
