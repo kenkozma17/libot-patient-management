@@ -8,6 +8,7 @@ use Inertia\Inertia;
 use App\Http\Requests\PatientStoreRequest;
 use App\Models\LabTest;
 use App\Models\Patient;
+use App\Models\PatientLoan;
 use App\Models\PatientVisit;
 
 class PatientController extends Controller
@@ -82,6 +83,11 @@ class PatientController extends Controller
             ->with('patient')
             ->orderBy('created_at', 'desc');
 
+        $loans = PatientLoan::where('patient_id', $id)
+            ->orderBy('created_at', 'desc')
+            ->paginate(config('pagination.default'), ['*'], 'loans_page')
+            ->withQueryString();
+
         # Filtering
         $columnFilters = $request->column_filters ? json_decode($request->column_filters, true) : [];
         if($columnFilters) {
@@ -92,12 +98,14 @@ class PatientController extends Controller
                 }
             }
         }
-            $visits = $visits
-                ->paginate(config('pagination.default'))
-                ->withQueryString();
+        $visits = $visits
+            ->paginate(config('pagination.default'), ['*'], 'visits_page')
+            ->withQueryString();
+
         return Inertia::render('Patients/Show', props: [
             'patient' => $patient,
-            'visits' => $visits
+            'visits' => $visits,
+            'loans' => $loans,
         ]);
     }
 

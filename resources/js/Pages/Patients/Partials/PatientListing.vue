@@ -6,7 +6,7 @@ import { Link, useForm, router } from "@inertiajs/vue3";
 import { useToast } from "vue-toast-notification";
 import TitleAndButtonsWrapper from "@/Components/Partials/TitleAndButtonsWrapper.vue";
 import DataTable from "@/Components/Data/DataTable.vue";
-import { ref, watch } from "vue";
+import { ref, watch, reactive } from "vue";
 import { debounce } from "lodash";
 import dayjs from "dayjs";
 
@@ -15,15 +15,18 @@ const $toast = useToast({ position: "top-right" });
 const props = defineProps({
   patient: Object,
   visits: Object,
+  loans: Object,
 });
-
-/* DataTable: Pagination and Filters */
-const urlParams = new URLSearchParams(window.location.search);
-const currentPage = Number(urlParams.get("page")) || 1;
-const filters = JSON.parse(urlParams.get("column_filters"));
 
 /* DataTable Data: Transactions Definitions (For DataTable) */
 const visits = ref(props.visits);
+const loans = ref(props.loans);
+
+/* DataTable: Pagination and Filters */
+const urlParams = new URLSearchParams(window.location.search);
+const currentLoansPage = ref(loans.value.current_page);
+const currentVisitsPage = ref(visits.value.current_page);
+const filters = reactive(JSON.parse(urlParams.get("column_filters")));
 
 /* DataTable Filtering: Return Filter Value by ID */
 const getFilter = (id) => filters?.find((filter) => filter.field === id)?.value;
@@ -41,6 +44,18 @@ const columns = ref([
   { field: "visit_date", title: "Visit Date", value: getFilter("visit_date") },
 ]);
 
+const loanColumns = ref([
+  { field: "id", title: "ID", filter: false },
+  { field: "amount_formatted", title: "Amount", filter: false },
+  { field: "interest_rate", title: "Interest Rate", filter: false },
+  { field: "duration_months", title: "Duration (Months)", filter: false },
+  { field: "capital_build_up", title: "CBU", filter: false },
+  { field: "start_date", title: "Start Date", filter: false },
+  { field: "end_date", title: "End Date", filter: false },
+  { field: "check_no", title: "Check No.", filter: false },
+  { field: "status", title: "Status", filter: false },
+]);
+
 const deletePatient = () => {
   if (confirm("Are you sure you want to delete?")) {
     const form = useForm({});
@@ -53,23 +68,38 @@ const deletePatient = () => {
 };
 
 /* DataTable: Fetch Updated Data upon Filtering or Page Change */
-const updateRows = debounce((event) => {
+const updateRows = debounce((event, type) => {
   const column_filters = JSON.stringify(event.column_filters);
-  router.get(
-    route("patients.show", props.patient.id),
-    { page: event.current_page, column_filters },
-    {
-      preserveScroll: true,
-      preserveState: true,
-    }
-  );
+
+  let queryObj = {};
+  if (type === "loans") {
+    queryObj = {
+      loans_page: event.current_page,
+      visits_page: currentVisitsPage.value,
+      column_filters: JSON.stringify(filters),
+    };
+  } else {
+    queryObj = {
+      visits_page: event.current_page,
+      loans_page: currentLoansPage.value,
+      column_filters,
+    };
+  }
+
+  router.get(route("patients.show", props.patient.id), queryObj, {
+    preserveScroll: true,
+    preserveState: true,
+  });
 }, 500);
 
 /* DataTable: Update Data on Table Change */
 watch(
-  () => props.visits,
-  (newData) => {
-    visits.value = newData;
+  () => [props.visits, props.loans],
+  ([newVisits, newLoans]) => {
+    visits.value = newVisits;
+    loans.value = newLoans;
+    currentLoansPage.value = newLoans?.current_page ?? 1;
+    currentVisitsPage.value = newVisits?.current_page ?? 1;
   }
 );
 </script>
@@ -149,10 +179,10 @@ watch(
         :rows="visits.data"
         :columns="columns"
         :total-rows="visits.total"
-        :current-page="currentPage"
+        :current-page="currentVisitsPage"
         :page-size="visits.per_page"
         :column-filter="true"
-        :page-change-fn="updateRows"
+        :page-change-fn="(e) => updateRows(e, 'visits')"
       >
         <template #patient.full_name="{ data }">
           <Link
@@ -177,6 +207,35 @@ watch(
           ><PrimaryButton size="small">New Loan</PrimaryButton>
         </Link>
       </TitleAndButtonsWrapper>
+
+      <DataTable
+        class="mt-2.5"
+        :rows="loans.data"
+        :columns="loanColumns"
+        :total-rows="loans.total"
+        :current-page="currentLoansPage"
+        :page-size="loans.per_page"
+        :column-filter="true"
+        :page-change-fn="(e) => updateRows(e, 'loans')"
+      >
+        <template #id="{ data }">
+          <a href="#" class="text-blue-600 cursor-pointer hover:underline">{{
+            data.value.id
+          }}</a>
+        </template>
+        <template #start_date="{ data }">
+          <span>{{ dayjs(data.value.start_date).format("YYYY-MM-DD") }}</span>
+        </template>
+        <template #end_date="{ data }">
+          <span>{{ dayjs(data.value.end_date).format("YYYY-MM-DD") }}</span>
+        </template>
+        <template #capital_build_up="{ data }">
+          <span>{{ data.value.capital_build_up }}%</span>
+        </template>
+        <template #interest_rate="{ data }">
+          <span>{{ data.value.interest_rate }}%</span>
+        </template>
+      </DataTable>
     </div>
   </div>
 </template>

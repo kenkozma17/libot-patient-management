@@ -24,4 +24,12 @@ class PatientLoan extends Model
         'patient_id',
         'net_amount_released'
     ];
+
+    protected $appends = [
+        'amount_formatted'
+    ];
+
+    public function getAmountFormattedAttribute() {
+        return 'P' . number_format($this->amount);
+    }
 }
