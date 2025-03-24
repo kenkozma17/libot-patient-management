@@ -7,6 +7,7 @@ use App\Http\Controllers\InventoryCategoryController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LabTestController;
 use App\Http\Controllers\NotificationsController;
+use App\Http\Controllers\PatientLoansController;
 use App\Notifications\ExpirationNotice;
 use App\Notifications\LowInventory;
 use Illuminate\Foundation\Application;
@@ -76,5 +77,10 @@ Route::middleware([
     Route::get('reports', [ReportsController::class, 'index'])->name('reports.index');
     Route::get('reports/generate', [ReportsController::class, 'generateReport'])
         ->name('reports.generate');
+
+    /** Loans */
+    Route::resource('patient-loans', PatientLoansController::class);
+    Route::get('patient-loans/create/{patientId?}', [PatientLoansController::class, 'create'])
+        ->name('patient-loans.create');
 
 });

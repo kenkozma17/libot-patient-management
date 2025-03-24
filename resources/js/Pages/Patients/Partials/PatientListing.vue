@@ -166,5 +166,17 @@ watch(
         </template>
       </DataTable>
     </div>
+
+    <!-- Patient Loans -->
+    <div
+      class="bg-white rounded-md md:mt-6 mt-3 md:px-[1.9rem] px-[1.25rem] md:py-[1.4rem] py-[1.125rem]"
+    >
+      <TitleAndButtonsWrapper>
+        <h2 class="leading-none md:text-[1.5rem] text-[1.2rem]">Patient Loans</h2>
+        <Link :href="route('patient-loans.create', props.patient.id)"
+          ><PrimaryButton size="small">New Loan</PrimaryButton>
+        </Link>
+      </TitleAndButtonsWrapper>
+    </div>
   </div>
 </template>

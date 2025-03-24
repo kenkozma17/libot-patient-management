@@ -68,6 +68,8 @@ class ReportsController extends Controller
             ['Date', 'OR Number', 'Remarks', 'Income', 'Loan Payments', 'Send Out Payments', 'Accounts Receivable', 'Total']
         ], $summary->values()->toArray());
 
+        dd($data);
+
         return Excel::download(new InvoicesExport($data),  $date . 'mir.xlsx');
     }
 
