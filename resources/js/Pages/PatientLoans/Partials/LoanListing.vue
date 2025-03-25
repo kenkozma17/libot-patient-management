@@ -14,26 +14,68 @@ const $toast = useToast({ position: "top-right" });
 
 const props = defineProps({
   loan: Object,
+  payments: Object,
 });
+
+/* DataTable Data: Transactions Definitions (For DataTable) */
+const payments = ref(props.payments);
+
+const urlParams = new URLSearchParams(window.location.search);
+const currentPage = Number(urlParams.get("page")) || 1;
+
+/* DataTable: Field Columns */
+const columns = ref([
+  { field: "id", title: "ID", filter: false },
+  { field: "amount", title: "Payment Amount", filter: false },
+  { field: "remaining_balance", title: "Remaining Balance", filter: false },
+  { field: "or_number", title: "OR Number", filter: false },
+  { field: "payment_date", title: "Payment Date", filter: false },
+]);
+
+/* DataTable: Fetch Updated Data upon Filtering or Page Change */
+const updateRows = debounce((event) => {
+  const column_filters = JSON.stringify(event.column_filters);
+  router.get(
+    route("patient-loans.show", props.loan.id),
+    { page: event.current_page, column_filters },
+    {
+      preserveScroll: true,
+      preserveState: true,
+    }
+  );
+}, 500);
+
+/* DataTable: Update Transactions on Table Change */
+watch(
+  () => props.payments,
+  (newData) => {
+    payments.value = newData;
+  }
+);
 </script>
 <template>
   <div>
     <h1>Loan Details</h1>
-    <!-- Loan Details -->
     <div
       class="bg-white rounded-md mt-2.5 md:px-[1.9rem] px-[1.25rem] md:py-[1.4rem] py-[1.125rem]"
     >
       <div class="flex md:flex-row flex-col md:gap-x-4 gap-x-3">
         <div class="w-full">
           <TitleAndButtonsWrapper>
-            <h2 class="leading-none md:text-[1.5rem] text-[1.2rem] md:mt-0 mt-[.5rem]">
-              Loanee:
-              <Link
-                :href="route('patients.show', loan.patient.id)"
-                class="text-blue-600 hover:underline"
-                >{{ loan.patient.full_name }}</Link
+            <div class="flex flex-wrap items-center gap-[.5rem]">
+              <h2 class="leading-none md:text-[1.5rem] text-[1.2rem] md:mt-0 mt-[.5rem]">
+                <Link
+                  :href="route('patients.show', loan.patient.id)"
+                  class="text-blue-600 hover:underline"
+                  >{{ loan.patient.full_name }}</Link
+                >
+              </h2>
+              <span
+                class="text-xs font-semibold rounded-md px-[.5rem] py-[.25rem] bg-green-300 inline-block"
               >
-            </h2>
+                Remaining Balance: P{{ Number(loan.remaining_balance).toLocaleString() }}
+              </span>
+            </div>
             <div>
               <PrimaryButton size="small"
                 ><Link :href="route('patient-loans.edit', loan.id)"
@@ -67,6 +109,10 @@ const props = defineProps({
               :value="dayjs(loan.end_date).format('YYYY-MM-DD')"
             />
             <LabelAndValue label="Status" :value="loan.status" />
+            <LabelAndValue
+              label="Monthly Payment"
+              :value="'P' + loan.monthly_payment.toLocaleString()"
+            />
           </div>
         </div>
       </div>
@@ -131,11 +177,41 @@ const props = defineProps({
     <div
       class="bg-white rounded-md mt-2.5 md:px-[1.9rem] px-[1.25rem] md:py-[1.4rem] py-[1.125rem]"
     >
+      <TitleAndButtonsWrapper>
+        <h2 class="leading-none md:text-[1.5rem] text-[1.2rem]">Loan Payments</h2>
+        <Link :href="route('loan-payments.create', props.loan.id)"
+          ><PrimaryButton size="small">New Loan Payment</PrimaryButton>
+        </Link>
+      </TitleAndButtonsWrapper>
       <div class="flex md:flex-row flex-col md:gap-x-4 gap-x-3">
         <div class="w-full">
-          <h2 class="leading-none md:text-[1.5rem] text-[1.2rem] md:mt-0 mt-[.5rem]">
-            Loan Payments
-          </h2>
+          <DataTable
+            class="mt-2.5"
+            :rows="payments.data"
+            :columns="columns"
+            :total-rows="payments.total"
+            :current-page="currentPage"
+            :page-size="payments.per_page"
+            :column-filter="true"
+            :page-change-fn="updateRows"
+          >
+            <template #id="{ data }">
+              <Link
+                :href="route('loan-payments.show', data.value.id)"
+                class="text-blue-600 cursor-pointer hover:underline"
+                >{{ data.value.id }}</Link
+              >
+            </template>
+            <template #amount="{ data }">
+              <span>P{{ Number(data.value.amount).toLocaleString() }}</span>
+            </template>
+            <template #remaining_balance="{ data }">
+              <span>P{{ Number(data.value.remaining_balance).toLocaleString() }}</span>
+            </template>
+            <template #payment_date="{ data }">
+              <span>{{ dayjs(data.value.payment_date).format("YYYY-MM-DD") }}</span>
+            </template></DataTable
+          >
         </div>
       </div>
     </div>

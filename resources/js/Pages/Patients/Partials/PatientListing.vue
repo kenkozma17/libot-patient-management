@@ -198,7 +198,7 @@ watch(
     </div>
 
     <!-- Patient Loans -->
-    <div
+    <div v-if="patient.is_member"
       class="bg-white rounded-md md:mt-6 mt-3 md:px-[1.9rem] px-[1.25rem] md:py-[1.4rem] py-[1.125rem]"
     >
       <TitleAndButtonsWrapper>

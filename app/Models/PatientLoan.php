@@ -29,7 +29,9 @@ class PatientLoan extends Model
         'amount_formatted',
         'total_interest_amount',
         'cpu_amount',
-        'total_deductions'
+        'total_deductions',
+        'remaining_balance',
+        'monthly_payment'
     ];
 
     public function getAmountFormattedAttribute() {
@@ -38,6 +40,18 @@ class PatientLoan extends Model
 
     public function patient() {
         return $this->belongsTo(Patient::class);
+    }
+
+    public function payments() {
+        return $this->hasMany(LoanPayment::class);
+    }
+
+    public function getRemainingBalanceAttribute() {
+        return $this->amount - $this->payments->sum('amount');
+    }
+
+    public function getMonthlyPaymentAttribute() {
+        return number_format($this->amount / $this->duration_months,2);
     }
 
     // Deductions

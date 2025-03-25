@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PatientLoanStoreRequest;
+use App\Models\LoanPayment;
 use App\Models\Patient;
 use App\Models\PatientLoan;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Route;
 use Inertia\Inertia;
 
 class PatientLoansController extends Controller
@@ -47,8 +49,15 @@ class PatientLoansController extends Controller
     {
         $patientLoan = PatientLoan::where('id', $id)
             ->with('patient')->first();
+
+        $loanPayments = LoanPayment::where('patient_loan_id', $id)
+            ->orderBy('payment_date', 'desc')
+            ->paginate(config('pagination.default'))
+            ->withQueryString();
+
         return Inertia::render('PatientLoans/Show', [
-            'loan' => $patientLoan
+            'loan' => $patientLoan,
+            'payments' => $loanPayments
         ]);
     }
 

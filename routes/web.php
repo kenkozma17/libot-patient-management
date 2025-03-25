@@ -6,6 +6,7 @@ use App\Http\Controllers\InventoryTransactionController;
 use App\Http\Controllers\InventoryCategoryController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LabTestController;
+use App\Http\Controllers\LoanPaymentController;
 use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\PatientLoansController;
 use App\Notifications\ExpirationNotice;
@@ -82,5 +83,8 @@ Route::middleware([
     Route::resource('patient-loans', PatientLoansController::class);
     Route::get('patient-loans/create/{patientId?}', [PatientLoansController::class, 'create'])
         ->name('patient-loans.create');
+    Route::resource('loan-payments', LoanPaymentController::class);
+    Route::get('loan-payments/create/{loanId?}', [LoanPaymentController::class, 'create'])
+        ->name('loan-payments.create');
 
 });

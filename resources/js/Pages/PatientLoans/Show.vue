@@ -6,10 +6,11 @@ import AdminLayout from "@/Layouts/AdminLayout.vue";
 defineOptions({ layout: AdminLayout });
 const props = defineProps({
   loan: Object,
+  payments: Object,
 });
 </script>
 <template>
   <AdminContentWrapper>
-    <LoanListing :loan="loan" />
+    <LoanListing :payments="payments" :loan="loan" />
   </AdminContentWrapper>
 </template>
