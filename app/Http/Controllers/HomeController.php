@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\InventoryItem;
 use App\Models\Patient;
+use App\Models\PatientLoan;
 use App\Notifications\ExpirationNotice;
+use App\Notifications\LateLoanPaymentNotice;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -18,7 +20,27 @@ class HomeController extends Controller
     {
         $this->checkForExpiration();
         $this->resetMemberCredits();
+        $this->checkForDueLoanPayments();
         return Inertia::render('Home');
+    }
+
+    public function checkForDueLoanPayments() {
+        $loans = PatientLoan::with(['payments', 'patient'])
+            ->where('status', 'pending')
+            ->whereMonth('notification_date', '!=', Carbon::now()->month)
+            ->get();
+
+        foreach($loans as $loan) {
+            $totalPaymentsMade = count($loan->payments);
+            $monthsElapsed = Carbon::parse($loan->start_date)
+                ->diffInMonths(Carbon::now());
+
+            if($totalPaymentsMade < $monthsElapsed) {
+                $loan->notify(new LateLoanPaymentNotice($loan->patient));
+                $loan->notification_date = Carbon::now();
+                $loan->save();
+            }
+        }
     }
 
     public function resetMemberCredits() {

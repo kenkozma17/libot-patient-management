@@ -52,7 +52,7 @@ class ExpirationNotice extends Notification
      */
     public function toArray(object $notifiable): array
     {
-        $notification = ['type' => 'Expiration Notice Alert', 'message' => ''];
+        $notification = ['notification' => 'inventory', 'type' => 'Expiration Notice Alert', 'message' => ''];
 
         if($this->isTodayBeforeExpiration) {
             // To Expire

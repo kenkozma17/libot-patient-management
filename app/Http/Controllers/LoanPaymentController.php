@@ -47,6 +47,12 @@ class LoanPaymentController extends Controller
         $loan = PatientLoan::find($patientLoanId);
         $payment->remaining_balance = $loan->amount - ($payment->amount + $totalPaymentsAmount);
 
+        // Change status if fully paid.
+        if($payment->remaining_balance == 0) {
+            $loan->status = 'fully paid';
+            $loan->save();
+        }
+
         $payment->save();
     }
 

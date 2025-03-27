@@ -17,7 +17,7 @@ return new class extends Migration
             $table->decimal('amount');
             $table->datetime('payment_date');
             $table->decimal('remaining_balance')->nullable();
-            $table->string('or_number');
+            $table->string('or_number')->nullable();
             $table->timestamps();
         });
     }

@@ -7,17 +7,18 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class LowInventory extends Notification
+class LateLoanPaymentNotice extends Notification
 {
     use Queueable;
+
+    protected $patient;
 
     /**
      * Create a new notification instance.
      */
-    protected $inventoryItem;
-    public function __construct($inventoryItem)
+    public function __construct($patient)
     {
-        $this->inventoryItem = $inventoryItem;
+        $this->patient = $patient;
     }
 
     /**
@@ -48,10 +49,11 @@ class LowInventory extends Notification
      */
     public function toArray(object $notifiable): array
     {
-        return [
-            'notification' => 'inventory',
-            'type' => 'Low Inventory Alert',
-            'message' => $this->inventoryItem->name . ' has dropped below the minimum stock level. Only ' . $this->inventoryItem->current_stock  . ' ' . $this->inventoryItem->unit . ' left in stock. Please restock soon!'
+        $notification = [
+            'type' => 'Loan Payment Due Notice Alert',
+            'notification' => 'patient-loans',
+            'message' => 'Patient' . ' (' . $this->patient->full_name . ')' . ' has a loan payment due.'
         ];
+        return $notification;
     }
 }

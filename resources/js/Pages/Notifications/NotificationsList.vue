@@ -52,7 +52,16 @@ defineOptions({ layout: AdminLayout });
           <p class="text-sm" :class="{ 'font-bold': notification.read_at === null }">
             {{ notification.data.message }}
           </p>
-          <Link class="mt-[1rem] text-xs text-blue-600 font-bold hover:underline" :href="route('inventory.show', notification.notifiable_id)">View Item</Link>
+          <Link v-if="notification.data.notification == 'inventory'"
+            class="mt-[1rem] text-xs text-blue-600 font-bold hover:underline"
+            :href="route('inventory.show', notification.notifiable_id)"
+            >View Item</Link
+          >
+          <Link v-if="notification.data.notification == 'patient-loans'"
+            class="mt-[1rem] text-xs text-blue-600 font-bold hover:underline"
+            :href="route('patient-loans.show', notification.notifiable_id)"
+            >View Loan</Link
+          >
         </div>
         <div class="lg:col-span-4 col-span-12 flex flex-col gap-[.5rem] items-end">
           <p class="text-xs" :class="{ 'font-bold': notification.read_at === null }">

@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 
 class PatientLoan extends Model
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     protected $fillable = [
         'amount',
@@ -22,7 +23,8 @@ class PatientLoan extends Model
         'capital_build_up',
         'status',
         'patient_id',
-        'net_amount_released'
+        'net_amount_released',
+        'notification_date'
     ];
 
     protected $appends = [
