@@ -82,6 +82,9 @@ class PatientLoansController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $loan = PatientLoan::find($id);
+        $patientId = $loan->patient_id;
+        PatientLoan::destroy($id);
+        return redirect()->route('patients.show', $patientId);
     }
 }

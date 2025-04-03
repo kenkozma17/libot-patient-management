@@ -45,6 +45,20 @@ const updateRows = debounce((event) => {
   );
 }, 500);
 
+const deleteLoan = () => {
+  if (confirm("Are you sure you want to delete this loan?")) {
+    const form = useForm({});
+    form.delete(route("patient-loans.destroy", props.loan.id), {
+      errorBag: "deletePatientLoan",
+      preserveScroll: true,
+      onSuccess: () => {
+        $toast.success("Patient Loan Deleted Successfully!");
+        form.reset();
+      },
+    });
+  }
+};
+
 /* DataTable: Update Transactions on Table Change */
 watch(
   () => props.payments,
@@ -77,10 +91,8 @@ watch(
               </span>
             </div>
             <div>
-              <PrimaryButton size="small"
-                ><Link :href="route('patient-loans.edit', loan.id)"
-                  >Edit Loan</Link
-                ></PrimaryButton
+              <PrimaryButton size="small" color="red" @click="deleteLoan"
+                >Delete</PrimaryButton
               >
             </div>
           </TitleAndButtonsWrapper>

@@ -146,7 +146,7 @@ watch(
             <div>
               <PrimaryButton size="small"
                 ><Link :href="route('inventory.edit', item.id)"
-                  >Edit Item</Link
+                  >Edit</Link
                 ></PrimaryButton
               >
               <PrimaryButton @click="deleteItem" size="small" class="ml-2" color="red"
@@ -208,7 +208,7 @@ watch(
       >
         <template #id="{ data }">
           <Link
-            class="hover:underline"
+            class="hover:underline text-blue-600"
             :href="route('inventory-transactions.show', data.value.id)"
             >{{ data.value.id }}</Link
           >
