@@ -28,7 +28,7 @@ class PatientVisitController extends Controller
     public function index(Request $request)
     {
         $search = $request->get('search');
-        $visits = PatientVisit::with('patient')->whereHas('patient',
+        $visits = PatientVisit::with(['patient', 'invoice'])->whereHas('patient',
             function ($query) use ($request) {
                 if (($s = $request->search)) {
                     $query->where('last_name', 'LIKE', '%' . $s . '%')
@@ -55,7 +55,7 @@ class PatientVisitController extends Controller
             }
         }
         $visits = $visits
-            ->paginate(config('pagination.default'))
+            ->paginate(isset($request->pagesize) ? $request->pagesize : config('pagination.default'))
             ->withQueryString();
 
         return Inertia::render('PatientVisits/PatientVisitsList', [
@@ -218,6 +218,21 @@ class PatientVisitController extends Controller
         return Inertia::render('PatientVisits/Edit', props: [
             'visit' => $visit,
         ]);
+    }
+
+    public function markAsPaid(Request $request) {
+        if(isset($request->selected_ids) && count($request->selected_ids)) {
+            $selectedIds = $request->selected_ids;
+            foreach($selectedIds as $visitId) {
+                $visit = PatientVisit::whereHas('invoice', function($query) {
+                    $query->where('is_paid', 0);
+                })->find($visitId);
+                if($visit && $visit->invoice) {
+                    $visit->invoice->is_paid = 1;
+                    $visit->invoice->save();
+                }
+            }
+        }
     }
 
     /**

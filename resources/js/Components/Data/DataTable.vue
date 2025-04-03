@@ -22,7 +22,11 @@ const props = defineProps({
   },
   pageChangeFn: {
     type: Function,
-    default: () => {}
+    default: () => {},
+  },
+  selectRowsFn: {
+    type: Function,
+    default: () => {},
   },
   currentPage: {
     type: Number,
@@ -31,8 +35,21 @@ const props = defineProps({
   pageSize: {
     type: Number,
     default: 1,
+  },
+  hasCheckBox: {
+    type: Boolean,
+    default: false,
+  },
+  selectRowOnClick: {
+    type: Boolean,
+    default: false,
   }
 });
+
+const tabs = ref(null);
+const check = () => {
+    console.log(tabs.value.getSelectedRows());
+}
 
 const s = ref(props.search);
 </script>
@@ -42,6 +59,7 @@ const s = ref(props.search);
       <TextInput name="search" placeholder="Search" v-model="s" />
     </form>
     <vue3-datatable
+      ref="tabs"
       :rows="rows"
       :columns="columns"
       :columnFilter="columnFilter"
@@ -50,6 +68,9 @@ const s = ref(props.search);
       @change="pageChangeFn"
       :isServerMode="true"
       :pageSize="pageSize"
+      :hasCheckbox="hasCheckBox"
+      :selectRowOnClick="selectRowOnClick"
+      @rowSelect="selectRowsFn"
     >
       <template v-for="(slotFn, slotName) in slots" v-slot:[slotName]="data">
         <slot :name="slotName" :data="data"></slot>

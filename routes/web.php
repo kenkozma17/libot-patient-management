@@ -53,6 +53,8 @@ Route::middleware([
         ->name('patient-visits.destroy-lab-test');
     Route::put('patient-visits/update-consumption/{fileId}', [PatientVisitController::class, 'updateConsumption'])
         ->name('patient-visits.update-consumption');
+    Route::post('patient-visits/mark-as-paid', [PatientVisitController::class, 'markAsPaid'])
+        ->name('patient-visits.mark-as-paid');
 
     /** Inventory */
     Route::resource('inventory', InventoryController::class);

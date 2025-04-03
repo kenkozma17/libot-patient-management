@@ -24,7 +24,7 @@ class PatientVisit extends Model
 
     protected $appends = [
         'visit_date_formatted',
-        'visit_date_no_time'
+        'visit_date_no_time',
     ];
 
     public function getVisitDateNoTimeAttribute() {
