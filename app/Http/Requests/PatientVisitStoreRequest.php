@@ -30,6 +30,7 @@ class PatientVisitStoreRequest extends FormRequest
             'patient_age' => 'required|numeric',
             'patient_status' => 'required|string',
             'patient_type' => 'required|string',
+            'office_type' => 'nullable|string'
         ];
 
         return $rules;

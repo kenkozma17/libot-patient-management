@@ -27,9 +27,10 @@ const columns = ref([
   { field: "patient.last_name", title: "Last Name", value: getFilter("last_name") },
   { field: "patient.first_name", title: "First Name", filter: false, },
   { field: "patient.middle_name", title: "Middle Name", filter: false, },
-  { field: "diagnosis", title: "Diagnosis" },
-  { field: "requesting_physician", title: "Requesting Physician" },
+//   { field: "diagnosis", title: "Diagnosis" },
+//   { field: "requesting_physician", title: "Requesting Physician" },
   { field: "patient_type", title: "Type" },
+  { field: "office_type", title: "Office Type" },
   { field: "patient_status", title: "Status" },
   { field: "visit_date", title: "Visit Date", value: getFilter("vist_date") },
 ]);

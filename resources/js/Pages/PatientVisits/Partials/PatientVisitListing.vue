@@ -152,6 +152,8 @@ const form = useForm({
 
           <LabelAndValue label="Patient Type" :value="visit.patient_type" />
 
+          <LabelAndValue label="Office Type" :value="visit.office_type ?? 'N/A'" />
+
           <LabelAndValue label="Diagnosis" :value="visit.diagnosis ?? 'N/A'" />
 
           <LabelAndValue label="Visit Date" :value="visit.visit_date_formatted" />
@@ -284,15 +286,8 @@ const form = useForm({
             <TextInput :value="'P' + invoice.discount_amount" disabled />
           </li>
           <li v-if="visit.patient.is_member">
-            <InputLabel
-              for="credits"
-              value="Staff/Member Credits Applied"
-            />
-            <TextInput
-              type="number"
-              disabled
-              v-model="invoiceForm.credits_applied"
-            />
+            <InputLabel for="credits" value="Staff/Member Credits Applied" />
+            <TextInput type="number" disabled v-model="invoiceForm.credits_applied" />
           </li>
           <li>
             <InputLabel for="total_amount_due" value="Total Amount Due" />

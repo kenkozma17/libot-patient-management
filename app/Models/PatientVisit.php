@@ -18,7 +18,8 @@ class PatientVisit extends Model
         'visit_date',
         'patient_age',
         'patient_status',
-        'patient_type'
+        'patient_type',
+        'office_type',
     ];
 
     protected $appends = [

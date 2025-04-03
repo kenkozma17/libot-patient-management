@@ -24,6 +24,7 @@ const form = useForm({
   patient_age: String(props.visit.patient_age),
   patient_type: props.visit.patient_type,
   patient_status: props.visit.patient_status,
+  office_type: props.visit.office_type,
 });
 
 const updatePatientVisit = () => {
@@ -116,10 +117,15 @@ const updatePatientVisit = () => {
 
       <!-- Diagnosis -->
       <TwoColumnWrapper>
-        <template v-slot:col1>
+        <template v-slot:col2>
           <InputLabel for="diagnosis" value="Diagnosis" />
           <TextArea v-model="form.diagnosis" placeholder="" />
           <InputError :message="form.errors.diagnosis" class="mt-1.5" />
+        </template>
+        <template v-slot:col1>
+          <InputLabel for="offce_type" value="Office Type" />
+          <TextInput v-model="form.office_type" />
+          <InputError :message="form.errors.office_type" class="mt-1.5" />
         </template>
       </TwoColumnWrapper>
 

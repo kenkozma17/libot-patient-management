@@ -36,6 +36,7 @@ const form = useForm({
   or_number: "",
   is_paid: false,
   credits_applied: "",
+  office_type: "",
 });
 
 // Gets the total amount (price) of all lab tests selected
@@ -114,7 +115,7 @@ const patientBalance = computed(() => {
   if (props.patient.credits - form.credits_applied < 0) {
     return "Exceeded current balance of P" + props.patient.credits.toLocaleString();
   }
-  return 'P' + (props.patient.credits - form.credits_applied).toLocaleString();
+  return "P" + (props.patient.credits - form.credits_applied).toLocaleString();
 });
 </script>
 <template>
@@ -196,10 +197,15 @@ const patientBalance = computed(() => {
 
       <!-- Diagnosis -->
       <TwoColumnWrapper>
-        <template v-slot:col1>
+        <template v-slot:col2>
           <InputLabel for="diagnosis" value="Diagnosis" />
           <TextArea v-model="form.diagnosis" placeholder="" />
           <InputError :message="form.errors.diagnosis" class="mt-1.5" />
+        </template>
+        <template v-slot:col1>
+          <InputLabel for="offce_type" value="Office Type" />
+          <TextInput v-model="form.office_type" />
+          <InputError :message="form.errors.office_type" class="mt-1.5" />
         </template>
       </TwoColumnWrapper>
 
@@ -324,7 +330,11 @@ const patientBalance = computed(() => {
                 for="credits"
                 :value="'Staff/Member Credits (' + patientBalance.toLocaleString() + ')'"
               />
-              <TextInput type="number" :max="patient.credits" v-model="form.credits_applied" />
+              <TextInput
+                type="number"
+                :max="patient.credits"
+                v-model="form.credits_applied"
+              />
             </li>
             <li>
               <InputLabel for="total_amount_due" value="Total Amount Due" />

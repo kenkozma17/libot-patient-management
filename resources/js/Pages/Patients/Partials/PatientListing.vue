@@ -34,12 +34,13 @@ const getFilter = (id) => filters?.find((filter) => filter.field === id)?.value;
 const columns = ref([
   { field: "patient.full_name", title: "Patient", filter: false },
   { field: "diagnosis", title: "Diagnosis", value: getFilter("diagnosis") },
-  {
-    field: "requesting_physician",
-    title: "Requesting Physician",
-    value: getFilter("requesting_physician"),
-  },
+//   {
+//     field: "requesting_physician",
+//     title: "Requesting Physician",
+//     value: getFilter("requesting_physician"),
+//   },
   { field: "patient_type", title: "Type", value: getFilter("patient_type") },
+  { field: "office_type", title: "Office Type", value: getFilter("office_type") },
   { field: "patient_status", title: "Status", value: getFilter("patient_status") },
   { field: "visit_date", title: "Visit Date", value: getFilter("visit_date") },
 ]);
@@ -186,7 +187,7 @@ watch(
       >
         <template #patient.full_name="{ data }">
           <Link
-            class="hover:underline"
+            class="hover:underline text-blue-600"
             :href="route('patient-visits.show', data.value.id)"
             >{{ data.value.patient.full_name }}</Link
           >
