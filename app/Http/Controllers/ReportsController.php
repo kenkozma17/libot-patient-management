@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Exports\InvoicesExport;
+use App\Exports\LoanExport;
 use App\Models\Invoice;
+use App\Models\PatientLoan;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
@@ -20,9 +23,6 @@ class ReportsController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function generateReport(Request $request)
     {
         $month = $request->month;
@@ -68,9 +68,39 @@ class ReportsController extends Controller
             ['Date', 'OR Number', 'Remarks', 'Income', 'Loan Payments', 'Send Out Payments', 'Accounts Receivable', 'Total']
         ], $summary->values()->toArray());
 
-        dd($data);
-
         return Excel::download(new InvoicesExport($data),  $date . 'mir.xlsx');
+    }
+
+    public function generateLoanReport(Request $request, $loanId) {
+        $loan = PatientLoan::with(['payments' => function($query) {
+            $query->orderBy('payment_date', 'asc');
+        }])->find($loanId);
+
+        $totalAmountPaid = $loan->payments->sum('amount');
+
+        $loanPayments = $loan->payments;
+
+        $loanReport = [
+            ['DETAILS OF LOAN PAYMENTS'],
+            ['Name: ' . $loan->patient->full_name],
+            ['AMOUNT OF LOAN: P' . number_format($loan->amount,2 ), 'MONTHLY AMORTIZATION: P' . $loan->monthly_payment],
+            ['DURATION OF PAYMENT: ' . Carbon::parse($loan->start_date)->format('F Y') . ' - ' . Carbon::parse($loan->end_date)->format('F Y')],
+            ['', '', '', '', ''],
+            ['Duration of Month', 'Date of Payment', 'Due Date', 'OR Number', 'Amount Paid', 'Penalty', 'Remarks'],
+        ];
+        $loanReport[] = $loanPayments->map(function($payment) {
+            return [
+                'duration_of_month' => Carbon::parse($payment->payment_date)->format('F Y'),
+                'date_of_payment' => Carbon::parse($payment->payment_date)->format('m/d/Y'),
+                'due_date' => '30th',
+                'or_number' => $payment->or_number,
+                'amount_paid' => number_format($payment->amount, 2),
+            ];
+        })->toArray();
+
+        array_push($loanReport, ['', '', '', 'Total', number_format($totalAmountPaid, 2)]);
+
+        return Excel::download(new LoanExport($loanReport),  $loan->patient->full_name . ' Loan Report.xlsx');
     }
 
 }

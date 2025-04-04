@@ -59,6 +59,10 @@ const deleteLoan = () => {
   }
 };
 
+const generateLoanReport = () => {
+  window.location.href = route("reports.generate-loan-report", props.loan.id);
+};
+
 /* DataTable: Update Transactions on Table Change */
 watch(
   () => props.payments,
@@ -136,9 +140,14 @@ watch(
     >
       <div class="flex md:flex-row flex-col md:gap-x-4 gap-x-3">
         <div class="w-full">
-          <h2 class="leading-none md:text-[1.5rem] text-[1.2rem] md:mt-0 mt-[.5rem]">
-            Loan Deductions and Summary
-          </h2>
+          <div class="flex justify-between">
+            <h2 class="leading-none md:text-[1.5rem] text-[1.2rem] md:mt-0 mt-[.5rem]">
+              Loan Deductions and Summary
+            </h2>
+            <PrimaryButton size="small" color="green" @click="generateLoanReport"
+              >Export</PrimaryButton
+            >
+          </div>
           <div class="flex flex-col md:gap-x-6 md:gap-y-4 gap-3 md:mt-4 mt-6">
             <LabelAndValue label="Principal Loan Amount" :value="loan.amount_formatted" />
             <LabelAndValue
