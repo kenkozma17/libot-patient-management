@@ -144,7 +144,7 @@ watch(
             <h2 class="leading-none md:text-[1.5rem] text-[1.2rem] md:mt-0 mt-[.5rem]">
               Loan Deductions and Summary
             </h2>
-            <PrimaryButton size="small" color="green" @click="generateLoanReport"
+            <PrimaryButton v-if="loan.payments" size="small" color="green" @click="generateLoanReport"
               >Export</PrimaryButton
             >
           </div>

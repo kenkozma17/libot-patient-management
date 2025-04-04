@@ -71,36 +71,37 @@ class ReportsController extends Controller
         return Excel::download(new InvoicesExport($data),  $date . 'mir.xlsx');
     }
 
-    public function generateLoanReport(Request $request, $loanId) {
+    public function generateLoanReport($loanId) {
         $loan = PatientLoan::with(['payments' => function($query) {
             $query->orderBy('payment_date', 'asc');
         }])->find($loanId);
 
-        $totalAmountPaid = $loan->payments->sum('amount');
+        if($loan) {
+            $totalAmountPaid = $loan->payments->sum('amount');
+            $loanPayments = $loan->payments;
 
-        $loanPayments = $loan->payments;
-
-        $loanReport = [
-            ['DETAILS OF LOAN PAYMENTS'],
-            ['Name: ' . $loan->patient->full_name],
-            ['AMOUNT OF LOAN: P' . number_format($loan->amount,2 ), 'MONTHLY AMORTIZATION: P' . $loan->monthly_payment],
-            ['DURATION OF PAYMENT: ' . Carbon::parse($loan->start_date)->format('F Y') . ' - ' . Carbon::parse($loan->end_date)->format('F Y')],
-            ['', '', '', '', ''],
-            ['Duration of Month', 'Date of Payment', 'Due Date', 'OR Number', 'Amount Paid', 'Penalty', 'Remarks'],
-        ];
-        $loanReport[] = $loanPayments->map(function($payment) {
-            return [
-                'duration_of_month' => Carbon::parse($payment->payment_date)->format('F Y'),
-                'date_of_payment' => Carbon::parse($payment->payment_date)->format('m/d/Y'),
-                'due_date' => '30th',
-                'or_number' => $payment->or_number,
-                'amount_paid' => number_format($payment->amount, 2),
+            $loanReport = [
+                ['DETAILS OF LOAN PAYMENTS'],
+                ['Name: ' . $loan->patient->full_name],
+                ['AMOUNT OF LOAN: P' . number_format($loan->amount,2 ), 'MONTHLY AMORTIZATION: P' . $loan->monthly_payment],
+                ['DURATION OF PAYMENT: ' . Carbon::parse($loan->start_date)->format('F Y') . ' - ' . Carbon::parse($loan->end_date)->format('F Y')],
+                ['', '', '', '', ''],
+                ['Duration of Month', 'Date of Payment', 'Due Date', 'OR Number', 'Amount Paid', 'Penalty', 'Remarks'],
             ];
-        })->toArray();
+            $loanReport[] = $loanPayments->map(function($payment) {
+                return [
+                    'duration_of_month' => Carbon::parse($payment->payment_date)->format('F Y'),
+                    'date_of_payment' => Carbon::parse($payment->payment_date)->format('m/d/Y'),
+                    'due_date' => '30th',
+                    'or_number' => $payment->or_number,
+                    'amount_paid' => number_format($payment->amount, 2),
+                ];
+            })->toArray();
 
-        array_push($loanReport, ['', '', '', 'Total', number_format($totalAmountPaid, 2)]);
+            array_push($loanReport, ['', '', '', 'Total', number_format($totalAmountPaid, 2)]);
 
-        return Excel::download(new LoanExport($loanReport),  $loan->patient->full_name . ' Loan Report.xlsx');
+            return Excel::download(new LoanExport($loanReport),  $loan->patient->full_name . ' Loan Report.xlsx');
+        }
     }
 
 }
