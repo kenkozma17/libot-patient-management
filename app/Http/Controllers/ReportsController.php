@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Exports\InvoicesExport;
 use App\Exports\LoanExport;
 use App\Models\Invoice;
+use App\Models\LoanPayment;
 use App\Models\PatientLoan;
+use App\Models\PatientVisit;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -69,6 +71,73 @@ class ReportsController extends Controller
         ], $summary->values()->toArray());
 
         return Excel::download(new InvoicesExport($data),  $date . 'mir.xlsx');
+    }
+
+    public function generateDailyCollectionReport(Request $request) {
+        $date = $request->date;
+
+        // Fetch first and last OR number for the date for income (walk ins)
+        $visits = PatientVisit::whereDate('visit_date', $date)
+            ->where('patient_type', 'Walk In')
+            ->whereHas('invoice', function($query) {
+                $query->where('is_paid', 1);
+            })
+            ->orderBy('created_at', 'asc')
+            ->get();
+
+        // Get Loan Payments for today
+        $loanPayments = LoanPayment::whereDate('payment_date', $date)
+            ->get();
+
+        $totalIncome = 0;
+        $firstLine = [];
+        if($visits->isNotEmpty()) {
+            $firstVisit = $visits->first();
+            $lastVisit = $visits->last();
+
+            // Get income from walk ins
+            $income = $visits->map(callback: function($visit) {
+                return $visit->invoice->amount_payable;
+            });
+            $totalIncome = $income->sum();
+
+            $firstLine = [
+                $firstVisit->invoice->or_number . ' - ' . $lastVisit->invoice->or_number,
+                number_format($totalIncome, 2),
+                '',
+                '',
+                number_format($totalIncome, 2)
+            ];
+        }
+
+        $totalLoanPayments = 0;
+        $secondLine = [];
+        if($loanPayments->isNotEmpty()) {
+            $totalLoanPayments = $loanPayments->sum('amount');
+            $secondLine = [
+                $loanPayments->first()->or_number . ' - ' . $loanPayments->last()->or_number,
+                '',
+                number_format($totalLoanPayments, 2),
+                '',
+                number_format($totalLoanPayments, 2),
+            ];
+        }
+
+        $grandTotal = $totalIncome + $totalLoanPayments;
+        $lastLine = [
+            'Total',
+            number_format($totalIncome, 2),
+            number_format($totalLoanPayments, 2),
+            '',
+            number_format($grandTotal, 2)
+        ];
+
+        $data = array_merge([
+            ['DAILY CASH COLLECTION REPORT'],
+            ['Particulars/OR Number', 'Income', 'Loan Receivables', 'Account Receivables', 'Total']
+        ], [$firstLine, $secondLine, $lastLine]);
+
+        return Excel::download(new InvoicesExport($data),  $date . '-daily-cash-collection.xlsx');
     }
 
     public function generateLoanReport($loanId) {

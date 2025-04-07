@@ -80,6 +80,8 @@ Route::middleware([
     Route::get('reports', [ReportsController::class, 'index'])->name('reports.index');
     Route::get('reports/generate', [ReportsController::class, 'generateReport'])
         ->name('reports.generate');
+    Route::get('reports/generate-daily-collection', [ReportsController::class, 'generateDailyCollectionReport'])
+        ->name('reports.generate-daily-collection');
     Route::get('reports/generate-loan-report/{loanId}', [ReportsController::class, 'generateLoanReport'])
         ->name('reports.generate-loan-report');
 
