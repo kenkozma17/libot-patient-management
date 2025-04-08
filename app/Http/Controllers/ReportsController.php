@@ -30,45 +30,106 @@ class ReportsController extends Controller
         $month = $request->month;
         $year = $request->year;
         $date = $year . '-' . strtolower($month) . '-';
-        $invoices = Invoice::
-            with(['patientVisit.patient'])
-            ->whereMonth('created_at', $month)
-            ->whereYear('created_at', $year)
+        $walkInVisits = PatientVisit::whereMonth('visit_date', $month)
+            ->whereYear('visit_date', $year)
+            ->where('patient_type', 'Walk In')
+            ->with('invoice')
+            ->whereHas('invoice', function($query) {
+                $query->where('is_paid', 1);
+            })
             ->orderBy('created_at', 'asc')
             ->get();
 
+        $sendOutVisits = PatientVisit::whereMonth('visit_date', $month)
+            ->whereYear('visit_date', $year)
+            ->where('patient_type', 'Send Out')
+            ->with('invoice')
+            ->whereHas('invoice', function($query) {
+                $query->where('is_paid', 1);
+            })
+            ->orderBy('created_at', 'asc')
+            ->get();
+
+        $loanPayments = LoanPayment::whereMonth('payment_date', $month)
+            ->whereYear('payment_date', $year)
+            ->orderBy('payment_date', 'asc')
+            ->get();
+
         // Group invoices by date
-        $groupedInvoices = $invoices->groupBy(function ($invoice) {
-            return $invoice->created_at->format('Y-m-d');
-        });
+        $combinedItems = $walkInVisits->concat($sendOutVisits)->concat($loanPayments);
 
-        $summary = $groupedInvoices->map(function ($invoices, $date) {
-            $income = $invoices->filter(function ($invoice) {
-                return $invoice->is_paid == 1
-                    && $invoice->patientVisit->patient_type === 'Walk In';
-            })->sum('amount_payable');
-            $accounts_receivable = $invoices->where('is_paid', '==', 0)->sum('amount_payable');
-            $sendOutPayments = $invoices->filter(function ($invoice) {
-                return $invoice->is_paid == 1
-                    && $invoice->patientVisit->patient_type === 'Send Out';
-            })->sum('amount_payable');
+        $groupedItems = $combinedItems->groupBy(function ($item) {
+            return Carbon::parse($item->visit_date ?? $item->payment_date)->format('Y-m-d');
+        })->map(function ($itemsPerDate) {
+            return $itemsPerDate->groupBy(function ($item) {
+                return $item->visit_date ? 'visits' : 'loans';
+            });
+        })->sortKeys();
+        // $visitsAndLoans = array_merge($groupedLoanPayments, $groupedVisits);
 
-            $total = $income + $accounts_receivable + $sendOutPayments;
-            return [
-                'date' => $date,
-                'or_number' => $invoices->first()->or_number . ' - ' . $invoices->last()->or_number,
-                'remarks' => '',
-                'income' => $income,
-                'loan_payments' => 0,
-                'send_out_payments' => $sendOutPayments,
-                'accounts_receivable' => $accounts_receivable,
-                'total' => $total,
-            ];
+        $exportData = [];
+        $totalWalkInIncome = 0;
+        $totalSendOutIncome = 0;
+        $totalLoanPayments = 0;
+        $groupedItems->each(function ($items, $date) use (&$exportData, &$totalWalkInIncome, &$totalLoanPayments, &$totalSendOutIncome) {
+            if(isset($items['visits'])) {
+                $visits = $items['visits'];
+                $walkInIncome = $visits->map(function($visit) {
+                    if($visit->patient_type === 'Walk In') {
+                        return $visit->invoice->amount_payable;
+                    }
+                });
+
+                $sendOutIncome = $visits->map(function($visit) {
+                    if($visit->patient_type === 'Send Out') {
+                        return $visit->invoice->amount_payable;
+                    }
+                });
+
+                $totalWalkInIncome = $totalWalkInIncome + $walkInIncome->sum();
+                $totalSendOutIncome = $totalSendOutIncome + $sendOutIncome->sum();
+                $exportData[] = [
+                    'date' => $date,
+                    'or_number' => $visits->first()->invoice->or_number . ' - ' . $visits->last()->invoice->or_number,
+                    'remarks' => '',
+                    'income' => number_format($walkInIncome->sum(), 2),
+                    'loan_payments' => '',
+                    'send_out_payments' => number_format($sendOutIncome->sum(), 2),
+                    'accounts_receivable' => '',
+                    'total' => number_format($walkInIncome->sum() + $sendOutIncome->sum(), 2),
+                ];
+            }
+
+            if(isset($items['loans'])) {
+                $loanPayments = $items['loans'];
+                $totalLoanPayments += $loanPayments->sum('amount');
+                $exportData[] = [
+                    'date' => $date,
+                    'or_number' => $loanPayments->first()->or_number . ' - ' . $loanPayments->last()->or_number,
+                    'remarks' => '',
+                    'income' => '',
+                    'loan_payments' => number_format($loanPayments->sum('amount'), 2),
+                    'send_out_payments' => '',
+                    'accounts_receivable' => '',
+                    'total' => number_format($loanPayments->sum('amount'), 2),
+                ];
+            }
         });
+        $grandTotal = number_format($totalWalkInIncome + $totalLoanPayments + $totalSendOutIncome, 2);
+        $lastLine = [
+            '',
+            '',
+            'Total',
+            number_format($totalWalkInIncome, 2),
+            number_format($totalLoanPayments, 2),
+            number_format($totalSendOutIncome, 2),
+            '',
+            $grandTotal
+        ];
 
         $data = array_merge([
             ['Date', 'OR Number', 'Remarks', 'Income', 'Loan Payments', 'Send Out Payments', 'Accounts Receivable', 'Total']
-        ], $summary->values()->toArray());
+        ], [$exportData, $lastLine]);
 
         return Excel::download(new InvoicesExport($data),  $date . 'mir.xlsx');
     }
