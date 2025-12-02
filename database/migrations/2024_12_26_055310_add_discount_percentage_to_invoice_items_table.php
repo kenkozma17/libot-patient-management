@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('invoice_items', function (Blueprint $table) {
-            $table->integer('discount_percentage')->default(0)->after('total_price');
+            $table->decimal('discount_percentage', 10, 2)->default(0)->after('total_price');
         });
     }
 

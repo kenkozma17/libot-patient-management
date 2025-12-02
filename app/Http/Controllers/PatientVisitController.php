@@ -310,11 +310,18 @@ class PatientVisitController extends Controller
     /**
      * Delete Lab Test within Patient Transaction
      */
+    /**
+     * Delete Lab Test within Patient Transaction
+     */
     public function destroyLabTest(Request $request, $patientVisitLabTestId) {
         $invoiceId = $request->invoice_id;
         $invoiceItemId = $request->invoice_item_id;
+        $patientId = $request->patient_id;
 
         if($invoiceItemId) {
+            $invoiceItem = InvoiceItem::find($invoiceItemId);
+            $itemTotal = $invoiceItem->total_price;
+
             InvoiceItem::destroy($invoiceItemId);
             PatientVisitLabTest::destroy($patientVisitLabTestId);
         }
@@ -322,6 +329,14 @@ class PatientVisitController extends Controller
         # Update amounts
         if($invoiceId) {
             $invoice = Invoice::find($invoiceId);
+            $updatedCredits = $invoice->credits_applied - $itemTotal;
+
+            # If credits used is more than that from the lab test, subtract using the lab test total
+            $patient = Patient::find($patientId);
+            $isCreditsAppliedMore = ($invoice->credits_applied > $itemTotal);
+            $patient->update([
+                'credits' => $patient->credits + ($isCreditsAppliedMore ? $itemTotal : $invoice->credits_applied)
+            ]);
 
             # Adjust invoice totals
             if($invoice->invoice_items()->exists()) {
@@ -334,14 +349,16 @@ class PatientVisitController extends Controller
                 $amountDue = $amountPayable - $discountAmount;
                 $invoice->update([
                     'amount_payable' => $amountDue,
-                    'amount_discounted' => $discountAmount
+                    'amount_discounted' => $discountAmount,
+                    'credits_applied' => $updatedCredits < 0 ? 0 : $updatedCredits,
                 ]);
             } else {
                 # Set invoice to nothing if no more items exist.
                 $invoice->update([
                     'amount_payable' => 0,
                     'discount_percentage' => 0,
-                    'amount_didscounted' => 0
+                    'amount_discounted' => 0,
+                    'credits_applied' => $updatedCredits < 0 ? 0 : $updatedCredits,
                 ]);
             }
             $invoice->save();
