@@ -4,6 +4,8 @@ import AdminLayout from '@/Layouts/AdminLayout.vue';
 
 <template>
     <AdminLayout title="Dashboard" background="#808080">
-        test
+        <div class="flex h-screen w-full justify-center items-center">
+            <p class="font-bold text-2xl">Patient Management System</p>
+        </div>
     </AdminLayout>
 </template>

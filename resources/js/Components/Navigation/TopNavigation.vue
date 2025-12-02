@@ -20,7 +20,7 @@ const unreadNotificationsCount = computed(() => {
     <div
       class="bg-light-gray inline-block px-[1.8rem] py-[.35rem] text-sm text-main-gray rounded-sm"
     >
-      Tue, 6 Apr 2022
+      PMS
     </div>
     <div class="flex gap-[1rem]">
       <Link :href="route('notifications.index')">
