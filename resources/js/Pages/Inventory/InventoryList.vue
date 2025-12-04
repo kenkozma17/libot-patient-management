@@ -73,7 +73,7 @@ defineOptions({ layout: AdminLayout });
       :page-change-fn="updateRows"
     >
       <template #name="{ data }">
-        <Link class="hover:underline" :href="route('inventory.show', data.value.id)">{{
+        <Link class="hover:underline text-blue-600" :href="route('inventory.show', data.value.id)">{{
           data.value.name
         }}</Link>
       </template>

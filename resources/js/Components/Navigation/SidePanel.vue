@@ -137,7 +137,11 @@ onMounted(() => {
       </li>
 
       <li>
-        <a :href="route('reports.index')" ref="reports" class="menu" @click="toggleSubMenu"
+        <a
+          :href="route('reports.index')"
+          ref="reports"
+          class="menu"
+          @click="toggleSubMenu"
           >Reports</a
         >
         <!-- <ul class="sub-menu flex flex-col mt-[.5rem] gap-[.5rem]">
@@ -149,6 +153,9 @@ onMounted(() => {
             >
           </li>
         </ul> -->
+      </li>
+      <li>
+        <a :href="route('user-guide.index')" ref="user-guide" class="menu">User Guide</a>
       </li>
     </ul>
   </aside>
@@ -190,6 +197,7 @@ onMounted(() => {
     display: block;
     cursor: pointer;
     padding: 0.75rem 0.9rem;
+    margin: 0.25rem 0;
 
     &:hover {
       background: rgba(128, 128, 128, 0.1);
@@ -202,7 +210,6 @@ onMounted(() => {
     }
 
     &__dropdown {
-      margin: 0.5rem 0;
       &::after {
         content: "";
         background: url("/icons/arrow-down.png");

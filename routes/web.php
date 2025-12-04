@@ -17,6 +17,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\PatientVisitController;
 use App\Http\Controllers\ReportsController;
+use App\Http\Controllers\UserGuideController;
 use App\Models\InventoryItem;
 use App\Models\Invoice;
 
@@ -93,4 +94,6 @@ Route::middleware([
     Route::get('loan-payments/create/{loanId?}', [LoanPaymentController::class, 'create'])
         ->name('loan-payments.create');
 
+    /** User Guide */
+    Route::resource('user-guide', UserGuideController::class);
 });
